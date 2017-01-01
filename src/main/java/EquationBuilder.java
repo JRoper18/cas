@@ -4,17 +4,67 @@ import EquationObjects.PatternMatching.GenericExpression;
 import EquationObjects.PatternMatching.GenericType;
 import EquationObjects.PatternMatching.LogicalOperator;
 import EquationObjects.PatternMatching.LogicalOperatorType;
+import EquationObjects.SyntaxObject;
+import EquationObjects.SyntaxObjectAbbriviations;
+import EquationObjects.SyntaxObjectType;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
 public class EquationBuilder{
-    public static Equation makePatternEquation(String equationStr){
-        return null;
+    public static PatternEquation makePatternEquation(String equationStr){
+        return new PatternEquation(makeEquationTree(equationStr, false));
     }
     public static Equation makeEquation(String equationStr){
-        return null;
+        return new Equation(makeEquationTree(equationStr));
+    }
+
+
+    private static Tree<MathObject> makeEquationTree(String equationStr){
+        return (Tree<MathObject>)(Tree<?>) makeEquationTree(equationStr, true);
+    }
+    private static Tree<EquationObject> makeEquationTree(String equationStr, boolean isPattern){ //This stakes a string input of which I hope is correctly formatted.
+        List<EquationObject> equationObjectList = preProcess(equationStr, isPattern);
+        Tree<EquationObject> tree = new Tree<>();
+        Tree<EquationObject> selected = tree;
+        for(EquationObject equationObject : equationObjectList){
+            if(equationObject instanceof SyntaxObject){
+                SyntaxObjectType objType = ((SyntaxObject) equationObject).syntax;
+                switch(objType){
+                    case OPEN_PAREN:
+                        //An open paren means arguments are beginning.
+                        selected.addEmptyChild();
+                        selected = selected.getChild(selected.getNumberOfChildren()-1);
+                        break;
+                    case CLOSE_PAREN:
+                        selected = selected.getParent();
+                        break;
+                    case COMMA:
+                        selected = selected.getParent();
+                        selected.addEmptyChild();
+                        selected = selected.getChild(selected.getNumberOfChildren()-1);
+                        break;
+                    default:
+                }
+            }
+            else{
+                //It's not syntax.
+                selected.data = equationObject;
+            }
+        }
+        return tree;
+    }
+    private static List<EquationObject> preProcess(String equationStr, boolean isPattern){
+        String[] tokens = equationStr.split(" ");
+        List<EquationObject> equationObjectList = new ArrayList<>();
+        for(int i = 0; i<tokens.length; i++){
+            equationObjectList.add(parseString(tokens[i], isPattern));
+        }
+        return equationObjectList;
     }
     public static EquationObject parseString(String str){
         return parseString(str, true);
@@ -41,7 +91,29 @@ public class EquationBuilder{
         } catch(NumberFormatException e){
             //IGNORE IT
         }
-        //Done checking for numbers. Check for operators
+        //Check the list of mathematical operators.
+        try{
+            MathObjectNamed obj = new MathObjectNamed(MathOperators.valueOf(str));
+            //If no error, we found our math object. USE IT!
+            return obj;
+        } catch (IllegalArgumentException er){
+            //IGNORED (I'm such a badass)
+        }
+        //OK, now check the abbriviations table.
+        MathOperators possible = (MathOperatorsAbbriviations.abbriviations.get(str));
+        if(possible != null){ //A HashMap's .get() method returns null if there's no key.
+            return new MathObjectNamed(possible);
+        }
+        //Now do the same for syntax operators
+        try{
+            SyntaxObjectType obj = (SyntaxObjectType.valueOf(str));
+            return new SyntaxObject(obj);
+        } catch (IllegalArgumentException er){
+        }
+        SyntaxObjectType possibleSyntax = (SyntaxObjectAbbriviations.abbriviations.get(str));
+        if(possibleSyntax != null){ //A HashMap's .get() method returns null if there's no key.
+            return new SyntaxObject(possibleSyntax);
+        }
         if(allowPattern){ //If we are allowing pattern objects, check for logical operators
             switch(str){
                 case "||":
@@ -49,6 +121,7 @@ public class EquationBuilder{
                 case "&&":
                     return new LogicalOperator(LogicalOperatorType.AND);
                 default:
+                    //If more logical operators are added, put them in this switch statement.
             }
             //Nope, not logical. Maybe it's a generic. If it's an expression it'll look like <genericType>_<genericName>
             int index = str.indexOf('_');
@@ -76,16 +149,35 @@ public class EquationBuilder{
                 return new GenericExpression(type, name);
             }
         }
-        //Check the list of mathematical operators.
-        try{
-            MathObjectNamed obj = new MathObjectNamed(MathOperators.valueOf(str));
-            //If no error, we found our math object. USE IT!
-            return obj;
-        } catch (IllegalArgumentException er){
-            //IGNORED (I'm such a badass)
+        throw new UncheckedIOException(new IOException("Operator: " + str + " is not recognized by EquationBuilder. "));
+    }
+    private static List<ParenInfo> findParen(List<EquationObject> eq){
+        List<ParenInfo> result = new ArrayList<ParenInfo>();
+        Stack<Integer> notClosedParens = new Stack<Integer>();
+        for(int i = 0; i<eq.size(); i++){
+            EquationObject current = eq.get(i);
+            if(current instanceof SyntaxObject){
+                SyntaxObjectType mathObject = ((SyntaxObject) current).syntax;
+                if(mathObject == SyntaxObjectType.OPEN_PAREN) {
+                    notClosedParens.push(new Integer(i));
+                }
+                else if(mathObject == SyntaxObjectType.CLOSE_PAREN){
+                    int nextParenIndex = notClosedParens.pop();
+                    ParenInfo newParenInfo = new ParenInfo(nextParenIndex, new Integer(i), notClosedParens.size() + 1);
+                    result.add(newParenInfo);
+                }
+            }
         }
-        //OK, now check the abbriviations table.
-        MathOperatorsAbbriviations abbriviations = new MathOperatorsAbbriviations();
-        return new MathObjectNamed(abbriviations.abbriviations.get(str));
+        return result;
+    }
+    private static class ParenInfo{
+        public int start;
+        public int end;
+        public int level;
+        public ParenInfo(int startIndex, int endIndex, int level){
+            this.start = startIndex;
+            this.end = endIndex;
+            this.level = level;
+        }
     }
 }

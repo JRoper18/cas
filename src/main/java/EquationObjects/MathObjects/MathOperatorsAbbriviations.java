@@ -6,8 +6,8 @@ import java.util.HashMap;
  * Created by jack on 12/30/2016.
  */
 public class MathOperatorsAbbriviations {
-    public static HashMap<String, MathOperators> abbriviations;
-    public MathOperatorsAbbriviations(){
+    public static final HashMap<String, MathOperators> abbriviations;
+    static {
         abbriviations = new HashMap<>();
         abbriviations.put("+", MathOperators.ADD);
         abbriviations.put("*", MathOperators.MULTIPLY);

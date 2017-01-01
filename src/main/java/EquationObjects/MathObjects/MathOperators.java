@@ -9,7 +9,6 @@ public enum MathOperators {
     SUBTRACT(2, true, false),
     DIVIDE(2, true, false);
 
-
     private final int arguments;
     private final boolean ordered;
     private final boolean associative;

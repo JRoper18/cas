@@ -23,4 +23,9 @@ public class MathNumberInteger extends MathNumberRational{
         MathNumberInteger num = (MathNumberInteger) obj;
         return (num.num.compareTo(this.num) == 0);
     }
+
+    @Override
+    public String toString(){
+        return this.num.toString();
+    }
 }

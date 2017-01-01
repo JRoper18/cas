@@ -1,5 +1,4 @@
-import EquationObjects.MathObjects.MathNumberInteger;
-import EquationObjects.MathObjects.MathNumberRational;
+import EquationObjects.MathObjects.*;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -14,7 +13,14 @@ public class EquationBuilderTest {
     public void testStringTokenizer() throws Exception {
         assertEquals(new MathNumberRational(25, 10), builder.parseString("2.5"));
         assertEquals(new MathNumberInteger(300), builder.parseString("300"));
-        assertEquals();
+    }
 
+    @Test
+    public void testTreeCreation() throws Exception {
+        Equation test1 = builder.makeEquation("ADD ( 4 , 5 )");
+        Tree<MathObject> expectedTree1 = new Tree<>(new MathObjectNamed(MathOperators.ADD));
+        expectedTree1.addChildWithData(new MathNumberInteger(4));
+        expectedTree1.addChildWithData(new MathNumberInteger(5));
+        assertEquals(new Equation(expectedTree1), test1);
     }
 }

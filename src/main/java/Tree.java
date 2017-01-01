@@ -44,4 +44,45 @@ public class Tree<T> {
             return false;
         }
     }
+    public void addChild(Tree<T> child){
+        this.children.add(child);
+    }
+    public void addChildWithData(T data){
+        this.children.add(new Tree<T>(data));
+    }
+    public void addEmptyChild(){
+        Tree<T> newChild = new Tree<T>();
+        newChild.parent = this;
+        this.children.add(newChild);
+    }
+    public int getNumberOfChildren(){
+        return this.children.size();
+    }
+    public void print(){
+        this.print(1);
+    }
+    private void print(int level) {
+        for (int i = 1; i < level; i++) {
+            System.out.print("\t"); //Newline
+        }
+        if(this.data == null){
+            System.out.println("null");
+        }
+        else{
+            System.out.println(this.data);
+        }
+        for (Tree child : this.children) {
+            child.print(level + 1);
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if(obj instanceof Tree){
+            
+        }
+        else{
+            return false;
+        }
+    }
 }
