@@ -8,6 +8,7 @@ import EquationObjects.EquationObject;
 public class LogicalOperator extends EquationObject{
     public LogicalOperatorType operator;
     public LogicalOperator(LogicalOperatorType type){
+        super(2);
         this.operator = type;
     }
 }

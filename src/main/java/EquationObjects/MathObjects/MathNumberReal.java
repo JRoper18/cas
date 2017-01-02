@@ -5,6 +5,6 @@ package EquationObjects.MathObjects;
  */
 public class MathNumberReal extends MathObject { //Actually should extend MathNumberComplex. Doing this so I can compile and test.
     public MathNumberReal(){
-        super(0, false, false);
+        super(MathSymbol.NUMBER);
     }
 }

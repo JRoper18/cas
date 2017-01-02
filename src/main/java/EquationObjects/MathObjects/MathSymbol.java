@@ -3,16 +3,20 @@ package EquationObjects.MathObjects;
 /**
  * Created by jack on 12/30/2016.
  */
-public enum MathOperators {
+public enum MathSymbol {
     ADD(2, false, true),
     MULTIPLY(2, false, true),
     SUBTRACT(2, true, false),
-    DIVIDE(2, true, false);
+    DIVIDE(2, true, false),
+    SINE(1, true, true),
+    COSINE(1, true, true),
+    TANGENT(1, true, true),
+    NUMBER(0, false, false);
 
     private final int arguments;
     private final boolean ordered;
     private final boolean associative;
-    private MathOperators(int arguments, boolean ordered, boolean associative){
+    private MathSymbol(int arguments, boolean ordered, boolean associative){
         this.arguments = arguments;
         this.ordered = ordered;
         this.associative = associative;

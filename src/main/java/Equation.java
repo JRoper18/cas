@@ -8,4 +8,12 @@ public class Equation {
     public Equation(Tree<MathObject> tree){
         this.tree = tree;
     }
+
+    @Override
+    public boolean equals(Object obj){
+        if(obj instanceof Equation){
+            return this.tree.equals(((Equation) obj).tree);
+        }
+        return false;
+    }
 }

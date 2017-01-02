@@ -18,9 +18,11 @@ public class EquationBuilderTest {
     @Test
     public void testTreeCreation() throws Exception {
         Equation test1 = builder.makeEquation("ADD ( 4 , 5 )");
-        Tree<MathObject> expectedTree1 = new Tree<>(new MathObjectNamed(MathOperators.ADD));
+        Tree<MathObject> expectedTree1 = new Tree<>(new MathObject(MathSymbol.ADD));
         expectedTree1.addChildWithData(new MathNumberInteger(4));
         expectedTree1.addChildWithData(new MathNumberInteger(5));
         assertEquals(new Equation(expectedTree1), test1);
+
+        Equation test2 = builder.makeEquation("SUBTRACT ( 3 , TIMES ( SIN ( 4 ) , 5 ) )"); //3-(sin(4) * 5)
     }
 }

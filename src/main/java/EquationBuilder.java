@@ -1,11 +1,11 @@
 import EquationObjects.EquationObject;
+import EquationObjects.EquationObjectAbbriviations;
 import EquationObjects.MathObjects.*;
 import EquationObjects.PatternMatching.GenericExpression;
 import EquationObjects.PatternMatching.GenericType;
 import EquationObjects.PatternMatching.LogicalOperator;
 import EquationObjects.PatternMatching.LogicalOperatorType;
 import EquationObjects.SyntaxObject;
-import EquationObjects.SyntaxObjectAbbriviations;
 import EquationObjects.SyntaxObjectType;
 
 import java.io.IOException;
@@ -27,31 +27,41 @@ public class EquationBuilder{
     private static Tree<MathObject> makeEquationTree(String equationStr){
         return (Tree<MathObject>)(Tree<?>) makeEquationTree(equationStr, true);
     }
-    private static Tree<EquationObject> makeEquationTree(String equationStr, boolean isPattern){ //This stakes a string input of which I hope is correctly formatted.
+    private static Tree<EquationObject> makeEquationTree(String equationStr, boolean isPattern) { //This stakes a string input of which I hope is correctly formatted.
         List<EquationObject> equationObjectList = preProcess(equationStr, isPattern);
         Tree<EquationObject> tree = new Tree<>();
         Tree<EquationObject> selected = tree;
-        for(EquationObject equationObject : equationObjectList){
-            if(equationObject instanceof SyntaxObject){
+        for (EquationObject equationObject : equationObjectList) {
+            if (equationObject instanceof SyntaxObject) {
                 SyntaxObjectType objType = ((SyntaxObject) equationObject).syntax;
-                switch(objType){
+                switch (objType) {
                     case OPEN_PAREN:
                         //An open paren means arguments are beginning.
                         selected.addEmptyChild();
-                        selected = selected.getChild(selected.getNumberOfChildren()-1);
+                        selected = selected.getChild(selected.getNumberOfChildren() - 1);
                         break;
                     case CLOSE_PAREN:
                         selected = selected.getParent();
+                        //Check the number of args isn't too little.
+                        MathObject operator = (MathObject) selected.data;
+                        if (operator.getArgs() > selected.getNumberOfChildren()) {
+                            throw new UncheckedIOException(new IOException("You have the wrong number of arguments for the operator: " + selected.data + ". It takes " + operator.getArgs() + " arguments, but you put in too little. "));
+                        }
                         break;
                     case COMMA:
                         selected = selected.getParent();
+                        //Check to see if we have too many arguments
+                        MathObject parentOperator = ((MathObject) selected.data);
+                        int argsNeeded = parentOperator.getArgs();
+                        if (argsNeeded <= selected.getNumberOfChildren() && !parentOperator.isAssociative()) { //Too many arguments
+                            throw new UncheckedIOException(new IOException("You have the wrong number of arguments for the operator: " + selected.data + ". It takes " + argsNeeded + " arguments, but you put in too much. "));
+                        }
                         selected.addEmptyChild();
-                        selected = selected.getChild(selected.getNumberOfChildren()-1);
+                        selected = selected.getChild(selected.getNumberOfChildren() - 1);
                         break;
                     default:
                 }
-            }
-            else{
+            } else {
                 //It's not syntax.
                 selected.data = equationObject;
             }
@@ -93,26 +103,24 @@ public class EquationBuilder{
         }
         //Check the list of mathematical operators.
         try{
-            MathObjectNamed obj = new MathObjectNamed(MathOperators.valueOf(str));
+            MathObject obj = new MathObject(MathSymbol.valueOf(str));
             //If no error, we found our math object. USE IT!
             return obj;
         } catch (IllegalArgumentException er){
             //IGNORED (I'm such a badass)
         }
-        //OK, now check the abbriviations table.
-        MathOperators possible = (MathOperatorsAbbriviations.abbriviations.get(str));
-        if(possible != null){ //A HashMap's .get() method returns null if there's no key.
-            return new MathObjectNamed(possible);
-        }
+
         //Now do the same for syntax operators
         try{
             SyntaxObjectType obj = (SyntaxObjectType.valueOf(str));
             return new SyntaxObject(obj);
         } catch (IllegalArgumentException er){
         }
-        SyntaxObjectType possibleSyntax = (SyntaxObjectAbbriviations.abbriviations.get(str));
-        if(possibleSyntax != null){ //A HashMap's .get() method returns null if there's no key.
-            return new SyntaxObject(possibleSyntax);
+
+        //Check the abbriviations table
+        EquationObject possibleObject = (EquationObjectAbbriviations.abbriviations.get(str));
+        if(possibleObject != null){ //A HashMap's .get() method returns null if there's no key.
+            return possibleObject;
         }
         if(allowPattern){ //If we are allowing pattern objects, check for logical operators
             switch(str){

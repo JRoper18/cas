@@ -39,8 +39,8 @@ public class PatternMatcher {
             }
         }
         //No operator. Time to check for generics.
-        if(compare instanceof GenericExpression){ //We have a constant. Check if it's any specific type of constant.
-
+        if(compare instanceof GenericExpression){ //We have an expression. Check if it's any specific type of expression.
+            
         }
         return false; //CHANGE
     }

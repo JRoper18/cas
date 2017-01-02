@@ -76,10 +76,26 @@ public class Tree<T> {
         }
     }
 
+
     @Override
     public boolean equals(Object obj){
         if(obj instanceof Tree){
-            
+            //Check the data
+            if(!this.data.equals(((Tree) obj).data)){
+                return false;
+            }
+           //Check the number of children
+            if(((Tree) obj).getNumberOfChildren() != this.getNumberOfChildren()){
+                return false;
+            }
+            //Actually compare the children
+            for(int i = 0; i<this.getNumberOfChildren(); i++){
+                if(!this.getChild(i).equals(((Tree) obj).getChild(i))){
+                    return false;
+                }
+            }
+            //Made it!
+            return true;
         }
         else{
             return false;

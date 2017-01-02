@@ -7,7 +7,7 @@ public class MathNumberComplex extends MathObject {
     MathNumberReal real;
     MathNumberReal imaginary;
     public MathNumberComplex(MathNumberReal realPart, MathNumberReal imaginaryPart){
-        super(0, false, false);
+        super(MathSymbol.NUMBER);
         this.real = realPart;
         this.imaginary = imaginaryPart;
     }

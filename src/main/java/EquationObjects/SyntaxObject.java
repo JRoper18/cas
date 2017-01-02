@@ -6,6 +6,7 @@ package EquationObjects;
 public class SyntaxObject extends EquationObject {
     public SyntaxObjectType syntax;
     public SyntaxObject(SyntaxObjectType type){
+        super(0);
         this.syntax = type;
     }
 }
