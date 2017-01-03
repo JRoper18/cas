@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0ba3a60f-56b4-4d4a-9bf1-cc9202c65bbb" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/EquationSub.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/EquationObjects/PatternMatching/GenericType.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/EquationObjects/PatternMatching/GenericType.class" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/EquationBuilder.class" afterPath="$PROJECT_DIR$/target/classes/EquationBuilder.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/EquationObjects/PatternMatching/GenericExpression.class" afterPath="$PROJECT_DIR$/target/classes/EquationObjects/PatternMatching/GenericExpression.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/PatternMatcher$1.class" afterPath="$PROJECT_DIR$/target/classes/PatternMatcher$1.class" />
@@ -12,13 +9,6 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/test-classes/EquationBuilderTest.class" afterPath="$PROJECT_DIR$/target/test-classes/EquationBuilderTest.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/test-classes/PatternMatcherTest.class" afterPath="$PROJECT_DIR$/target/test-classes/PatternMatcherTest.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/EquationBuilder.java" afterPath="$PROJECT_DIR$/src/main/java/EquationBuilder.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/EquationObjects/MathObjects/MathNumberInteger.java" afterPath="$PROJECT_DIR$/src/main/java/EquationObjects/MathObjects/MathNumberInteger.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/EquationObjects/PatternMatching/GenericExpression.java" afterPath="$PROJECT_DIR$/src/main/java/EquationObjects/PatternMatching/GenericExpression.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/PatternMatcher.java" afterPath="$PROJECT_DIR$/src/main/java/PatternMatcher.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/Tree.java" afterPath="$PROJECT_DIR$/src/main/java/Tree.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/EquationBuilderTest.java" afterPath="$PROJECT_DIR$/src/test/java/EquationBuilderTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/PatternMatcherTest.java" afterPath="$PROJECT_DIR$/src/test/java/PatternMatcherTest.java" />
     </list>
     <ignored path="CAS.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -731,7 +721,14 @@
       <option name="project" value="LOCAL" />
       <updated>1483398001837</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Substitution being worked on">
+      <created>1483418307461</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1483418307461</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -804,7 +801,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="EquationBuilder being worked on" />
     <MESSAGE value="Refactoring. Hopefully less instanceof in the future." />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactoring. Hopefully less instanceof in the future." />
+    <MESSAGE value="Substitution being worked on" />
+    <option name="LAST_COMMIT_MESSAGE" value="Substitution being worked on" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
