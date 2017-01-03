@@ -8,7 +8,12 @@ public class Equation {
     public Equation(Tree<MathObject> tree){
         this.tree = tree;
     }
-
+    public Equation(String str){
+        this.tree = EquationBuilder.makeEquation(str).tree;
+    }
+    public Equation(Equation prev){
+        this.tree = prev.tree;
+    }
     @Override
     public boolean equals(Object obj){
         if(obj instanceof Equation){

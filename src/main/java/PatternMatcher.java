@@ -40,9 +40,11 @@ public class PatternMatcher {
                 }
                 return true;
             case EXPRESSION:
-                //We have an expression. Check if it's any specific type of expression.
+
+                //We have an expression. Check if it's any specific type of expression
                 GenericExpression genEx = (GenericExpression) compare;
                 if (genEx.hasTag()) {
+
                     String tag = genEx.tag;
                     //First, check if we have a tag already
                     if (values.containsKey(tag)) {
@@ -62,7 +64,7 @@ public class PatternMatcher {
             return false;
         }
         //Compare the number of children (unless pattern's children are generics or logical operators
-        if(!(mathSymbol == MathSymbol.OR || mathSymbol == MathSymbol.AND || mathSymbol == MathSymbol.EXPRESSION || eq.getNumberOfChildren() == pattern.getNumberOfChildren())){
+        if(mathSymbol != MathSymbol.OR && mathSymbol != MathSymbol.AND && mathSymbol != MathSymbol.EXPRESSION && eq.getNumberOfChildren() != pattern.getNumberOfChildren()){
             return false;
         }
         //Compare the actual children.

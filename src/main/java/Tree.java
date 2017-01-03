@@ -21,7 +21,7 @@ public class Tree<T> {
         return this.children;
     }
     public boolean hasChildren(){
-        return this.children.isEmpty();
+        return !this.children.isEmpty();
     }
     public void setChildren(List<Tree<T>> children) {
         for(Tree<T> child : this.children) {
@@ -33,10 +33,14 @@ public class Tree<T> {
         return children.get(index);
     }
     public boolean containsData(T data){
-        if(!this.hasChildren() && this.data == data){
+        if(this.data.equals(data)){
             return true;
         }
+        if(!this.hasChildren()){
+            return false;
+        }
         else{
+            System.out.println(data + " " + this.data);
             for(Tree<T> child : children){
                 if(child.containsData(data)){
                     return true;
@@ -86,19 +90,25 @@ public class Tree<T> {
         return this.continuePath(path, 0);
     }
     private Tree continuePath(LinkedList<Integer> path, int index){
-        if(index == path.size()-1){
+        if(index == path.size()){
             return this;
         }
         return this.getChild(path.get(index)).continuePath(path, index + 1);
     }
     public void replaceWith(Tree<T> newTree){
-        newTree.parent = this.parent;
-        for(int i = 0; i<this.parent.getNumberOfChildren(); i++){
-            Tree<T> sibling = this.parent.getChild(i);
-            if(this == sibling){ //Purposely ==, not .equals()
-                this.parent.children.set(i, newTree);
-                return;
+        if(this.parent != null){
+            newTree.parent = this.parent;
+            for(int i = 0; i<this.parent.getNumberOfChildren(); i++){
+                Tree<T> sibling = this.parent.getChild(i);
+                if(this == sibling){ //Purposely ==, not .equals()
+                    this.parent.children.set(i, newTree);
+                    break;
+                }
             }
+        }
+        else{
+            this.children = newTree.children;
+            this.data = newTree.data;
         }
     }
     public void addChild(Tree<T> child){

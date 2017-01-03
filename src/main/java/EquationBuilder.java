@@ -12,6 +12,9 @@ import java.util.Stack;
 
 public class EquationBuilder{
     public static Equation makeEquation(String str){
+        return postProcess(new Equation(makeEquationTree(str)));
+    }
+    public static Equation makeUnprocessedEquation(String str){
         return new Equation(makeEquationTree(str));
     }
     private static Tree<MathObject> makeEquationTree(String equationStr) { //This stakes a string input of which I hope is correctly formatted.
@@ -62,6 +65,14 @@ public class EquationBuilder{
             equationObjectList.add(parseString(tokens[i]));
         }
         return equationObjectList;
+    }
+    private static Equation postProcess(Equation eq){
+        List<EquationSub> subs = new ArrayList<>();
+        subs.add(new EquationSub(makeUnprocessedEquation("MINUS ( _v1 , _v2 )"), makeUnprocessedEquation("PLUS ( _v1 , TIMES ( -1 , _v2 ) )")));
+        for(EquationSub sub : subs){
+            eq = sub.apply(eq);
+        }
+        return eq;
     }
     public static EquationObject parseString(String str){
         //First, check for numbers
@@ -115,7 +126,6 @@ public class EquationBuilder{
             String name = str.substring(1, str.length());
             return new GenericExpression(name);
         }
-
         throw new UncheckedIOException(new IOException("Operator: " + str + " is not recognized by EquationBuilder. "));
     }
     private static List<ParenInfo> findParen(List<EquationObject> eq){

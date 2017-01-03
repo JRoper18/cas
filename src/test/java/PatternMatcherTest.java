@@ -10,7 +10,9 @@ public class PatternMatcherTest {
     public void testPatternMatching() throws Exception {
         Equation pattern1 = builder.makeEquation("PLUS ( _ , _ )");
         Equation test1 = builder.makeEquation("PLUS ( 1 , 1 )");
-
         assertEquals(true, matcher.patternMatch(test1, pattern1));
+        Equation test2 = builder.makeEquation("ADD ( 4 , 5 )");
+        Equation pattern2 = builder.makeEquation("MINUS ( _ , _ )");
+        assertEquals(false, matcher.patternMatch(test2, pattern2));
     }
 }

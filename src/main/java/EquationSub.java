@@ -16,19 +16,29 @@ public class EquationSub {
         this.before = before;
         this.after = after;
     }
+    public EquationSub(String before, String after){
+        this.before = new Equation(before);
+        this.after = new Equation(after);
+    }
+    public EquationSub(Equation before, String after){
+        this.before = before;
+        this.after = new Equation(after);
+    }
     public Equation apply(Equation equation){
-        Equation newEquation = new Equation(after.tree); //Quick clone
         if(matcher.patternMatch(equation, before)) {
+            Equation newEquation = new Equation(after); //Quick clone
             HashMap<String, Tree<MathObject>> values = matcher.getLastMatchExpressions();
             for (String var : values.keySet()) {
                 Tree<MathObject> substitution = values.get(var);
+                GenericExpression genExToLookFor = new GenericExpression(var);
                 List<LinkedList<Integer>> paths = newEquation.tree.findPaths(new GenericExpression(var)); //Find the matching expressions
                 for (LinkedList<Integer> path : paths) {
                     Tree<MathObject> temp = newEquation.tree.getChildThroughPath(path);
                     temp.replaceWith(substitution);
                 }
             }
+            return newEquation;
         }
-        return newEquation;
+        return equation;
     }
 }

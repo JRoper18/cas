@@ -23,4 +23,5 @@ public class EquationBuilderTest {
         expectedTree1.addChildWithData(new MathNumberInteger(5));
         assertEquals(new Equation(expectedTree1), test1);
     }
+
 }

@@ -15,6 +15,19 @@ public class GenericExpression extends MathObject {
     }
 
     public boolean hasTag(){
-        return this.tag == null;
+        return this.tag != null;
+    }
+
+    @Override
+    public boolean equals(Object n){
+        if(n instanceof GenericExpression){
+            return ((GenericExpression) n).tag.equals(this.tag);
+        }
+        return false;
+    }
+
+    @Override
+    public String toString(){
+        return "_" + tag;
     }
 }
