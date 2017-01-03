@@ -1,14 +1,16 @@
+import static org.junit.Assert.assertEquals;
+
 /**
  * Created by jack on 12/30/2016.
  */
-
-import static org.junit.Assert.*;
-
 public class PatternMatcherTest {
-
+    EquationBuilder builder = new EquationBuilder();
+    PatternMatcher matcher = new PatternMatcher();
     @org.junit.Test
-    public void testStuff() throws Exception {
-        int t = 5;
-        assertEquals(5, t);
+    public void testPatternMatching() throws Exception {
+        PatternEquation pattern1 = builder.makePatternEquation("PLUS ( _ , _ )");
+        Equation test1 = builder.makeEquation("PLUS ( 1 , 1 )");
+
+        assertEquals(true, matcher.patternMatch(test1, pattern1));
     }
 }

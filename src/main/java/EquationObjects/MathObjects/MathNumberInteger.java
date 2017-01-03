@@ -1,5 +1,7 @@
 package EquationObjects.MathObjects;
 
+import org.bidouille.jops.Operator;
+
 import java.math.BigInteger;
 
 /**
@@ -15,6 +17,10 @@ public class MathNumberInteger extends MathNumberRational{
         super();
         this.num = BigInteger.valueOf(num);
     }
+    public MathNumberInteger(BigInteger num){
+        super(num.intValue());
+        this.num = num;
+    }
     @Override
     public boolean equals(Object obj){
         if(!(obj instanceof MathNumberInteger)){
@@ -27,5 +33,15 @@ public class MathNumberInteger extends MathNumberRational{
     @Override
     public String toString(){
         return this.num.toString();
+    }
+
+    @Operator( "+" )
+    public static MathNumberInteger add(MathNumberInteger one, MathNumberInteger two){
+        return new MathNumberInteger(one.num.add(two.num));
+    }
+
+    @Operator( "*" )
+    public static MathNumberInteger mul(MathNumberInteger one, MathNumberInteger two){
+        return new MathNumberInteger(one.num.multiply(two.num));
     }
 }

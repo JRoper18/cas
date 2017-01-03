@@ -22,7 +22,5 @@ public class EquationBuilderTest {
         expectedTree1.addChildWithData(new MathNumberInteger(4));
         expectedTree1.addChildWithData(new MathNumberInteger(5));
         assertEquals(new Equation(expectedTree1), test1);
-
-        Equation test2 = builder.makeEquation("SUBTRACT ( 3 , TIMES ( SIN ( 4 ) , 5 ) )"); //3-(sin(4) * 5)
     }
 }

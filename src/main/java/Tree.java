@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -44,6 +45,49 @@ public class Tree<T> {
             return false;
         }
     }
+    public List<LinkedList<Integer>> findPaths(T toFind){ //Returns linked list of a route to take to find the said child
+        List<LinkedList<Integer>> paths = new ArrayList<LinkedList<Integer>>();
+        if (this.hasChildren()) {
+            for(int i = 0; i<this.getChildren().size(); i++){
+                if(this.getChild(i).data.equals(toFind)){
+                    LinkedList<Integer> toReturn = new LinkedList<Integer>();
+                    toReturn.add(new Integer(i));
+                    paths.add(toReturn);
+                }
+                List<LinkedList<Integer>> possiblePaths = this.getChild(i).findPaths(toFind);
+                if(!possiblePaths.isEmpty()){
+                    for(int j = 0; j<possiblePaths.size(); j++){
+                        LinkedList<Integer> currentPath = possiblePaths.get(j);
+                        currentPath.addFirst(i);
+                        paths.add(currentPath);
+                    }
+                }
+            }
+        }
+        return paths;
+    }
+    public Tree<T> getChildThroughPath(LinkedList<Integer> path){
+        if(path.isEmpty()){
+            return this;
+        }
+        return this.continuePath(path, 0);
+    }
+    private Tree continuePath(LinkedList<Integer> path, int index){
+        if(index == path.size()-1){
+            return this;
+        }
+        return this.getChild(path.get(index)).continuePath(path, index + 1);
+    }
+    public void replaceWith(Tree<T> newTree){
+        newTree.parent = this.parent;
+        for(int i = 0; i<this.parent.getNumberOfChildren(); i++){
+            Tree<T> sibling = this.parent.getChild(i);
+            if(this == sibling){ //Purposely ==, not .equals()
+                this.parent.children.set(i, newTree);
+                return;
+            }
+        }
+    }
     public void addChild(Tree<T> child){
         this.children.add(child);
     }
@@ -76,7 +120,6 @@ public class Tree<T> {
         }
     }
 
-
     @Override
     public boolean equals(Object obj){
         if(obj instanceof Tree){
@@ -101,4 +144,6 @@ public class Tree<T> {
             return false;
         }
     }
+
+
 }

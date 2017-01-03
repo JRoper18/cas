@@ -1,8 +1,10 @@
 import EquationObjects.EquationObject;
 import EquationObjects.EquationObjectAbbriviations;
-import EquationObjects.MathObjects.*;
+import EquationObjects.MathObjects.MathNumberInteger;
+import EquationObjects.MathObjects.MathNumberRational;
+import EquationObjects.MathObjects.MathObject;
+import EquationObjects.MathObjects.MathSymbol;
 import EquationObjects.PatternMatching.GenericExpression;
-import EquationObjects.PatternMatching.GenericType;
 import EquationObjects.PatternMatching.LogicalOperator;
 import EquationObjects.PatternMatching.LogicalOperatorType;
 import EquationObjects.SyntaxObject;
@@ -10,14 +12,13 @@ import EquationObjects.SyntaxObjectType;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
 public class EquationBuilder{
     public static PatternEquation makePatternEquation(String equationStr){
-        return new PatternEquation(makeEquationTree(equationStr, false));
+        return new PatternEquation(makeEquationTree(equationStr, true));
     }
     public static Equation makeEquation(String equationStr){
         return new Equation(makeEquationTree(equationStr));
@@ -25,7 +26,7 @@ public class EquationBuilder{
 
 
     private static Tree<MathObject> makeEquationTree(String equationStr){
-        return (Tree<MathObject>)(Tree<?>) makeEquationTree(equationStr, true);
+        return (Tree<MathObject>)(Tree<?>) makeEquationTree(equationStr, false);
     }
     private static Tree<EquationObject> makeEquationTree(String equationStr, boolean isPattern) { //This stakes a string input of which I hope is correctly formatted.
         List<EquationObject> equationObjectList = preProcess(equationStr, isPattern);
@@ -131,30 +132,15 @@ public class EquationBuilder{
                 default:
                     //If more logical operators are added, put them in this switch statement.
             }
-            //Nope, not logical. Maybe it's a generic. If it's an expression it'll look like <genericType>_<genericName>
-            int index = str.indexOf('_');
-            if(index != -1){ //There's a _ so it's a generic.
+
+            //Nope, not logical. Maybe it's a generic. If it's an expression it'll look like _<genericName>
+            if(str.charAt(0) == '_'){ //There's a _ so it's a generic.
                 // NOTE: In the future you might make a function with a _ in it's name. Sorry, but I don't care enough to account for that.
                 if(str.length() == 1){ //It's just a _, which means any expression of any type with any name.
                     return new GenericExpression();
                 }
-                String name = str.substring(index + 1, str.length());
-                if(index == 0){ //They have nothing behind the _, so no type is specified.
-                    return new GenericExpression(name);
-                }
-                String typeStr = str.substring(0, index);
-                GenericType type;
-                try{
-                    type = GenericType.valueOf(typeStr);
-                } catch (InvalidParameterException er){
-                    throw new UncheckedIOException(new IOException("You put in an invalid generic expression type: " + typeStr));
-                }
-                if(index == str.length()-1){ //The _ is at the back, so no name specified.
-                    return new GenericExpression(type);
-                }
-
-                //We've gotten here, so it must have both a name and a type defined.
-                return new GenericExpression(type, name);
+                String name = str.substring(1, str.length());
+                return new GenericExpression(name);
             }
         }
         throw new UncheckedIOException(new IOException("Operator: " + str + " is not recognized by EquationBuilder. "));
