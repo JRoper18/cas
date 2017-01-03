@@ -8,7 +8,7 @@ public class PatternMatcherTest {
     PatternMatcher matcher = new PatternMatcher();
     @org.junit.Test
     public void testPatternMatching() throws Exception {
-        PatternEquation pattern1 = builder.makePatternEquation("PLUS ( _ , _ )");
+        Equation pattern1 = builder.makeEquation("PLUS ( _ , _ )");
         Equation test1 = builder.makeEquation("PLUS ( 1 , 1 )");
 
         assertEquals(true, matcher.patternMatch(test1, pattern1));

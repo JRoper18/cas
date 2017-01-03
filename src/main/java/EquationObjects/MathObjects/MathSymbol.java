@@ -11,7 +11,10 @@ public enum MathSymbol {
     SINE(1, true, true),
     COSINE(1, true, true),
     TANGENT(1, true, true),
-    NUMBER(0, false, false);
+    NUMBER(0, false, false),
+    EXPRESSION(0, false, false),
+    OR(2, false, true),
+    AND(2, false, true);
 
     private final int arguments;
     private final boolean ordered;

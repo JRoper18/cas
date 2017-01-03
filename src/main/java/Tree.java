@@ -45,6 +45,19 @@ public class Tree<T> {
             return false;
         }
     }
+    public boolean containsClass(Class find){
+        if(!this.hasChildren() && this.data.getClass().equals(find)){
+            return true;
+        }
+        else{
+            for(Tree<T> child : children){
+                if(child.containsClass(find)){
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
     public List<LinkedList<Integer>> findPaths(T toFind){ //Returns linked list of a route to take to find the said child
         List<LinkedList<Integer>> paths = new ArrayList<LinkedList<Integer>>();
         if (this.hasChildren()) {
@@ -144,6 +157,5 @@ public class Tree<T> {
             return false;
         }
     }
-
 
 }

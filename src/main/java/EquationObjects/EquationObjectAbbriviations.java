@@ -22,5 +22,6 @@ public class EquationObjectAbbriviations {
         abbriviations.put("MINUS", new MathObject(MathSymbol.SUBTRACT));
         abbriviations.put("/", new MathObject(MathSymbol.DIVIDE));
         abbriviations.put("SIN", new MathObject(MathSymbol.SINE));
+        abbriviations.put("||", new MathObject(MathSymbol.OR));
     }
 }

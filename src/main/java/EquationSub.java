@@ -1,6 +1,5 @@
-import EquationObjects.EquationObject;
+import EquationObjects.MathObjects.GenericExpression;
 import EquationObjects.MathObjects.MathObject;
-import EquationObjects.PatternMatching.GenericExpression;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -10,23 +9,26 @@ import java.util.List;
  * Created by jack on 1/2/2017.
  */
 public class EquationSub {
-    public PatternEquation before;
-    public PatternEquation after;
+    public final Equation before;
+    public final Equation after;
     private PatternMatcher matcher = new PatternMatcher();
-    public EquationSub(PatternEquation before, PatternEquation after){
+    public EquationSub(Equation before, Equation after){
         this.before = before;
         this.after = after;
     }
     public Equation apply(Equation equation){
-        if(matcher.patternMatch(equation, before)){
+        Equation newEquation = new Equation(after.tree); //Quick clone
+        if(matcher.patternMatch(equation, before)) {
             HashMap<String, Tree<MathObject>> values = matcher.getLastMatchExpressions();
-            for(String var : values.keySet()){
+            for (String var : values.keySet()) {
                 Tree<MathObject> substitution = values.get(var);
-                List<LinkedList<Integer>> paths = after.tree.findPaths(new GenericExpression(var)); //Find the matching expressions
-                for(LinkedList<Integer> path : paths){
-                    Tree<EquationObject> temp = after.tree.getChildThroughPath(path);
-                    temp.replaceWith((Tree<EquationObject>)(Tree<?>) substitution); //This casting is annoying.
+                List<LinkedList<Integer>> paths = newEquation.tree.findPaths(new GenericExpression(var)); //Find the matching expressions
+                for (LinkedList<Integer> path : paths) {
+                    Tree<MathObject> temp = newEquation.tree.getChildThroughPath(path);
+                    temp.replaceWith(substitution);
                 }
             }
+        }
+        return newEquation;
     }
 }

@@ -1,18 +1,16 @@
-package EquationObjects.PatternMatching;
-
-import EquationObjects.EquationObject;
+package EquationObjects.MathObjects;
 
 /**
  * Created by Ulysses Howard Smith on 10/26/2016.
  */
-public class GenericExpression extends EquationObject {
+public class GenericExpression extends MathObject {
     public String tag;
     public GenericExpression(){
-        super(0);
+        super(MathSymbol.EXPRESSION);
         this.tag = null;
     }
     public GenericExpression(String tag){
-        super(0);
+        super(MathSymbol.EXPRESSION);
         this.tag = tag;
     }
 
