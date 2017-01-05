@@ -1,8 +1,5 @@
-import EquationObjects.EquationObject;
-import EquationObjects.EquationObjectAbbriviations;
+import EquationObjects.*;
 import EquationObjects.MathObjects.*;
-import EquationObjects.SyntaxObject;
-import EquationObjects.SyntaxObjectType;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -51,8 +48,12 @@ public class EquationBuilder{
                         break;
                     default:
                 }
-            } else {
-                //It's not syntax.
+            } else if(equationObject instanceof RationalTempInfoHolder){  //It's not syntax. Is it a temporary info holder?
+                selected.data = new MathObject(MathSymbol.DIVIDE);
+                    selected.addChildWithData(((RationalTempInfoHolder) equationObject).numer);
+                    selected.addChildWithData(((RationalTempInfoHolder) equationObject).denom);
+            }
+            else {
                 selected.data = (MathObject) equationObject;
             }
         }
@@ -69,6 +70,8 @@ public class EquationBuilder{
     private static Equation postProcess(Equation eq){
         List<EquationSub> subs = new ArrayList<>();
         subs.add(new EquationSub(makeUnprocessedEquation("MINUS ( _v1 , _v2 )"), makeUnprocessedEquation("PLUS ( _v1 , TIMES ( -1 , _v2 ) )")));
+
+        subs.add(new EquationSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("TIMES ( _v1 , POWER ( _v2 , -1 ) )"), new EquationCondition[]{new EquationCondition(makeUnprocessedEquation("_v2"), EquationConditionType.NOT_EQUALS_FULL, makeUnprocessedEquation("0"))}));
         for(EquationSub sub : subs){
             eq = sub.apply(eq);
         }
@@ -79,7 +82,7 @@ public class EquationBuilder{
         try{
             double num = Double.parseDouble(str);
             if(Math.floor(num) == num){ //Easy way to check if num is an int
-                return new MathNumberInteger((int) num);
+                return new MathInteger((int) num);
             }
             //Nope, it's decimal. We hate decimal numbers, turn them into rational numbers.
             //Remove the decimal place and turn it into a fraction.
@@ -92,7 +95,7 @@ public class EquationBuilder{
 
             int denom = (int) Math.pow(10, afterDecLength);
             int numer = (int) (num * denom);
-            return new MathNumberRational(numer, denom);
+            return new RationalTempInfoHolder(new MathInteger(numer), new MathInteger(denom));
         } catch(NumberFormatException e){
             //IGNORE IT
         }

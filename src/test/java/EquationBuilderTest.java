@@ -1,4 +1,5 @@
 import EquationObjects.MathObjects.*;
+import EquationObjects.RationalTempInfoHolder;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -11,17 +12,20 @@ public class EquationBuilderTest {
 
     @Test
     public void testStringTokenizer() throws Exception {
-        assertEquals(new MathNumberRational(25, 10), builder.parseString("2.5"));
-        assertEquals(new MathNumberInteger(300), builder.parseString("300"));
+        assertEquals(new RationalTempInfoHolder(new MathInteger(25), new MathInteger(10)), builder.parseString("2.5"));
+        assertEquals(new MathInteger(300), builder.parseString("300"));
     }
 
     @Test
     public void testTreeCreation() throws Exception {
         Equation test1 = builder.makeEquation("ADD ( 4 , 5 )");
         Tree<MathObject> expectedTree1 = new Tree<>(new MathObject(MathSymbol.ADD));
-        expectedTree1.addChildWithData(new MathNumberInteger(4));
-        expectedTree1.addChildWithData(new MathNumberInteger(5));
+        expectedTree1.addChildWithData(new MathInteger(4));
+        expectedTree1.addChildWithData(new MathInteger(5));
         assertEquals(new Equation(expectedTree1), test1);
+
+        Equation test2 = new Equation("DIVIDE ( 4 , 3 )");
+        test2.tree.print();
     }
 
 }

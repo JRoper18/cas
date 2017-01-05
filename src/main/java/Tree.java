@@ -142,7 +142,15 @@ public class Tree<T> {
             child.print(level + 1);
         }
     }
-
+    public void replaceAll(Tree<T> before, Tree<T> after){
+        if(this.equals(before)){
+            this.replaceWith(after);
+            return;
+        }
+        for(Tree<T> child : children){
+            child.replaceAll(before, after);
+        }
+    }
     @Override
     public boolean equals(Object obj){
         if(obj instanceof Tree){

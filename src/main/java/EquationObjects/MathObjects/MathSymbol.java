@@ -8,13 +8,15 @@ public enum MathSymbol {
     MULTIPLY(2, false, true),
     SUBTRACT(2, true, false),
     DIVIDE(2, true, false),
+    POWER(2, true, false),
     SINE(1, true, true),
     COSINE(1, true, true),
     TANGENT(1, true, true),
     NUMBER(0, false, false),
     EXPRESSION(0, false, false),
     OR(2, false, true),
-    AND(2, false, true);
+    AND(2, false, true),
+    IFEQUAL(2, false, true);
 
     private final int arguments;
     private final boolean ordered;
