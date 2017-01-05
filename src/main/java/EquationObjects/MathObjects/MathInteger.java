@@ -1,7 +1,5 @@
 package EquationObjects.MathObjects;
 
-import org.bidouille.jops.Operator;
-
 import java.math.BigInteger;
 
 /**
@@ -31,13 +29,19 @@ public class MathInteger extends MathObject{
         return this.num.toString();
     }
 
-    @Operator( "+" )
-    public static MathInteger add(MathInteger one, MathInteger two){
-        return new MathInteger(one.num.add(two.num));
+    public MathInteger add(MathInteger other){
+        return new MathInteger(this.num.add(other.num));
     }
 
-    @Operator( "*" )
-    public static MathInteger mul(MathInteger one, MathInteger two){
-        return new MathInteger(one.num.multiply(two.num));
+    public MathInteger mul(MathInteger other){
+        return new MathInteger(this.num.multiply(other.num));
+    }
+
+    public MathInteger sub(MathInteger other){
+        return new MathInteger(this.num.subtract(other.num));
+    }
+
+    public MathInteger div(MathInteger other){ //Assume that they are just being simplified, and you wont get inputs like 5/2.
+        return new MathInteger(this.num.divide(other.num));
     }
 }

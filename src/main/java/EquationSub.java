@@ -7,31 +7,29 @@ import java.util.HashMap;
  * Created by jack on 1/2/2017.
  */
 public class EquationSub {
-    public final Equation before;
-    public final Equation after;
+    public final DirectOperation operation;
     public final EquationCondition[] conditions;
     private PatternMatcher matcher = new PatternMatcher();
     public EquationSub(Equation before, Equation after){
-        this.before = before;
-        this.after = after;
-        this.conditions = null;
-    }
-    public EquationSub(String before, String after){
-        this.before = new Equation(before);
-        this.after = new Equation(after);
-        this.conditions = null;
-    }
-    public EquationSub(Equation before, String after){
-        this.before = before;
-        this.after = new Equation(after);
+        this.operation = (eq -> {
+            return this.substitute(before, after, eq);
+        });
         this.conditions = null;
     }
     public EquationSub(Equation before, Equation after, EquationCondition[] conditions) {
-        this.before = before;
-        this.after = after;
+        this.operation = (eq -> {
+            return this.substitute(before, after, eq);
+        });
         this.conditions = conditions;
     }
+    public EquationSub(DirectOperation operation){
+        this.operation = operation;
+        this.conditions = null;
+    }
     public Equation apply(Equation equation){
+        return this.operation.operate(equation);
+    }
+    private Equation substitute(Equation before, Equation after, Equation equation){
         if(matcher.patternMatch(equation, before)) {
             Equation newEquation = new Equation(after); //Quick clone
             HashMap<String, Tree<MathObject>> values = matcher.getLastMatchExpressions();

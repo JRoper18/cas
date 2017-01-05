@@ -18,14 +18,27 @@ public class EquationBuilderTest {
 
     @Test
     public void testTreeCreation() throws Exception {
-        Equation test1 = builder.makeEquation("ADD ( 4 , 5 )");
+        Equation test1 = builder.makeUnsimplifiedEquation("ADD ( 4 , 5 )");
         Tree<MathObject> expectedTree1 = new Tree<>(new MathObject(MathSymbol.ADD));
         expectedTree1.addChildWithData(new MathInteger(4));
         expectedTree1.addChildWithData(new MathInteger(5));
         assertEquals(new Equation(expectedTree1), test1);
 
-        Equation test2 = new Equation("DIVIDE ( 4 , 3 )");
-        test2.tree.print();
     }
 
+    @Test
+    public void testAutomaticSimplification() throws Exception {
+        Equation test2 = new Equation("DIVIDE ( 4 , 1 )");
+        Equation expected2 = new Equation("4");
+        assertEquals(expected2, test2);
+
+        Equation test3 = new Equation("MINUS ( 4 , 3 )");
+        Equation expected3 = new Equation("1");
+        assertEquals(expected3, test3);
+
+        Equation test4 = new Equation("ADD ( 4 , 10298 )");
+        Equation expected4 = new Equation("10302");
+        assertEquals(expected4, test4);
+
+    }
 }
