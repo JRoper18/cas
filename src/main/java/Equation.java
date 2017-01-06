@@ -21,4 +21,26 @@ public class Equation {
         }
         return false;
     }
+
+    @Override
+    public String toString(){
+        if(this.tree.data.getArgs() == 0){ //No children
+            return this.tree.data.toString();
+        }
+        else{
+            String build = this.tree.data.toString();
+            build += (" ( ");
+            for(Tree<MathObject> child : this.tree.getChildren()){
+                build += (new Equation(child).toString() + " , ");
+            }
+            //Remove the last comma and add an end paren
+            build = build.substring(0, build.length() - 3);
+            build += " ) ";
+            return build;
+        }
+    }
+    public Equation clone(){
+        return new Equation(this);
+    }
+
 }

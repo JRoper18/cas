@@ -8,23 +8,23 @@ import java.util.HashMap;
  */
 public class EquationSub {
     public final DirectOperation operation;
-    public final EquationCondition[] conditions;
+    public final Equation condition;
     private PatternMatcher matcher = new PatternMatcher();
     public EquationSub(Equation before, Equation after){
         this.operation = (eq -> {
             return this.substitute(before, after, eq);
         });
-        this.conditions = null;
+        this.condition = null;
     }
-    public EquationSub(Equation before, Equation after, EquationCondition[] conditions) {
+    public EquationSub(Equation before, Equation after, Equation conditions) {
         this.operation = (eq -> {
             return this.substitute(before, after, eq);
         });
-        this.conditions = conditions;
+        this.condition = conditions;
     }
-    public EquationSub(DirectOperation operation){
+    public EquationSub(DirectOperation operation){ //I'm hoping I'll only have to ever use this for adding, subtracting, division, and multiplication. Hoping.
         this.operation = operation;
-        this.conditions = null;
+        this.condition = null;
     }
     public Equation apply(Equation equation){
         return this.operation.operate(equation);
@@ -34,20 +34,19 @@ public class EquationSub {
             Equation newEquation = new Equation(after); //Quick clone
             HashMap<String, Tree<MathObject>> values = matcher.getLastMatchExpressions();
             //Go through conditions
-            if(this.conditions != null){
-                for(EquationCondition condition : conditions){
-                    //Replace generics
-                    for(String var : values.keySet()){
-                        Tree<MathObject> substitution = values.get(var);
-                        GenericExpression genExToLookFor = new GenericExpression(var);
-                        condition.arg1.tree.replaceAll(new Tree(genExToLookFor), substitution);
-                    }
-                    //Now check the condition
-                    if(!condition.fitsCondition()){
-                        //Don't apply the substitution
-                        return equation;
-                    }
+            if(this.condition != null){
+                Equation temp = condition.clone();
+                //Replace generics
+                for(String var : values.keySet()){
+                    Tree<MathObject> substitution = values.get(var);
+                    GenericExpression genExToLookFor = new GenericExpression(var);
+                    temp.tree.replaceAll(new Tree(genExToLookFor), substitution);
                 }
+                //If there's still generics in the equation, the condition fails.
+                if(temp.tree.containsClass(GenericExpression.class)){
+                    return equation;
+                }
+                //No generics. Try evaluating it.
             }
             for (String var : values.keySet()) {
                 Tree<MathObject> substitution = values.get(var);
@@ -57,5 +56,16 @@ public class EquationSub {
             return newEquation;
         }
         return equation;
+    }
+    public Equation applyEverywhere(Equation equation){
+        if(equation.tree.getNumberOfChildren() == 0){
+            return this.apply(equation);
+        }
+        else{
+            for(Tree<MathObject> childTree : equation.tree.getChildren()){
+                childTree.replaceWith(this.applyEverywhere(new Equation(childTree)).tree);
+            }
+            return this.apply(equation);
+        }
     }
 }

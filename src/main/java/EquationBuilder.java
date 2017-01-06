@@ -12,9 +12,6 @@ import java.util.Stack;
 
 public class EquationBuilder{
     public static Equation makeEquation(String str){
-        return basicSimplify(toCorrectForm(new Equation(makeEquationTree(str))));
-    }
-    public static Equation makeUnsimplifiedEquation(String str){
         return toCorrectForm(new Equation(makeEquationTree(str)));
     }
     public static Equation makeUnprocessedEquation(String str){
@@ -66,54 +63,24 @@ public class EquationBuilder{
         return tree;
     }
     private static List<EquationObject> preProcess(String equationStr){
-        String[] tokens = equationStr.split(" ");
+        String[] tokens = equationStr.trim().split(" ");
         List<EquationObject> equationObjectList = new ArrayList<>();
         for(int i = 0; i<tokens.length; i++){
             equationObjectList.add(parseString(tokens[i]));
         }
         return equationObjectList;
     }
+    private static boolean isAutoSimplified(Equation eq){
+        return false;//CHANGETHIS
+    }
     private static Equation toCorrectForm(Equation eq){
         List<EquationSub> subs = new ArrayList<>();
         subs.add(new EquationSub(makeUnprocessedEquation("MINUS ( _v1 , _v2 )"), makeUnprocessedEquation("PLUS ( _v1 , TIMES ( -1 , _v2 ) )")));
-
-        subs.add(new EquationSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("TIMES ( _v1 , POWER ( _v2 , -1 ) )"), new EquationCondition[]{new EquationCondition(makeUnprocessedEquation("_v2"), EquationConditionType.NOT_EQUALS_FULL, makeUnprocessedEquation("0"))}));
+        subs.add(new EquationSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("TIMES ( _v1 , POWER ( _v2 , -1 ) )")));
         for(EquationSub sub : subs){
             eq = sub.apply(eq);
         }
         return eq;
-    }
-    private static Equation basicSimplify(Equation equation){
-        List<EquationSub> subs = new ArrayList<>();
-        subs.add(new EquationSub(makeUnsimplifiedEquation("DIVIDE ( _v1 , 1 )"), makeUnsimplifiedEquation("_v1")));
-        subs.add(new EquationSub((eq -> {
-            if(eq.tree.data.equals(new MathObject(MathSymbol.ADD)) && eq.tree.getNumberOfChildren() >= 2){
-                if(eq.tree.getChild(0).data instanceof MathInteger && eq.tree.getChild(1).data instanceof MathInteger){
-                    return new Equation(((MathInteger) eq.tree.getChild(0).data).add((MathInteger) eq.tree.getChild(1).data).toString());
-                }
-            }
-            return eq; //No change
-        })));
-        subs.add(new EquationSub((eq -> {
-            if(eq.tree.data.equals(new MathObject(MathSymbol.MULTIPLY)) && eq.tree.getNumberOfChildren() >= 2){
-                if(eq.tree.getChild(0).data instanceof MathInteger && eq.tree.getChild(1).data instanceof MathInteger){
-                    return new Equation(((MathInteger) eq.tree.getChild(0).data).mul((MathInteger) eq.tree.getChild(1).data).toString());
-                }
-            }
-            return eq; //No change
-        })));
-        subs.add(new EquationSub((eq -> {
-            if(eq.tree.data.equals(new MathObject(MathSymbol.SUBTRACT)) && eq.tree.getNumberOfChildren() >= 2){
-                if(eq.tree.getChild(0).data instanceof MathInteger && eq.tree.getChild(1).data instanceof MathInteger){
-                    return new Equation(((MathInteger) eq.tree.getChild(0).data).sub((MathInteger) eq.tree.getChild(1).data).toString());
-                }
-            }
-            return eq; //No change
-        })));
-        for(EquationSub sub : subs){
-            equation = sub.apply(equation);
-        }
-        return equation;
     }
     public static EquationObject parseString(String str){
         //First, check for numbers

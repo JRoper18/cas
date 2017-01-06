@@ -23,5 +23,9 @@ public class EquationObjectAbbriviations {
         abbriviations.put("/", new MathObject(MathSymbol.DIVIDE));
         abbriviations.put("SIN", new MathObject(MathSymbol.SINE));
         abbriviations.put("||", new MathObject(MathSymbol.OR));
+        abbriviations.put("<=", new MathObject(MathSymbol.LESS_EQUAL));
+        abbriviations.put("==", new MathObject(MathSymbol.EQUALS));
+        abbriviations.put("!", new MathObject(MathSymbol.NOT));
+        abbriviations.put("GCD", new MathObject(MathSymbol.GREATEST_COMMON_DENOMINATOR));
     }
 }

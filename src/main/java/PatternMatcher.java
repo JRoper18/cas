@@ -25,22 +25,29 @@ public class PatternMatcher {
         MathObject compare = pattern.data;
         MathSymbol mathSymbol = compare.getOperator();
         switch(compare.getOperator()) { //Depending on the operator, check the subtrees
-            case OR:
+            case PATTERN_OR:
                 for (Tree<MathObject> child : pattern.getChildren()) {
                     if (compareSubTrees(eq, child)) {
                         return true;
                     }
                 }
 
-            case AND:
+            case PATTERN_AND:
                 for (Tree<MathObject> child : pattern.getChildren()) {
                     if (!compareSubTrees(eq, child)) {
                         return false;
                     }
                 }
                 return true;
+            case ANYWHERE:
+                //Check anywhere's argument. Look for it anywhere in the equation.
+                for(Tree<MathObject> child : eq.getChildren()){
+                    if(compareSubTrees(eq, pattern.getChild(0))){
+                        return true;
+                    }
+                }
+                return false;
             case EXPRESSION:
-
                 //We have an expression. Check if it's any specific type of expression
                 GenericExpression genEx = (GenericExpression) compare;
                 if (genEx.hasTag()) {
