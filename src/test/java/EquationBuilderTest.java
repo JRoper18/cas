@@ -24,15 +24,4 @@ public class EquationBuilderTest {
         expectedTree1.addChildWithData(new MathInteger(5));
         assertEquals(new Equation(expectedTree1), test1);
     }
-
-    @Test
-    public void testAutomaticSimplification() throws Exception {
-        Equation test2 = new Equation("DIVIDE ( 4 , 1 )");
-        Equation expected2 = new Equation("4");
-        //assertEquals(expected2, test2);
-
-        Equation test3 = new Equation ("EQUALS ( OR ( OR ( TRUE , FALSE ) , AND ( TRUE , TRUE ) , FALSE )");
-        Simplifier.booleanSimplify(test3).tree.print();
-
-    }
 }

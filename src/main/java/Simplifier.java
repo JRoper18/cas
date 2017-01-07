@@ -1,6 +1,7 @@
 import EquationObjects.MathObjects.MathInteger;
 import EquationObjects.MathObjects.MathObject;
 import EquationObjects.MathObjects.MathSymbol;
+import com.rits.cloning.Cloner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,17 +15,19 @@ public class Simplifier {
         subs.add(new EquationSub(new Equation("PATTERN_OR ( OR ( TRUE , FALSE ) , OR ( FALSE , TRUE ) , OR ( TRUE , TRUE ) )"), new Equation("TRUE")));
         subs.add(new EquationSub(new Equation("OR ( FALSE , FALSE )"), new Equation("FALSE")));
         subs.add(new EquationSub(new Equation("AND ( TRUE , TRUE )"), new Equation("TRUE")));
+        subs.add(new EquationSub(new Equation("PATTERN_OR ( AND ( TRUE , FALSE ) , AND ( FALSE , TRUE ) , AND ( FALSE , FALSE ) )"), new Equation("FALSE")));
         subs.add(new EquationSub(new Equation("EQUALS ( _v1 , _v1 )"), new Equation ("TRUE")));
         subs.add(new EquationSub(new Equation("EQUALS ( _v1 , _v2 )"), new Equation ("FALSE")));
+        Cloner cloner = new Cloner();
+        Equation newEq = cloner.deepClone(equation);
         Equation last;
         do {
-            last = equation.clone();
+            last = cloner.deepClone(newEq);
             for(EquationSub sub : subs){
-                equation = sub.applyEverywhere(equation);
-                equation.tree.print();
+                newEq = sub.applyEverywhere(newEq);
             }
-        } while(!last.equals(equation));
-        return equation;
+        } while(!last.equals(newEq));
+        return newEq;
     }
     public static Equation basicSimplify(Equation equation){
         List<EquationSub> subs = new ArrayList<>();

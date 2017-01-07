@@ -29,6 +29,9 @@ public class Tree<T> {
         }
         this.children = children;
     }
+    public void setChild(int index, Tree<T> newChild){
+        this.children.set(index, newChild);
+    }
     public Tree<T> getChild(int index){
         return children.get(index);
     }
@@ -122,8 +125,16 @@ public class Tree<T> {
         newChild.parent = this;
         this.children.add(newChild);
     }
+    public void removeChild(int index){
+        this.children.remove(index);
+    }
     public int getNumberOfChildren(){
         return this.children.size();
+    }
+    public Tree<T> clone(){
+        Tree<T> newTree = new Tree(this.data);
+        newTree.setChildren(this.children);
+        return newTree;
     }
     public void print(){
         this.print(1);
