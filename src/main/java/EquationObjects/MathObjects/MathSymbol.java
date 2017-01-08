@@ -19,8 +19,6 @@ public enum MathSymbol {
     EXPRESSION(0, false, false),
     PATTERN_OR(2, false, true),
     PATTERN_AND(2, false, true),
-    ANYWHERE(1, true, true),
-    EVERYWHERE(1, true, false),
     TYPEOF(1, false, false),
     OR(2, false, true),
     AND(2, false, true),

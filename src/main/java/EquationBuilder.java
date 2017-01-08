@@ -76,9 +76,10 @@ public class EquationBuilder{
     private static Equation toCorrectForm(Equation eq){
         List<EquationSub> subs = new ArrayList<>();
         subs.add(new EquationSub(makeUnprocessedEquation("MINUS ( _v1 , _v2 )"), makeUnprocessedEquation("PLUS ( _v1 , TIMES ( -1 , _v2 ) )")));
+        subs.add(new EquationSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("FRACTION ( _v1 , _v2 )"), makeUnprocessedEquation("AND ( EQUALS ( TYPEOF ( _v1 ) , NUMBER ) , EQUALS ( TYPEOF ( _v2 ) , NUMBER ) , NOT ( EQUALS ( _v2 , 0 )")));
         subs.add(new EquationSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("TIMES ( _v1 , POWER ( _v2 , -1 ) )")));
         for(EquationSub sub : subs){
-            eq = sub.apply(eq);
+            eq = sub.applyEverywhere(eq);
         }
         return eq;
     }

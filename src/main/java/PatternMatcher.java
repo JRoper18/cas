@@ -8,7 +8,7 @@ import java.util.HashMap;
  * Created by jack on 12/29/2016.
  */
 public class PatternMatcher {
-    private static HashMap<String, Tree<MathObject>> values = new HashMap<>();
+    private static HashMap<String, Tree<MathObject>> values = new HashMap<>(); //Definitely not thread-safe. Fix later
     public static boolean patternMatch(Equation eq, Equation pattern){
         Tree<MathObject> eqTree = eq.tree;
         Tree<MathObject> patternTree = pattern.tree;
@@ -39,14 +39,6 @@ public class PatternMatcher {
                     }
                 }
                 return true;
-            case ANYWHERE:
-                //Check anywhere's argument. Look for it anywhere in the equation.
-                for(Tree<MathObject> child : eq.getChildren()){
-                    if(compareSubTrees(eq, pattern.getChild(0))){
-                        return true;
-                    }
-                }
-                return false;
             case EXPRESSION:
                 //We have an expression. Check if it's any specific type of expression
                 GenericExpression genEx = (GenericExpression) compare;

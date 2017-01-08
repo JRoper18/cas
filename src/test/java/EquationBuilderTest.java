@@ -3,6 +3,7 @@ import EquationObjects.RationalTempInfoHolder;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * Created by jack on 12/30/2016.
@@ -23,5 +24,11 @@ public class EquationBuilderTest {
         expectedTree1.addChildWithData(new MathInteger(4));
         expectedTree1.addChildWithData(new MathInteger(5));
         assertEquals(new Equation(expectedTree1), test1);
+    }
+
+    @Test
+    public void testPreSimplification() throws Exception {
+        assertEquals(new Equation("FRACTION ( 1 , 3 )"), new Equation("DIVIDE ( 1 , 3 )"));
+        assertNotEquals(new Equation("FRACTION ( 1 , _v1 )"), new Equation("DIVIDE ( 1 , _v1 )"));
     }
 }

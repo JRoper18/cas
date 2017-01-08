@@ -4,6 +4,7 @@ import EquationObjects.MathObjects.MathSymbol;
 import com.rits.cloning.Cloner;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -28,6 +29,26 @@ public class Simplifier {
             }
         } while(!last.equals(newEq));
         return newEq;
+    }
+    public static Equation getTypeOf(Equation equation){
+        EquationSub typeofSub = new EquationSub((eq -> {
+            PatternMatcher matcher = new PatternMatcher();
+            if(matcher.patternMatch(eq, new Equation("TYPEOF ( _v1 )"))){
+                HashMap<String, Tree<MathObject>> vars = matcher.getLastMatchExpressions();
+                Tree<MathObject> objectTree = vars.get("v1");
+                if(objectTree.hasChildren() && objectTree.data.getOperator() != MathSymbol.FRACTION){
+                    return new Equation("EXPRESSION");
+                }
+                else{
+                    return new Equation(objectTree.data.getOperator().toString());
+                }
+            }
+            else{
+                return eq; //No change
+            }
+        }));
+        return typeofSub.apply(equation);
+
     }
     public static Equation basicSimplify(Equation equation){
         List<EquationSub> subs = new ArrayList<>();
