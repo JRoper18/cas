@@ -15,21 +15,23 @@ public class EquationSub implements Serializable {
     public final Equation condition;
     public EquationSubProperties properties = new EquationSubProperties();
     public EquationSub(Equation before, Equation after){
-        this.properties.assignedOperator = this.getProbableAssignedOperator(before);
         this.operation = (DirectOperation & Serializable) ( eq -> {
             return this.substitute(before, after, eq);
         });
         this.condition = null;
     }
+    public EquationSub setOp(MathObject op){
+        this.properties.assignedOperator = op;
+        return this;
+    }
     public EquationSub(Equation before, Equation after, Equation conditions) {
-        this.properties.assignedOperator = this.getProbableAssignedOperator(before);
         this.operation = (DirectOperation & Serializable) (eq -> {
             return this.substitute(before, after, eq);
         });
         this.condition = conditions;
     }
     public EquationSub(DirectOperation operation){ //I'm hoping I'll only have to ever use this for adding, subtracting, division, and multiplication. Hoping.
-        this.operation = (DirectOperation & Serializable) operation;
+        this.operation = operation;
         this.condition = null;
     }
     public MathObject getProbableAssignedOperator(Equation equation){
@@ -96,8 +98,8 @@ public class EquationSub implements Serializable {
                     temp.tree.replaceAll(new Tree(genExToLookFor), substitution);
                 }
                 //No generics. Try evaluating it.
-                Equation isGood = Simplifier.booleanSimplify(condition);
-                if(isGood.equals(new Equation("FALSE"))){
+                Equation simplified = Simplifier.simplify(condition);
+                if(simplified.equals(new Equation("FALSE"))){
                     return equation; //Again, do nothing to the equation.
                 }
             }
@@ -107,9 +109,6 @@ public class EquationSub implements Serializable {
                 newEquation.tree.replaceAll(new Tree(genExToLookFor), substitution);
             }
             return newEquation;
-        }
-        else{
-
         }
         return equation;
     }

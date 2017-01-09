@@ -60,8 +60,6 @@ public class PatternMatcher {
 
         //Compare raw data.
         if(!eq.data.equals(pattern.data)){
-            System.out.println(eq.data.getArgs());
-            System.out.println(pattern.data.getArgs());
             return false;
         }
         //Compare the number of children (unless pattern's children are generics or logical operators

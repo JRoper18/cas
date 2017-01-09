@@ -117,6 +117,15 @@ public class Tree<T> implements Serializable{
             this.data = newTree.data;
         }
     }
+    public int size(){
+        int size = 1;
+        if(this.hasChildren()){
+            for(Tree<T> child : this.children){
+                size += child.size();
+            }
+        }
+        return size;
+    }
     public void addChild(Tree<T> child){
         this.children.add(child);
     }

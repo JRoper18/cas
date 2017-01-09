@@ -46,5 +46,11 @@ public class Equation implements Serializable{
     public Equation clone(){
         return new Equation(this);
     }
+    public MathObject getRoot(){
+        return this.tree.data;
+    }
+    public int complexity(){
+        return this.tree.size();
+    }
 
 }

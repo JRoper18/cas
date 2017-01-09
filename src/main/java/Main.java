@@ -1,8 +1,11 @@
+import CAS.Equation;
 import CAS.EquationObjects.MathObjects.MathObject;
 import CAS.EquationSub;
+import CAS.Simplifier;
 import Database.EquationSubDatabase;
+import Database.SubDatabase;
+import Database.SubSerializer;
 
-import java.io.*;
 import java.sql.*;
 
 /**
@@ -11,53 +14,25 @@ import java.sql.*;
 public class Main {
     public static void main(String[] args){
         connectDatabase();
-    }
-    private static byte[] serializeEquationSub(EquationSub sub) throws Exception{
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutput out = null;
-        try {
-            out = new ObjectOutputStream(bos);
-            out.writeObject(sub);
-            out.flush();
-            return bos.toByteArray();
-        } finally {
-            try {
-                bos.close();
-            } catch (IOException ex) {
-                // ignore close exception
-            }
-        }
-    }
-    private static EquationSub deserializeEquationSub(byte[] bytes) throws Exception{
-        ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-        ObjectInput in = null;
-        try {
-            in = new ObjectInputStream(bis);
-            return (EquationSub) in.readObject();
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (IOException ex) {
-                // ignore close exception
-            }
-        }
+        Equation test1 = new Equation ("OR ( FALSE , TRUE , TRUE )");
+        Simplifier.simplify(test1).tree.print();
     }
     private static void connectDatabase(){
         Connection c = null;
         try {
             Class.forName("org.sqlite.JDBC");
             c = DriverManager.getConnection("jdbc:sqlite:subs.db");
+            SubDatabase.setConnection(c);
             System.out.println("Opened database successfully");
             Statement statement = c.createStatement();
 
             statement.executeUpdate("drop table if exists subs");
             statement.executeUpdate("create table subs (algorithm blob, operator string)");
+
             for(EquationSub sub : EquationSubDatabase.subs){
                 String toPrepare = "insert into subs values(?, ?)";
                 PreparedStatement prepared = c.prepareStatement(toPrepare);
-                prepared.setBytes(1, serializeEquationSub(sub));
+                prepared.setBytes(1, SubSerializer.serialize(sub));
                 MathObject op = sub.properties.assignedOperator;
                 if(op != null){
                     prepared.setString(2, op.toString());

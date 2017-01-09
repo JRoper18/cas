@@ -2,15 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0ba3a60f-56b4-4d4a-9bf1-cc9202c65bbb" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/CAS/AbstractSerializationObject.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/Database/SubDatabase.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/Database/SubSerializer.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/java/SimplifierTest.java" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/CAS/DirectOperation.java" afterPath="$PROJECT_DIR$/src/main/java/CAS/DirectOperation.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/CAS/Equation.java" afterPath="$PROJECT_DIR$/src/main/java/CAS/Equation.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/CAS/EquationBuilder.java" afterPath="$PROJECT_DIR$/src/main/java/CAS/EquationBuilder.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/CAS/EquationObjects/EquationObject.java" afterPath="$PROJECT_DIR$/src/main/java/CAS/EquationObjects/EquationObject.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/CAS/EquationObjects/MathObjects/MathObject.java" afterPath="$PROJECT_DIR$/src/main/java/CAS/EquationObjects/MathObjects/MathObject.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/CAS/EquationSub.java" afterPath="$PROJECT_DIR$/src/main/java/CAS/EquationSub.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/CAS/EquationSubProperties.java" afterPath="$PROJECT_DIR$/src/main/java/CAS/EquationSubProperties.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/CAS/PatternMatcher.java" afterPath="$PROJECT_DIR$/src/main/java/CAS/PatternMatcher.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/CAS/Simplifier.java" afterPath="$PROJECT_DIR$/src/main/java/CAS/Simplifier.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/CAS/Tree.java" afterPath="$PROJECT_DIR$/src/main/java/CAS/Tree.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/Database/EquationSubDatabase.java" afterPath="$PROJECT_DIR$/src/main/java/Database/EquationSubDatabase.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/Main.java" afterPath="$PROJECT_DIR$/src/main/java/Main.java" />
@@ -35,35 +35,51 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="600">
-      <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="717">
-              <caret line="22" column="19" selection-start-line="22" selection-start-column="19" selection-end-line="22" selection-end-column="19" />
+            <state relative-caret-position="460">
+              <caret line="16" column="64" selection-start-line="16" selection-start-column="60" selection-end-line="16" selection-end-column="64" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#253#254#0" expanded="true" />
-                <element signature="e#286#287#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="EquationSub.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/CAS/EquationSub.java">
+      <file leaf-file-name="Simplifier.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Simplifier.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="394">
-              <caret line="24" column="84" selection-start-line="24" selection-start-column="84" selection-end-line="24" selection-end-column="84" />
-              <folding />
+            <state relative-caret-position="528">
+              <caret line="35" column="47" selection-start-line="35" selection-start-column="47" selection-end-line="35" selection-end-column="47" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="EquationSubDatabase.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/Database/EquationSubDatabase.java">
+      <file leaf-file-name="Equation.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Equation.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="264">
-              <caret line="11" column="336" selection-start-line="11" selection-start-column="336" selection-end-line="11" selection-end-column="336" />
+            <state relative-caret-position="924">
+              <caret line="51" column="25" selection-start-line="51" selection-start-column="25" selection-end-line="51" selection-end-column="25" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1347#1348#0" expanded="true" />
+                <element signature="e#1384#1385#0" expanded="true" />
+                <element signature="e#1413#1414#0" expanded="true" />
+                <element signature="e#1452#1453#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Tree.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Tree.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1021">
+              <caret line="126" column="20" selection-start-line="126" selection-start-column="20" selection-end-line="126" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -96,10 +112,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/EquationObjects/SyntaxObject.java" />
-        <option value="$PROJECT_DIR$/src/main/java/EquationObjects/SyntaxObjectAbbriviations.java" />
-        <option value="$PROJECT_DIR$/src/main/java/EquationObjects/MathObjects/MathOperators.java" />
-        <option value="$PROJECT_DIR$/src/main/java/EquationObjects/MathObjects/MathNumberReal.java" />
         <option value="$PROJECT_DIR$/src/main/java/EquationObjects/PatternMatching/LogicalOperator.java" />
         <option value="$PROJECT_DIR$/src/main/java/EquationObjects/MathObjects/MathNumberComplex.java" />
         <option value="$PROJECT_DIR$/src/main/java/EquationObjects/PatternMatching/GenericExpression.java" />
@@ -119,7 +131,6 @@
         <option value="$PROJECT_DIR$/src/main/java/EquationObjects/EquationObjectAbbriviations.java" />
         <option value="$PROJECT_DIR$/src/main/java/EquationObjects/MathObjects/MathSymbol.java" />
         <option value="$PROJECT_DIR$/src/main/java/EquationObjects/MathObjects/TypeIndicator.java" />
-        <option value="$PROJECT_DIR$/src/test/java/SimplifierTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/EquationBuilderTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/Simplifier.java" />
         <option value="$PROJECT_DIR$/src/main/java/PatternMatcher.java" />
@@ -134,18 +145,23 @@
         <option value="$PROJECT_DIR$/src/main/java/EquationSub.java" />
         <option value="$PROJECT_DIR$/src/main/java/Database/SQLite.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/src/main/java/CAS/Equation.java" />
-        <option value="$PROJECT_DIR$/src/main/java/CAS/Tree.java" />
         <option value="$PROJECT_DIR$/src/main/java/CAS/EquationObjects/MathObjects/MathObject.java" />
         <option value="$PROJECT_DIR$/src/main/java/CAS/EquationSubProperties.java" />
         <option value="$PROJECT_DIR$/src/main/java/CAS/EquationBuilder.java" />
-        <option value="$PROJECT_DIR$/src/main/java/CAS/PatternMatcher.java" />
         <option value="$PROJECT_DIR$/src/main/java/CAS/EquationObjects/AbstractSerializationObject.java" />
         <option value="$PROJECT_DIR$/src/main/java/CAS/EquationObjects/EquationObject.java" />
         <option value="$PROJECT_DIR$/src/main/java/CAS/AbstractSerializationObject.java" />
+        <option value="$PROJECT_DIR$/src/main/java/CAS/EquationSubDataPackage.java" />
+        <option value="$PROJECT_DIR$/src/test/java/SimplifierTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/CAS/DirectOperation.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Database/EquationSubDatabase.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Database/SubSerializer.java" />
         <option value="$PROJECT_DIR$/src/main/java/CAS/EquationSub.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Database/EquationSubDatabase.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Database/SubDatabase.java" />
+        <option value="$PROJECT_DIR$/src/main/java/CAS/PatternMatcher.java" />
+        <option value="$PROJECT_DIR$/src/main/java/CAS/Tree.java" />
+        <option value="$PROJECT_DIR$/src/main/java/CAS/Equation.java" />
+        <option value="$PROJECT_DIR$/src/main/java/CAS/Simplifier.java" />
         <option value="$PROJECT_DIR$/src/main/java/Main.java" />
       </list>
     </option>
@@ -810,7 +826,14 @@
       <option name="project" value="LOCAL" />
       <updated>1483970292185</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="EquationSub serialization added (woohoo) and SQLite database is working.">
+      <created>1484000260414</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1484000260414</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -914,7 +937,8 @@
     <MESSAGE value="Added typeof functionality, and division between ints replaced by fraction operator." />
     <MESSAGE value="Working on allowing substitutions to be added to and then searched with sqlite database" />
     <MESSAGE value="SQLite basic stuff added to main file." />
-    <option name="LAST_COMMIT_MESSAGE" value="SQLite basic stuff added to main file." />
+    <MESSAGE value="EquationSub serialization added (woohoo) and SQLite database is working." />
+    <option name="LAST_COMMIT_MESSAGE" value="EquationSub serialization added (woohoo) and SQLite database is working." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -927,10 +951,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/test/java/PatternMatcherTest.groovy" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/EquationObjects.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/EquationObjects/EquationTree.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/EquationObjects/Syntax.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/EquationObjects/SyntaxObjectAbbriviations.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/EquationObjects/MathObjects/MathObjectNamed.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/EquationObjects/MathObjects/MathOperatorsAbbriviations.java" />
@@ -999,13 +1019,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/SimplifierTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="203">
-          <caret line="11" column="38" selection-start-line="11" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/EquationCondition.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/EquationConditionType.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/CAS/EquationObjects/MathObjects/GenericExpression.java">
@@ -1023,6 +1036,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="909">
           <caret line="40" column="49" selection-start-line="40" selection-start-column="49" selection-end-line="40" selection-end-column="49" />
+          <folding>
+            <element signature="e#1001#1002#0" expanded="false" />
+            <element signature="e#1069#1070#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1065,16 +1082,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Simplifier.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="384">
-          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Database.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/Database/SQLite.java" />
     <entry file="file://$PROJECT_DIR$/pom.xml">
@@ -1085,20 +1092,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Tree.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="33">
-          <caret line="10" column="44" selection-start-line="10" selection-start-column="44" selection-end-line="10" selection-end-column="44" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/CAS/EquationSubProperties.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="429">
           <caret line="13" column="5" selection-start-line="13" selection-start-column="5" selection-end-line="13" selection-end-column="5" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1121,26 +1120,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Equation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="33">
-          <caret line="9" column="45" selection-start-line="9" selection-start-column="45" selection-end-line="9" selection-end-column="45" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/PatternMatcher.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2079">
-          <caret line="63" column="53" selection-start-line="63" selection-start-column="53" selection-end-line="63" selection-end-column="53" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/CAS/EquationObjects/EquationObject.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="396">
@@ -1151,15 +1130,15 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/EquationBuilder.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/EquationSubDataPackage.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="726">
-          <caret line="87" column="94" selection-start-line="87" selection-start-column="94" selection-end-line="87" selection-end-column="94" />
+        <state relative-caret-position="330">
+          <caret line="10" column="11" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="11" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/DirectOperation.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/Database/Deserializer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
           <caret line="5" column="25" selection-start-line="5" selection-start-column="25" selection-end-line="5" selection-end-column="25" />
@@ -1167,30 +1146,116 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/SimplifierTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="694">
+          <caret line="29" column="55" selection-start-line="29" selection-start-column="55" selection-end-line="29" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/DirectOperation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="231">
+          <caret line="7" column="53" selection-start-line="7" selection-start-column="53" selection-end-line="7" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Database/SubSerializer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="232">
+          <caret line="10" column="52" selection-start-line="10" selection-start-column="52" selection-end-line="10" selection-end-column="52" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/EquationBuilder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="429">
+          <caret line="144" column="7" selection-start-line="144" selection-start-column="4" selection-end-line="144" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Database/SubDatabase.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="528">
+          <caret line="18" column="5" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Database/EquationSubDatabase.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="11" column="336" selection-start-line="11" selection-start-column="336" selection-end-line="11" selection-end-column="336" />
-          <folding />
+        <state relative-caret-position="592">
+          <caret line="45" column="61" selection-start-line="45" selection-start-column="61" selection-end-line="45" selection-end-column="61" />
+          <folding>
+            <element signature="e#3685#3698#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/PatternMatcher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="902">
+          <caret line="61" column="42" selection-start-line="61" selection-start-column="42" selection-end-line="61" selection-end-column="42" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/CAS/EquationSub.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="394">
-          <caret line="24" column="84" selection-start-line="24" selection-start-column="84" selection-end-line="24" selection-end-column="84" />
+        <state relative-caret-position="429">
+          <caret line="84" column="7" selection-start-line="84" selection-start-column="4" selection-end-line="84" selection-end-column="7" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Tree.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1021">
+          <caret line="126" column="20" selection-start-line="126" selection-start-column="20" selection-end-line="126" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Equation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="924">
+          <caret line="51" column="25" selection-start-line="51" selection-start-column="25" selection-end-line="51" selection-end-column="25" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1347#1348#0" expanded="true" />
+            <element signature="e#1384#1385#0" expanded="true" />
+            <element signature="e#1413#1414#0" expanded="true" />
+            <element signature="e#1452#1453#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="717">
-          <caret line="22" column="19" selection-start-line="22" selection-start-column="19" selection-end-line="22" selection-end-column="19" />
+        <state relative-caret-position="460">
+          <caret line="16" column="64" selection-start-line="16" selection-start-column="60" selection-end-line="16" selection-end-column="64" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#253#254#0" expanded="true" />
-            <element signature="e#286#287#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Simplifier.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="528">
+          <caret line="35" column="47" selection-start-line="35" selection-start-column="47" selection-end-line="35" selection-end-column="47" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>

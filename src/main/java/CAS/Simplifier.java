@@ -1,37 +1,42 @@
 package CAS;
 
-import CAS.EquationObjects.MathObjects.MathInteger;
 import CAS.EquationObjects.MathObjects.MathObject;
-import CAS.EquationObjects.MathObjects.MathSymbol;
+import Database.SubDatabase;
+import Database.SubSerializer;
 import com.rits.cloning.Cloner;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.sql.ResultSet;
 
 /**
  * Created by jack on 1/5/2017.
  */
 public class Simplifier {
-    public static Equation booleanSimplify(Equation equation){
-        List<EquationSub> subs = new ArrayList<>();
+    public static Equation simplify(Equation eq){
         Cloner cloner = new Cloner();
-        subs.add(new EquationSub(new Equation("PATTERN_OR ( OR ( TRUE , FALSE ) , OR ( FALSE , TRUE ) , OR ( TRUE , TRUE ) )"), new Equation("TRUE")));
-        subs.add(new EquationSub(new Equation("OR ( FALSE , FALSE )"), new Equation("FALSE")));
-        subs.add(new EquationSub(new Equation("AND ( TRUE , TRUE )"), new Equation("TRUE")));
-        subs.add(new EquationSub(new Equation("PATTERN_OR ( AND ( TRUE , FALSE ) , AND ( FALSE , TRUE ) , AND ( FALSE , FALSE ) )"), new Equation("FALSE")));
-        subs.add(new EquationSub(new Equation("EQUALS ( _v1 , _v1 )"), new Equation ("TRUE")));
-        subs.add(new EquationSub(new Equation("EQUALS ( _v1 , _v2 )"), new Equation ("FALSE")));
-        Equation newEq = cloner.deepClone(equation);
-        Equation last;
-        do {
-            last = cloner.deepClone(newEq);
-            for(EquationSub sub : subs){
-                newEq = sub.applyEverywhere(newEq);
+        Equation newEq = cloner.deepClone(eq);
+        //Get newEq's root term.
+        MathObject root = newEq.getRoot();
+        //Find all the substitutions from the database that operate on that term.
+        int minComplexity;
+        int latestComplexity;
+        Equation lastIteration;
+        do{
+            minComplexity = newEq.complexity();
+            lastIteration = newEq;
+            try{
+                ResultSet results = SubDatabase.runQuery("select * from subs where (operator == '" + root.toString() + "')");
+                while(results.next()){
+                    EquationSub tempSub = SubSerializer.deserialize(results.getBytes("algorithm"));
+                    newEq = tempSub.apply(newEq);
+                }
+            } catch (Exception ex){
+                ex.printStackTrace();
             }
-        } while(!last.equals(newEq));
+            latestComplexity = newEq.complexity();
+        } while (!lastIteration.equals(newEq));
         return newEq;
     }
+    /*
     public static Equation getTypeOf(Equation equation){
         EquationSub typeofSub = new EquationSub((eq -> {
             PatternMatcher matcher = new PatternMatcher();
@@ -86,12 +91,5 @@ public class Simplifier {
         }
         return equation;
     }
-    public static Equation fullSimplify(Equation equation){
-        Cloner cloner = new Cloner();
-        Equation newEq = cloner.deepClone(equation);
-        newEq = getTypeOf(newEq);
-        newEq = booleanSimplify(newEq);
-        newEq = basicSimplify(newEq);
-        return newEq;
-    }
+    */
 }
