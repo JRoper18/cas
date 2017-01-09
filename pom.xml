@@ -24,10 +24,11 @@
         </plugins>
     </build>
     <dependencies>
+        <!-- Documentation: https://github.com/xerial/sqlite-jdbc#using-sqlitejdbc-with-maven2 -->
         <dependency>
-            <groupId>com.oracle.jdbc</groupId>
-            <artifactId>ojdbc7</artifactId>
-            <version>12.1.0.1</version>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.15.1</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.json/json -->
         <dependency>
