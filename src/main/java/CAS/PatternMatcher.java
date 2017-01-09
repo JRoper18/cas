@@ -10,19 +10,16 @@ import java.util.HashMap;
  * Created by jack on 12/29/2016.
  */
 public class PatternMatcher {
-    private HashMap<String, Tree<MathObject>> values = new HashMap<>(); //Definitely not thread-safe. Fix later
+    private HashMap<String, Tree<MathObject>> values = new HashMap<>();
+    public PatternMatcher(){
+
+    }
     public boolean patternMatch(Equation eq, Equation pattern){
         Tree<MathObject> eqTree = eq.tree;
         Tree<MathObject> patternTree = pattern.tree;
-        return compareSubTrees(eqTree, patternTree, true);
+        return compareSubTrees(eqTree, patternTree);
     }
     private boolean compareSubTrees(Tree<MathObject> eq, Tree<MathObject> pattern){
-        return compareSubTrees(eq, pattern, false);
-    }
-    private boolean compareSubTrees(Tree<MathObject> eq, Tree<MathObject> pattern, boolean initializer){
-        if(initializer){
-            values.clear(); //Reset the values
-        }
         MathObject current = eq.data;
         MathObject compare = pattern.data;
         MathSymbol mathSymbol = compare.getOperator();
@@ -60,8 +57,11 @@ public class PatternMatcher {
                 return true;
             default:
         }
+
         //Compare raw data.
         if(!eq.data.equals(pattern.data)){
+            System.out.println(eq.data.getArgs());
+            System.out.println(pattern.data.getArgs());
             return false;
         }
         //Compare the number of children (unless pattern's children are generics or logical operators

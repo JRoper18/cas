@@ -1,10 +1,14 @@
 package CAS.EquationObjects;
 
+import CAS.AbstractSerializationObject;
+
+import java.io.Serializable;
+
 /**
  * Created by jack on 12/30/2016.
  */
-public abstract class EquationObject {
-    protected int args;
+public abstract class EquationObject extends AbstractSerializationObject implements Serializable {
+    public int args;
     public EquationObject(int args){
         this.args = args;
     }

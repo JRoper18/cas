@@ -76,6 +76,7 @@ public class EquationBuilder{
         return false;//CHANGETHIS
     }
     private static Equation toCorrectForm(Equation eq){
+        /*
         List<EquationSub> subs = new ArrayList<>();
         subs.add(new EquationSub(makeUnprocessedEquation("MINUS ( _v1 , _v2 )"), makeUnprocessedEquation("PLUS ( _v1 , TIMES ( -1 , _v2 ) )")));
         subs.add(new EquationSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("FRACTION ( _v1 , _v2 )"), makeUnprocessedEquation("AND ( EQUALS ( TYPEOF ( _v1 ) , NUMBER ) , EQUALS ( TYPEOF ( _v2 ) , NUMBER ) , NOT ( EQUALS ( _v2 , 0 )")));
@@ -83,6 +84,8 @@ public class EquationBuilder{
         for(EquationSub sub : subs){
             eq = sub.applyEverywhere(eq);
         }
+        */
+        //Commenting the above out so that I can work on putting equationsubs into a database.
         return eq;
     }
     public static EquationObject parseString(String str){

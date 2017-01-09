@@ -1,5 +1,6 @@
 package CAS;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 /**
  * Created by jack on 12/30/2016.
  */
-public class Tree<T> {
+public class Tree<T> implements Serializable{
     public T data;
     private List<Tree<T>> children = new ArrayList<Tree<T>>();
     private Tree<T> parent;

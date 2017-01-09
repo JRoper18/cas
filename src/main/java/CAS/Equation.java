@@ -2,10 +2,12 @@ package CAS;
 
 import CAS.EquationObjects.MathObjects.MathObject;
 
+import java.io.Serializable;
+
 /**
  * Created by jack on 12/30/2016.
  */
-public class Equation{
+public class Equation implements Serializable{
     public Tree<MathObject> tree;
     public Equation(Tree<MathObject> tree){
         this.tree = tree;

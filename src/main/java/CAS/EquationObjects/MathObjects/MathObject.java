@@ -2,10 +2,12 @@ package CAS.EquationObjects.MathObjects;
 
 import CAS.EquationObjects.EquationObject;
 
+import java.io.Serializable;
+
 /**
  * Created by jack on 12/30/2016.
  */
-public class MathObject extends EquationObject {
+public class MathObject extends EquationObject implements Serializable {
     private boolean ordered;
     private boolean associative;
     private MathSymbol operator;

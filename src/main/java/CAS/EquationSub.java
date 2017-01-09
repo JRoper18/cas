@@ -4,34 +4,35 @@ import CAS.EquationObjects.MathObjects.GenericExpression;
 import CAS.EquationObjects.MathObjects.MathObject;
 import com.rits.cloning.Cloner;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  * Created by jack on 1/2/2017.
  */
-public class EquationSub {
+public class EquationSub implements Serializable {
     public final DirectOperation operation;
     public final Equation condition;
     public EquationSubProperties properties = new EquationSubProperties();
     public EquationSub(Equation before, Equation after){
-        this.properties.assignedOperator = getProbableAssignedOperator(before);
-        this.operation = ( eq -> {
+        this.properties.assignedOperator = this.getProbableAssignedOperator(before);
+        this.operation = (DirectOperation & Serializable) ( eq -> {
             return this.substitute(before, after, eq);
         });
         this.condition = null;
     }
     public EquationSub(Equation before, Equation after, Equation conditions) {
-        this.properties.assignedOperator = getProbableAssignedOperator(before);
-        this.operation = (eq -> {
+        this.properties.assignedOperator = this.getProbableAssignedOperator(before);
+        this.operation = (DirectOperation & Serializable) (eq -> {
             return this.substitute(before, after, eq);
         });
         this.condition = conditions;
     }
     public EquationSub(DirectOperation operation){ //I'm hoping I'll only have to ever use this for adding, subtracting, division, and multiplication. Hoping.
-        this.operation = operation;
+        this.operation = (DirectOperation & Serializable) operation;
         this.condition = null;
     }
-    private MathObject getProbableAssignedOperator(Equation equation){
+    public MathObject getProbableAssignedOperator(Equation equation){
         MathObject probableOperator = null;
         if(equation.tree.data.getOperator().toString().contains("PATTERN")){ //Note to future self: Make a way to identify pattern objects from mathobjects.
             //Don't check pattern objects. Check the children for a mathobject.
@@ -95,7 +96,7 @@ public class EquationSub {
                     temp.tree.replaceAll(new Tree(genExToLookFor), substitution);
                 }
                 //No generics. Try evaluating it.
-                Equation isGood = Simplifier.fullSimplify(condition);
+                Equation isGood = Simplifier.booleanSimplify(condition);
                 if(isGood.equals(new Equation("FALSE"))){
                     return equation; //Again, do nothing to the equation.
                 }
@@ -106,6 +107,9 @@ public class EquationSub {
                 newEquation.tree.replaceAll(new Tree(genExToLookFor), substitution);
             }
             return newEquation;
+        }
+        else{
+
         }
         return equation;
     }
