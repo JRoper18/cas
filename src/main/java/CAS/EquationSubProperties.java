@@ -1,4 +1,6 @@
-import EquationObjects.MathObjects.MathObject;
+package CAS;
+
+import CAS.EquationObjects.MathObjects.MathObject;
 
 /**
  * Created by jack on 1/7/2017.

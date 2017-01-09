@@ -1,5 +1,8 @@
-import EquationObjects.MathObjects.*;
-import EquationObjects.RationalTempInfoHolder;
+import CAS.Equation;
+import CAS.EquationBuilder;
+import CAS.EquationObjects.MathObjects.*;
+import CAS.EquationObjects.RationalTempInfoHolder;
+import CAS.Tree;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

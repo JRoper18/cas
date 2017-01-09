@@ -1,6 +1,8 @@
-import EquationObjects.MathObjects.GenericExpression;
-import EquationObjects.MathObjects.MathObject;
-import EquationObjects.MathObjects.MathSymbol;
+package CAS;
+
+import CAS.EquationObjects.MathObjects.GenericExpression;
+import CAS.EquationObjects.MathObjects.MathObject;
+import CAS.EquationObjects.MathObjects.MathSymbol;
 
 import java.util.HashMap;
 
@@ -8,16 +10,16 @@ import java.util.HashMap;
  * Created by jack on 12/29/2016.
  */
 public class PatternMatcher {
-    private static HashMap<String, Tree<MathObject>> values = new HashMap<>(); //Definitely not thread-safe. Fix later
-    public static boolean patternMatch(Equation eq, Equation pattern){
+    private HashMap<String, Tree<MathObject>> values = new HashMap<>(); //Definitely not thread-safe. Fix later
+    public boolean patternMatch(Equation eq, Equation pattern){
         Tree<MathObject> eqTree = eq.tree;
         Tree<MathObject> patternTree = pattern.tree;
         return compareSubTrees(eqTree, patternTree, true);
     }
-    private static boolean compareSubTrees(Tree<MathObject> eq, Tree<MathObject> pattern){
+    private boolean compareSubTrees(Tree<MathObject> eq, Tree<MathObject> pattern){
         return compareSubTrees(eq, pattern, false);
     }
-    private static boolean compareSubTrees(Tree<MathObject> eq, Tree<MathObject> pattern, boolean initializer){
+    private boolean compareSubTrees(Tree<MathObject> eq, Tree<MathObject> pattern, boolean initializer){
         if(initializer){
             values.clear(); //Reset the values
         }

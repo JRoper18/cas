@@ -1,4 +1,4 @@
-package EquationObjects.MathObjects;
+package CAS.EquationObjects.MathObjects;
 
 import java.math.BigInteger;
 

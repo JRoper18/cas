@@ -1,8 +1,10 @@
-import EquationObjects.*;
-import EquationObjects.MathObjects.GenericExpression;
-import EquationObjects.MathObjects.MathInteger;
-import EquationObjects.MathObjects.MathObject;
-import EquationObjects.MathObjects.MathSymbol;
+package CAS;
+
+import CAS.EquationObjects.*;
+import CAS.EquationObjects.MathObjects.GenericExpression;
+import CAS.EquationObjects.MathObjects.MathInteger;
+import CAS.EquationObjects.MathObjects.MathObject;
+import CAS.EquationObjects.MathObjects.MathSymbol;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -135,7 +137,7 @@ public class EquationBuilder{
             String name = str.substring(1, str.length());
             return new GenericExpression(name);
         }
-        throw new UncheckedIOException(new IOException("Operator: " + str + " is not recognized by EquationBuilder. "));
+        throw new UncheckedIOException(new IOException("Operator: " + str + " is not recognized by CAS.EquationBuilder. "));
     }
     private static List<ParenInfo> findParen(List<EquationObject> eq){
         List<ParenInfo> result = new ArrayList<ParenInfo>();

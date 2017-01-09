@@ -1,4 +1,4 @@
-package EquationObjects.MathObjects;
+package CAS.EquationObjects.MathObjects;
 
 /**
  * Created by Ulysses Howard Smith on 10/26/2016.

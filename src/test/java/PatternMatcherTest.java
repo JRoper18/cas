@@ -1,3 +1,7 @@
+import CAS.Equation;
+import CAS.EquationBuilder;
+import CAS.PatternMatcher;
+
 import static org.junit.Assert.assertEquals;
 
 /**

@@ -1,6 +1,6 @@
-package EquationObjects.MathObjects;
+package CAS.EquationObjects.MathObjects;
 
-import EquationObjects.EquationObject;
+import CAS.EquationObjects.EquationObject;
 
 /**
  * Created by jack on 12/30/2016.

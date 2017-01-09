@@ -1,3 +1,5 @@
+import CAS.Equation;
+import CAS.Simplifier;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

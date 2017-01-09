@@ -1,4 +1,4 @@
-package EquationObjects;
+package CAS.EquationObjects;
 
 /**
  * Created by jack on 12/30/2016.
@@ -11,7 +11,6 @@ public abstract class EquationObject {
     public int getArgs(){
         return this.args;
     }
-
     @Override
     public boolean equals(Object obj){
         if(obj.getClass() == EquationObject.class){

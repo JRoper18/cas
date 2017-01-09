@@ -1,7 +1,7 @@
-package EquationObjects;
+package CAS.EquationObjects;
 
-import EquationObjects.MathObjects.MathObject;
-import EquationObjects.MathObjects.MathSymbol;
+import CAS.EquationObjects.MathObjects.MathObject;
+import CAS.EquationObjects.MathObjects.MathSymbol;
 
 import java.util.HashMap;
 

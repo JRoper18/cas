@@ -1,5 +1,7 @@
-import EquationObjects.MathObjects.GenericExpression;
-import EquationObjects.MathObjects.MathObject;
+package CAS;
+
+import CAS.EquationObjects.MathObjects.GenericExpression;
+import CAS.EquationObjects.MathObjects.MathObject;
 import com.rits.cloning.Cloner;
 
 import java.util.HashMap;
@@ -10,11 +12,10 @@ import java.util.HashMap;
 public class EquationSub {
     public final DirectOperation operation;
     public final Equation condition;
-    private PatternMatcher matcher = new PatternMatcher();
     public EquationSubProperties properties = new EquationSubProperties();
     public EquationSub(Equation before, Equation after){
         this.properties.assignedOperator = getProbableAssignedOperator(before);
-        this.operation = (eq -> {
+        this.operation = ( eq -> {
             return this.substitute(before, after, eq);
         });
         this.condition = null;
@@ -79,23 +80,25 @@ public class EquationSub {
         return this.operation.operate(newEq);
     }
     private Equation substitute(Equation before, Equation after, Equation equation){
+        PatternMatcher matcher = new PatternMatcher();
         if(matcher.patternMatch(equation, before)) {
             Equation newEquation = new Equation(after); //Quick clone
             HashMap<String, Tree<MathObject>> values = matcher.getLastMatchExpressions();
             //Go through conditions
             if(this.condition != null){
-                Equation temp = condition.clone();
+                Cloner cloner = new Cloner();
+                Equation temp = cloner.deepClone(condition);
                 //Replace generics
                 for(String var : values.keySet()){
                     Tree<MathObject> substitution = values.get(var);
                     GenericExpression genExToLookFor = new GenericExpression(var);
                     temp.tree.replaceAll(new Tree(genExToLookFor), substitution);
                 }
-                //If there's still generics in the equation, the condition fails.
-                if(temp.tree.containsClass(GenericExpression.class)){
-                    return equation;
-                }
                 //No generics. Try evaluating it.
+                Equation isGood = Simplifier.fullSimplify(condition);
+                if(isGood.equals(new Equation("FALSE"))){
+                    return equation; //Again, do nothing to the equation.
+                }
             }
             for (String var : values.keySet()) {
                 Tree<MathObject> substitution = values.get(var);
