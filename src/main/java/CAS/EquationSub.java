@@ -1,70 +1,33 @@
 package CAS;
 
-import CAS.EquationObjects.MathObjects.GenericExpression;
 import CAS.EquationObjects.MathObjects.MathObject;
 import com.rits.cloning.Cloner;
 
 import java.io.Serializable;
-import java.util.HashMap;
 
 /**
  * Created by jack on 1/2/2017.
  */
 public class EquationSub implements Serializable {
     public final DirectOperation operation;
-    public final Equation condition;
-    public EquationSubProperties properties = new EquationSubProperties();
-    public EquationSub(Equation before, Equation after){
-        this.operation = (DirectOperation & Serializable) ( eq -> {
-            return this.substitute(before, after, eq);
-        });
-        this.condition = null;
-    }
-    public EquationSub setOp(MathObject op){
-        this.properties.assignedOperator = op;
-        return this;
-    }
-    public EquationSub(Equation before, Equation after, Equation conditions) {
-        this.operation = (DirectOperation & Serializable) (eq -> {
-            return this.substitute(before, after, eq);
-        });
-        this.condition = conditions;
-    }
-    public EquationSub(DirectOperation operation){ //I'm hoping I'll only have to ever use this for adding, subtracting, division, and multiplication. Hoping.
+    public MathObject rootOperator;
+    public EquationSub(DirectOperation operation){
         this.operation = operation;
-        this.condition = null;
+        this.rootOperator = null;
     }
-    public MathObject getProbableAssignedOperator(Equation equation){
-        MathObject probableOperator = null;
-        if(equation.tree.data.getOperator().toString().contains("PATTERN")){ //Note to future self: Make a way to identify pattern objects from mathobjects.
-            //Don't check pattern objects. Check the children for a mathobject.
-            for(Tree<MathObject> child : equation.tree.getChildren()){
-                MathObject possible = getProbableAssignedOperator(new Equation(child));
-                if(probableOperator == null){
-                    probableOperator = possible;
-                }
-                else{
-                    if(!probableOperator.equals(possible)){
-                        return null; //There's a difference. We can't tell.
-                    }
-                }
-            }
-            //Made it to the end with all of the operators the same? Probably that operator.
-            return probableOperator;
-        }
-        else{
-            return equation.tree.data;
-        }
+    public EquationSub(DirectOperation operation, MathObject operator){ //I'm hoping I'll only have to ever use this for adding, subtracting, division, and multiplication. Hoping.
+        this.operation = operation;
+        this.rootOperator = operator;
     }
     public Equation apply(Equation equation){
         Cloner cloner = new Cloner();
         Equation newEq = cloner.deepClone(equation);
-        if(this.properties.assignedOperator != null){
+        if(this.rootOperator != null){
             //It's specified. If it's associative, apply the operator for each section.
-            if(this.properties.assignedOperator.isAssociative()){
-                int operatorArgs = this.properties.assignedOperator.getArgs();
+            if(this.rootOperator.isAssociative()){
+                int operatorArgs = this.rootOperator.getArgs();
                 while(newEq.tree.getNumberOfChildren() > operatorArgs){
-                    Tree<MathObject> subEquationTree = new Tree<>(this.properties.assignedOperator);
+                    Tree<MathObject> subEquationTree = new Tree<>(this.rootOperator);
                     //Add the children as the specified number of args
                     for(int j = 0; j < operatorArgs; j++){
                         subEquationTree.addChild(newEq.tree.getChild(j));
@@ -81,35 +44,6 @@ public class EquationSub implements Serializable {
             }
         }
         return this.operation.operate(newEq);
-    }
-    private Equation substitute(Equation before, Equation after, Equation equation){
-        PatternMatcher matcher = new PatternMatcher();
-        if(matcher.patternMatch(equation, before)) {
-            Equation newEquation = new Equation(after); //Quick clone
-            HashMap<String, Tree<MathObject>> values = matcher.getLastMatchExpressions();
-            //Go through conditions
-            if(this.condition != null){
-                Cloner cloner = new Cloner();
-                Equation temp = cloner.deepClone(condition);
-                //Replace generics
-                for(String var : values.keySet()){
-                    Tree<MathObject> substitution = values.get(var);
-                    GenericExpression genExToLookFor = new GenericExpression(var);
-                    temp.tree.replaceAll(new Tree(genExToLookFor), substitution);
-                }
-                Equation simplified = Simplifier.simplify(temp);
-                if(simplified.equals(new Equation("FALSE"))){
-                    return equation; //Again, do nothing to the equation.
-                }
-            }
-            for (String var : values.keySet()) {
-                Tree<MathObject> substitution = values.get(var);
-                GenericExpression genExToLookFor = new GenericExpression(var);
-                newEquation.tree.replaceAll(new Tree(genExToLookFor), substitution);
-            }
-            return newEquation;
-        }
-        return equation;
     }
     public Equation applyEverywhere(Equation equation){
         if(equation.tree.getNumberOfChildren() == 0){

@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 public class EquationBuilder{
     public static Equation makeEquation(String str){
@@ -72,15 +71,12 @@ public class EquationBuilder{
         }
         return equationObjectList;
     }
-    private static boolean isAutoSimplified(Equation eq){
-        return false;//CHANGETHIS
-    }
     private static Equation toCorrectForm(Equation eq){
         List<EquationSub> subs = new ArrayList<>();
-        subs.add(new EquationSub(makeUnprocessedEquation("MINUS ( _v1 , _v2 )"), makeUnprocessedEquation("PLUS ( _v1 , TIMES ( -1 , _v2 ) )")));
-        subs.add(new EquationSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("FRACTION ( _v1 , _v2 )"), makeUnprocessedEquation("AND ( EQUALS ( TYPEOF ( _v1 ) , NUMBER ) , EQUALS ( TYPEOF ( _v2 ) , NUMBER ) , NOT ( EQUALS ( _v2 , 0 )"))); //Division between two ints
-        subs.add(new EquationSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("TIMES ( _v1 , FRACTION ( 1 , _v2 ) )"), makeUnprocessedEquation("AND ( EQUALS ( TYPEOF ( _v1 ) , EXPRESSION ) , EQUALS ( TYPEOF ( _v2 ) , NUMBER )"))); //Denominator is an int
-        subs.add(new EquationSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("TIMES ( _v1 , POWER ( _v2 , -1 ) )")));
+        subs.add(new StructuralSub(makeUnprocessedEquation("MINUS ( _v1 , _v2 )"), makeUnprocessedEquation("PLUS ( _v1 , TIMES ( -1 , _v2 ) )")));
+        subs.add(new StructuralSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("FRACTION ( _v1 , _v2 )"), makeUnprocessedEquation("AND ( EQUALS ( TYPEOF ( _v1 ) , NUMBER ) , EQUALS ( TYPEOF ( _v2 ) , NUMBER ) , NOT ( EQUALS ( _v2 , 0 )"))); //Division between two ints
+        subs.add(new StructuralSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("TIMES ( _v1 , FRACTION ( 1 , _v2 ) )"), makeUnprocessedEquation("AND ( EQUALS ( TYPEOF ( _v1 ) , EXPRESSION ) , EQUALS ( TYPEOF ( _v2 ) , NUMBER )"))); //Denominator is an int
+        subs.add(new StructuralSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("TIMES ( _v1 , POWER ( _v2 , -1 ) )")));
         for(EquationSub sub : subs){
             eq = sub.applyEverywhere(eq);
         }
@@ -141,34 +137,5 @@ public class EquationBuilder{
             return possibleObject;
         }
         throw new UncheckedIOException(new IOException("Operator: " + str + " is not recognized by CAS.EquationBuilder. "));
-    }
-    private static List<ParenInfo> findParen(List<EquationObject> eq){
-        List<ParenInfo> result = new ArrayList<ParenInfo>();
-        Stack<Integer> notClosedParens = new Stack<Integer>();
-        for(int i = 0; i<eq.size(); i++){
-            EquationObject current = eq.get(i);
-            if(current instanceof SyntaxObject){
-                SyntaxObjectType mathObject = ((SyntaxObject) current).syntax;
-                if(mathObject == SyntaxObjectType.OPEN_PAREN) {
-                    notClosedParens.push(new Integer(i));
-                }
-                else if(mathObject == SyntaxObjectType.CLOSE_PAREN){
-                    int nextParenIndex = notClosedParens.pop();
-                    ParenInfo newParenInfo = new ParenInfo(nextParenIndex, new Integer(i), notClosedParens.size() + 1);
-                    result.add(newParenInfo);
-                }
-            }
-        }
-        return result;
-    }
-    private static class ParenInfo{
-        public int start;
-        public int end;
-        public int level;
-        public ParenInfo(int startIndex, int endIndex, int level){
-            this.start = startIndex;
-            this.end = endIndex;
-            this.level = level;
-        }
     }
 }

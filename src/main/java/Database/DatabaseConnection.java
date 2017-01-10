@@ -30,7 +30,7 @@ public class DatabaseConnection {
                 String toPrepare = "insert into subs values(?, ?)";
                 PreparedStatement prepared = connection.prepareStatement(toPrepare);
                 prepared.setBytes(1, SubSerializer.serialize(sub));
-                MathObject op = sub.properties.assignedOperator;
+                MathObject op = sub.rootOperator;
                 if(op != null){
                     prepared.setString(2, op.toString());
                 }
