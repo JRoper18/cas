@@ -1,3 +1,5 @@
+package CAS;
+
 import CAS.Equation;
 import CAS.EquationBuilder;
 import CAS.PatternMatcher;

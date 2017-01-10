@@ -76,16 +76,14 @@ public class EquationBuilder{
         return false;//CHANGETHIS
     }
     private static Equation toCorrectForm(Equation eq){
-        /*
         List<EquationSub> subs = new ArrayList<>();
         subs.add(new EquationSub(makeUnprocessedEquation("MINUS ( _v1 , _v2 )"), makeUnprocessedEquation("PLUS ( _v1 , TIMES ( -1 , _v2 ) )")));
-        subs.add(new EquationSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("FRACTION ( _v1 , _v2 )"), makeUnprocessedEquation("AND ( EQUALS ( TYPEOF ( _v1 ) , NUMBER ) , EQUALS ( TYPEOF ( _v2 ) , NUMBER ) , NOT ( EQUALS ( _v2 , 0 )")));
+        subs.add(new EquationSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("FRACTION ( _v1 , _v2 )"), makeUnprocessedEquation("AND ( EQUALS ( TYPEOF ( _v1 ) , NUMBER ) , EQUALS ( TYPEOF ( _v2 ) , NUMBER ) , NOT ( EQUALS ( _v2 , 0 )"))); //Division between two ints
+        subs.add(new EquationSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("TIMES ( _v1 , FRACTION ( 1 , _v2 ) )"), makeUnprocessedEquation("AND ( EQUALS ( TYPEOF ( _v1 ) , EXPRESSION ) , EQUALS ( TYPEOF ( _v2 ) , NUMBER )"))); //Denominator is an int
         subs.add(new EquationSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("TIMES ( _v1 , POWER ( _v2 , -1 ) )")));
         for(EquationSub sub : subs){
             eq = sub.applyEverywhere(eq);
         }
-        */
-        //Commenting the above out so that I can work on putting equationsubs into a database.
         return eq;
     }
     public static EquationObject parseString(String str){
@@ -110,6 +108,17 @@ public class EquationBuilder{
         } catch(NumberFormatException e){
             //IGNORE IT
         }
+        //Maybe it's a generic. If it's an expression it'll look like _<genericName>
+        if(str.charAt(0) == '_'){ //There's a _ so it's a generic.
+            // NOTE: In the future you might make a function with a _ in it's name. Sorry, but I don't care enough to account for that.
+            if(str.length() == 1){ //It's just a _, which means any expression of any type with any name.
+                return new GenericExpression();
+            }
+            String name = str.substring(1, str.length());
+            return new GenericExpression(name);
+        }
+        //It's not a generic, so we don't need to base case sensitive at this point
+        str = str.toUpperCase();
         //Check the list of mathematical operators.
         try{
             MathObject obj = new MathObject(MathSymbol.valueOf(str));
@@ -130,15 +139,6 @@ public class EquationBuilder{
         EquationObject possibleObject = (EquationObjectAbbriviations.abbriviations.get(str));
         if(possibleObject != null){ //A HashMap's .get() method returns null if there's no key.
             return possibleObject;
-        }
-        //Nope, not logical. Maybe it's a generic. If it's an expression it'll look like _<genericName>
-        if(str.charAt(0) == '_'){ //There's a _ so it's a generic.
-            // NOTE: In the future you might make a function with a _ in it's name. Sorry, but I don't care enough to account for that.
-            if(str.length() == 1){ //It's just a _, which means any expression of any type with any name.
-                return new GenericExpression();
-            }
-            String name = str.substring(1, str.length());
-            return new GenericExpression(name);
         }
         throw new UncheckedIOException(new IOException("Operator: " + str + " is not recognized by CAS.EquationBuilder. "));
     }

@@ -6,6 +6,7 @@ import CAS.EquationObjects.MathObjects.MathObject;
 import CAS.EquationObjects.MathObjects.MathSymbol;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,12 +22,14 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
             new EquationSub(new Equation("PATTERN_OR ( AND ( TRUE , FALSE ) , AND ( FALSE , TRUE ) , AND ( FALSE , FALSE ) )"), new Equation("FALSE")).setOp(new MathObject(MathSymbol.AND)),
             new EquationSub(new Equation("EQUALS ( _v1 , _v1 )"), new Equation("TRUE")).setOp(new MathObject(MathSymbol.EQUALS)),
             new EquationSub(new Equation("EQUALS ( _v1 , _v2 )"), new Equation("FALSE")).setOp(new MathObject(MathSymbol.EQUALS)),
+            new EquationSub(new Equation("NOT ( FALSE )"), new Equation("TRUE")).setOp(new MathObject(MathSymbol.NOT)),
+            new EquationSub(new Equation("NOT ( TRUE )"), new Equation("FALSE")).setOp(new MathObject(MathSymbol.NOT)),
             new EquationSub((Serializable & DirectOperation) (eq -> {
                 PatternMatcher matcher = new PatternMatcher();
                 if (matcher.patternMatch(eq, new Equation("TYPEOF ( _v1 )"))) {
                     HashMap<String, Tree<MathObject>> vars = matcher.getLastMatchExpressions();
                     Tree<MathObject> objectTree = vars.get("v1");
-                    if (objectTree.hasChildren() && objectTree.data.getOperator() != MathSymbol.FRACTION) {
+                    if (objectTree.hasChildren()) {
                         return new Equation("EXPRESSION");
                     } else {
                         return new Equation(objectTree.data.getOperator().toString());
@@ -50,7 +53,22 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     }
                 }
                 return eq; //No change
-            })).setOp(new MathObject(MathSymbol.MULTIPLY))
+            })).setOp(new MathObject(MathSymbol.MULTIPLY)),
+            new EquationSub((Serializable & DirectOperation) (eq -> {
+                PatternMatcher matcher = new PatternMatcher();
+                if(matcher.patternMatch(eq, new Equation("FRACTION ( _numer , _denom )"))) {
+                    MathInteger numer = (MathInteger) matcher.getLastMatchExpressions().get("numer").data;
+                    MathInteger denom = (MathInteger) matcher.getLastMatchExpressions().get("denom").data;
+                    if(denom.equals(new MathInteger(0))){
+                        throw new ArithmeticException();
+                    }
+                    BigInteger gcd = numer.num.gcd(denom.num);
+                    BigInteger newNumer = numer.num.divide(gcd);
+                    BigInteger newDenom = denom.num.divide(gcd);
+                    return new Equation("FRACTION ( " + newNumer + " , " + newDenom + " )");
+                }
+                return eq; //CHANGE THIS
+            })).setOp(new MathObject(MathSymbol.FRACTION))
     };
     public static final HashSet<EquationSub> subs = new HashSet<EquationSub>(Arrays.asList(subsArray));
 }
