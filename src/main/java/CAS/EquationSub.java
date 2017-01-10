@@ -46,7 +46,7 @@ public class EquationSub implements Serializable {
         return this.operation.operate(newEq);
     }
     public Equation applyEverywhere(Equation equation){
-        if(equation.tree.getNumberOfChildren() == 0){
+        if(!equation.tree.hasChildren()){
             return this.apply(equation);
         }
         else{

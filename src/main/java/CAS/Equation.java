@@ -49,6 +49,16 @@ public class Equation implements Serializable{
     public MathObject getRoot(){
         return this.tree.data;
     }
+    public Equation toGeneric(){
+        Tree<MathObject> temp = new Tree();
+        temp.data = new MathObject(this.tree.data.getOperator());
+        if(this.tree.hasChildren()){
+            for(Tree<MathObject> child : this.tree.getChildren()){
+                temp.addChild(new Equation(child).toGeneric().tree);
+            }
+        }
+        return new Equation(temp);
+    }
     public int complexity(){
         return this.tree.size();
     }

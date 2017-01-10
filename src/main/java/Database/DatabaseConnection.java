@@ -21,11 +21,12 @@ public class DatabaseConnection {
         try {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:subs.db");
-                        System.out.println("Opened database successfully");
             Statement statement = connection.createStatement();
 
             statement.executeUpdate("drop table if exists subs");
+            statement.executeUpdate("drop table if exists structurals");
             statement.executeUpdate("create table subs (algorithm blob, operator string)");
+            statement.executeUpdate("create table structurals (before string, after string, condition string)");
             for(EquationSub sub : EquationSubDatabase.subs){
                 String toPrepare = "insert into subs values(?, ?)";
                 PreparedStatement prepared = connection.prepareStatement(toPrepare);

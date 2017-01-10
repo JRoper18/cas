@@ -30,7 +30,6 @@ public class EquationBuilderTest {
         expectedTree1.addChildWithData(new MathInteger(5));
         assertEquals(new Equation(expectedTree1), test1);
     }
-
     @Test
     public void testPreSimplification() throws Exception {
         assertEquals(new Equation("FRACTION ( 1 , 3 )"), new Equation("DIVIDE ( 1 , 3 )"));
