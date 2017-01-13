@@ -1,10 +1,11 @@
-package CAS.EquationObjects.MathObjects;
+package CAS.EquationObjects;
 
 /**
  * Created by Ulysses Howard Smith on 10/26/2016.
  */
 public class GenericExpression extends MathObject {
     public String tag;
+    public boolean named;
     public GenericExpression(){
         super(MathSymbol.EXPRESSION);
         this.tag = null;
@@ -20,7 +21,10 @@ public class GenericExpression extends MathObject {
 
     @Override
     public boolean equals(Object n){
-        if(n instanceof GenericExpression){
+        if(n instanceof GenericExpression && n != null){
+            if(((GenericExpression) n).tag == null){
+                return this.tag == null;
+            }
             return ((GenericExpression) n).tag.equals(this.tag);
         }
         return false;

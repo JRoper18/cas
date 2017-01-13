@@ -1,6 +1,6 @@
 package CAS;
 
-import CAS.EquationObjects.MathObjects.MathObject;
+import CAS.EquationObjects.MathObject;
 
 import java.io.Serializable;
 

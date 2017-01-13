@@ -1,12 +1,11 @@
 package CAS.EquationObjects;
 
-
 import java.util.HashMap;
 
 /**
  * Created by jack on 1/2/2017.
  */
-public class EquationObjectAbbriviations {
+public class MathObjectAbbriviations {
     public static final HashMap<String, MathObject> abbriviations = new HashMap<>();
     static {
         abbriviations.put("+", new MathObject(MathSymbol.ADD));

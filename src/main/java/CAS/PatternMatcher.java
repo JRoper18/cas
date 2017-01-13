@@ -1,8 +1,8 @@
 package CAS;
 
-import CAS.EquationObjects.MathObjects.GenericExpression;
-import CAS.EquationObjects.MathObjects.MathObject;
-import CAS.EquationObjects.MathObjects.MathSymbol;
+import CAS.EquationObjects.GenericExpression;
+import CAS.EquationObjects.MathObject;
+import CAS.EquationObjects.MathSymbol;
 
 import java.util.HashMap;
 

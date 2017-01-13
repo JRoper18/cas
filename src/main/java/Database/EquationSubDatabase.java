@@ -1,15 +1,17 @@
 package Database;
 
 import CAS.*;
-import CAS.EquationObjects.MathObjects.MathInteger;
-import CAS.EquationObjects.MathObjects.MathObject;
-import CAS.EquationObjects.MathObjects.MathSymbol;
+import CAS.EquationObjects.MathInteger;
+import CAS.EquationObjects.MathObject;
+import CAS.EquationObjects.MathSymbol;
 
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+
+
 
 /**
  * Created by jack on 1/8/2017.

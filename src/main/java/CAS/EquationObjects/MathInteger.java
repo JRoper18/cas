@@ -1,11 +1,11 @@
-package CAS.EquationObjects.MathObjects;
+package CAS.EquationObjects;
 
 import java.math.BigInteger;
 
 /**
  * Created by jack on 12/30/2016.
  */
-public class MathInteger extends MathObject{
+public class MathInteger extends MathObject {
     public BigInteger num;
     public MathInteger(int num){
         super(MathSymbol.NUMBER);

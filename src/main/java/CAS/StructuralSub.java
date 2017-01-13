@@ -1,7 +1,8 @@
 package CAS;
 
-import CAS.EquationObjects.MathObjects.GenericExpression;
-import CAS.EquationObjects.MathObjects.MathObject;
+
+import CAS.EquationObjects.GenericExpression;
+import CAS.EquationObjects.MathObject;
 import com.rits.cloning.Cloner;
 
 import java.io.Serializable;

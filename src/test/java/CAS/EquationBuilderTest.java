@@ -1,10 +1,8 @@
 package CAS;
 
-import CAS.Equation;
-import CAS.EquationBuilder;
-import CAS.EquationObjects.MathObjects.*;
-import CAS.EquationObjects.RationalTempInfoHolder;
-import CAS.Tree;
+import CAS.EquationObjects.MathInteger;
+import CAS.EquationObjects.MathObject;
+import CAS.EquationObjects.MathSymbol;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -18,7 +16,6 @@ public class EquationBuilderTest {
 
     @Test
     public void testStringTokenizer() throws Exception {
-        assertEquals(new RationalTempInfoHolder(new MathInteger(25), new MathInteger(10)), builder.parseString("2.5"));
         assertEquals(new MathInteger(300), builder.parseString("300"));
     }
 

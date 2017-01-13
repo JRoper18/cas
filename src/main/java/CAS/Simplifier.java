@@ -1,6 +1,6 @@
 package CAS;
 
-import CAS.EquationObjects.MathObjects.MathObject;
+import CAS.EquationObjects.MathObject;
 import Database.DatabaseConnection;
 import Database.SubSerializer;
 import com.rits.cloning.Cloner;

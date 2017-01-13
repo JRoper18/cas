@@ -1,15 +1,13 @@
 package CAS.EquationObjects;
 
-import CAS.EquationObjects.MathObjects.MathInteger;
 
 /**
  * Created by jack on 1/3/2017.
  */
-public class RationalTempInfoHolder extends EquationObject{
+public class RationalTempInfoHolder{
     public MathInteger numer;
     public MathInteger denom;
     public RationalTempInfoHolder(MathInteger numer, MathInteger denom){
-        super(0);
         this.numer = numer;
         this.denom = denom;
     }

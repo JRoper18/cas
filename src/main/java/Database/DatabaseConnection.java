@@ -1,6 +1,6 @@
 package Database;
 
-import CAS.EquationObjects.MathObjects.MathObject;
+import CAS.EquationObjects.MathObject;
 import CAS.EquationSub;
 
 import java.sql.*;
