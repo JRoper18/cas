@@ -1,6 +1,7 @@
 package CAS;
 
 import CAS.EquationObjects.MathObject;
+import CAS.EquationObjects.MathOperator;
 
 import java.io.Serializable;
 
@@ -48,6 +49,12 @@ public class Equation implements Serializable{
     }
     public MathObject getRoot(){
         return this.tree.data;
+    }
+    public Equation getSubEquation(int index){
+        return new Equation(this.tree.getChild(index));
+    }
+    public boolean isUndefined(){
+        return this.getRoot().equals(new MathObject(MathOperator.UNDEFINED));
     }
     public int complexity(){
         return this.tree.size();

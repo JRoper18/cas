@@ -12,6 +12,22 @@ import java.sql.ResultSet;
  * Created by jack on 1/5/2017.
  */
 public class Simplifier {
+    public static Equation simplifyByOperator(Equation eq, MathObject operation){
+        Equation newEq = eq.clone();
+        try{
+            ResultSet results = DatabaseConnection.runQuery("select algorithm from subs where (operator == '" + operation + "')");
+            while(results.next()){
+                EquationSub tempSub = SubSerializer.deserialize(results.getBytes("algorithm"));
+                newEq = tempSub.apply(newEq);
+            }
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return newEq;
+    }
+    public static Equation simplifyByOperator(Equation eq){
+        return simplifyByOperator(eq, eq.getRoot());
+    }
     public static Equation simplify(Equation eq){
         Cloner cloner = new Cloner();
         Equation newEq = cloner.deepClone(eq);
@@ -44,7 +60,9 @@ public class Simplifier {
     }
     public static Equation simplifyMetaFunctions(Equation equation){
         Equation newEq = equation.clone();
-        do{
+        Equation last = null;
+        while (newEq.getRoot().getOperator().getSubType() == MathOperatorSubtype.META && !newEq.equals(last)){
+            last = newEq.clone();
             try{
                 String sql = "select algorithm from subs where (subtype =='META' and operator == '" + equation.getRoot().toString() + "')";
                 ResultSet results = DatabaseConnection.runQuery(sql);
@@ -55,17 +73,11 @@ public class Simplifier {
             } catch (Exception ex){
                 ex.printStackTrace();
             }
-        } while (newEq.getRoot().getOperator().getSubType() == MathOperatorSubtype.META); //ON FALSE FOR DEBUGGING ONLY
+        }
         return newEq;
     }
-    public static Equation simplify(Equation equation, SimplificationType type){
+    public static Equation simplify(Equation equation, SimplificationType type){ //Do later
         Equation newEq = equation.clone();
-        while(!equation.isType(type)){
-            switch(type){
-                default:
-                    newEq = simplify(equation);
-            }
-        }
         return newEq;
     }
 }

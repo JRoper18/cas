@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import static CAS.EquationBuilder.makeUnprocessedEquation;
+import static CAS.Simplifier.simplifyByOperator;
 
 
 /**
@@ -84,7 +85,64 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     return new Equation("FRACTION ( " + newNumer + " , " + newDenom + " )");
                 }
                 return eq; //CHANGE THIS
-            }),(new MathObject(MathOperator.FRACTION)))
+            }),(new MathObject(MathOperator.FRACTION))),
+            new EquationSub((Serializable & DirectOperation) (eq -> {
+                Equation newEq = eq.clone();
+                if(eq.getRoot().equals(new MathObject(MathOperator.SIMPLIFY_RATIONAL_FRACTION))){
+                    newEq = eq.getSubEquation(0).clone();
+                }
+                if(newEq.getRoot().getOperator() == MathOperator.FRACTION && new Equation(newEq.tree.getChild(0)).isType(SimplificationType.INTEGER) && new Equation(newEq.tree.getChild(1)).isType(SimplificationType.INTEGER)){
+                    MathInteger numer = (MathInteger) newEq.getSubEquation(0).getRoot();
+                    MathInteger denom = (MathInteger) newEq.getSubEquation(1).getRoot();
+                    MathInteger gcd = new MathInteger(((MathInteger) newEq.tree.getChild(0).data).num.gcd(((MathInteger) newEq.tree.getChild(1).data).num));
+                    return new Equation("FRACTION(" + numer.div(gcd) + "," + denom.div(gcd) + ")");
+                }
+                else{
+                    return newEq;
+                }
+            }), new MathObject(MathOperator.SIMPLIFY_RATIONAL_FRACTION)),
+            new EquationSub((Serializable & DirectOperation) (eq -> {
+                if (eq.isType(SimplificationType.RATIONAL_NUMBER_EXPRESSION)) {
+                    return eq;
+                }
+                Equation newEq = eq.clone();
+                if(eq.getRoot().equals(new MathObject(MathOperator.SIMPLIFY_RATIONAL_EXPRESSION))){
+                    newEq = eq.getSubEquation(0).clone();
+                }
+                if(newEq.isType(SimplificationType.INTEGER)){
+                    return newEq;
+                }
+                else if(newEq.isType(SimplificationType.FRACTION_STANDARD_FORM)){
+                    if(new Equation("OPERAND(" + newEq + ",2").isUndefined()){
+                        return new Equation("UNDEFINED");
+                    }
+                    else return newEq;
+                }
+                else if(newEq.isUndefined()){
+                    return new Equation("UNDEFINED");
+                }
+                else if(newEq.getRoot().equals(new MathObject(MathOperator.POWER))){
+                    Equation newBase = new Equation("SIMPLIFY_RATIONAL_EXPRESSION(OPERAND(" + newEq + ", 1))");
+                    Equation power = newEq.getSubEquation(1);
+                    if(newBase.isUndefined()){
+                        return new Equation("UNDEFINED");
+                    }
+                    return simplifyByOperator(new Equation("POWER(" + newBase + ", " + power + ")"), new MathObject(MathOperator.POWER));
+                }
+                else if(newEq.tree.getNumberOfChildren() >= 2){
+                    if(newEq.getSubEquation(0).isUndefined() || newEq.getSubEquation(1).isUndefined()){
+                        return new Equation("UNDEFINED");
+                    }
+                    for(Tree<MathObject> child : newEq.tree.getChildren()){
+                        Equation replace = new Equation("SIMPLIFY_RATIONAL_EXPRESSION(" + new Equation(child) + ")");
+                        child.replaceWith(replace.tree);
+                    }
+                    return Simplifier.simplifyByOperator(newEq);
+                }
+                else{
+                    return newEq;
+                }
+            }), new MathObject(MathOperator.SIMPLIFY_RATIONAL_EXPRESSION))
     };
     public static final HashSet<EquationSub> subs = new HashSet<EquationSub>(Arrays.asList(subsArray));
 }

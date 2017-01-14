@@ -31,11 +31,24 @@ public class Identifier {
                     return true;
                 }
                 break;
+            case RATIONAL_NUMBER_EXPRESSION:
+                MathOperator op = equation.getRoot().getOperator();
+                if(equation.isType(INTEGER) || op == MathOperator.FRACTION){
+                    return true;
+                }
+                if((op == MathOperator.ADD || op == MathOperator.SUBTRACT || op == MathOperator.MULTIPLY) && new Equation("NUMBER_OF_OPERANDS (" + equation + ")").equals(new Equation("2"))){
+                    return equation.getSubEquation(0).isType(RATIONAL_NUMBER_EXPRESSION) && equation.getSubEquation(1).isType(RATIONAL_NUMBER_EXPRESSION);
+                }
+                if(op == MathOperator.POWER){
+                    return equation.getSubEquation(0).isType(RATIONAL_NUMBER_EXPRESSION) && equation.getSubEquation(1).isType(INTEGER);
+                }
+                return false;
             case AUTOSIMPLIFIED_EXPRESSION: //See the 2nd computer algebra book, pdf page 101.
                 MathObject root = equation.getRoot();
-                return equation.isType(INTEGER) || equation.isType(FRACTION_STANDARD_FORM) || (root.getOperator().getSubType()== MathOperatorSubtype.SYMBOL && root.getOperator() != MathOperator.UNDEFINED);
-            case BASIC_ALGEBRA_EXPRESSION:
-                break; //Do later
+                if(equation.isType(INTEGER) || equation.isType(FRACTION_STANDARD_FORM) || (root.getOperator().getSubType()== MathOperatorSubtype.SYMBOL && root.getOperator() != MathOperator.UNDEFINED)) {
+                    return true;
+                }
+                break;
         }
         return true;//DEFAULT
     }
