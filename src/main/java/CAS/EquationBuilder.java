@@ -15,6 +15,10 @@ public class EquationBuilder{
         return new Equation(makeEquationTree(str));
     }
     private static Tree<MathObject> makeEquationTree(String equationStr) { //This stakes a string input of which I hope is correctly formatted.
+
+        //NOTE TO FUTURE ME: At one point you might try to change this algorithm so that it implements infix notation or something. DO NOT DO THAT. Instead, Change the preprocess function.
+        //If you ever think editing this function is a good idea, just remember the all-nighter you pulled trying to fix a bug in it, and where for every bug you fixed 3 more popped up.
+        //This is your final warning. DO NOT TOUCH THIS FUNCTION.
         List<Object> equationObjectList = preProcess(equationStr);
         Tree<MathObject> tree = new Tree<>();
         Tree<MathObject> selected = tree;
@@ -32,7 +36,7 @@ public class EquationBuilder{
                 }
                 selected = selected.getParent().getChild(selected.getParent().getNumberOfChildren() - 1);
             } else if (equationObject instanceof RationalTempInfoHolder) {  //It's not syntax. Is it a temporary info holder?
-                selected.data = new MathObject(MathSymbol.DIVIDE);
+                selected.data = new MathObject(MathOperator.DIVIDE);
                 selected.addChildWithData(((RationalTempInfoHolder) equationObject).numer);
                 selected.addChildWithData(((RationalTempInfoHolder) equationObject).denom);
             } else {
@@ -73,15 +77,9 @@ public class EquationBuilder{
         return equationObjectList;
     }
     private static Equation toCorrectForm(Equation eq){
-        List<EquationSub> subs = new ArrayList<>();
-        subs.add(new StructuralSub(makeUnprocessedEquation("MINUS ( _v1 , _v2 )"), makeUnprocessedEquation("PLUS ( _v1 , TIMES ( -1 , _v2 ) )")));
-        subs.add(new StructuralSub(makeUnprocessedEquation("DIVIDE( _v1 , _v2 )"), makeUnprocessedEquation("FRACTION ( _v1 , _v2 )"),makeUnprocessedEquation("AND ( EQUALS ( TYPEOF ( _v1 ) , NUMBER ) , EQUALS ( TYPEOF ( _v2 ) , NUMBER ) , NOT ( EQUALS ( _v2 , 0 ) ) )"))); //Division between two ints
-        subs.add(new StructuralSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("TIMES ( _v1 , FRACTION ( 1 , _v2 ) )"), makeUnprocessedEquation("AND ( EQUALS ( TYPEOF ( _v1 ) , EXPRESSION ) , EQUALS ( TYPEOF ( _v2 ) , NUMBER ) )"))); //Denominator is an int
-        subs.add(new StructuralSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("TIMES ( _v1 , POWER ( _v2 , -1 ) )")));
-        for(EquationSub sub : subs){
-            eq = sub.applyEverywhere(eq);
-        }
-        return eq;
+        //Until I solve the infinite loop issue below,
+        return Simplifier.simplifyMetaFunctions(eq);
+        //return Simplifier.simplify(Simplifier.simplifyMetaFunctions(eq), SimplificationType.AUTOSIMPLIFIED_EXPRESSION);
     }
     public static Object parseString(String str){
         if(str.length() == 0){
@@ -130,7 +128,7 @@ public class EquationBuilder{
         str = str.toUpperCase();
         //Check the list of mathematical operators.
         try{
-            MathObject obj = new MathObject(MathSymbol.valueOf(str));
+            MathObject obj = new MathObject(MathOperator.valueOf(str));
             //If no error, we found our math object. USE IT!
             return obj;
         } catch (IllegalArgumentException er){

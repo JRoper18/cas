@@ -52,5 +52,7 @@ public class Equation implements Serializable{
     public int complexity(){
         return this.tree.size();
     }
-
+    public boolean isType(SimplificationType type){
+        return Identifier.isType(this, type);
+    }
 }

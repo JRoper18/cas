@@ -9,8 +9,8 @@ public class MathObject implements Serializable {
     private int args;
     private boolean ordered;
     private boolean associative;
-    private MathSymbol operator;
-    public MathObject(MathSymbol operator){
+    private MathOperator operator;
+    public MathObject(MathOperator operator){
         this.args = operator.getArguments();
         this.ordered = operator.isOrdered();
         this.associative = operator.isAssociative();
@@ -25,7 +25,7 @@ public class MathObject implements Serializable {
     public boolean isAssociative(){
         return this.associative;
     }
-    public MathSymbol getOperator(){
+    public MathOperator getOperator(){
         return this.operator;
     }
     public String getName(){

@@ -2,7 +2,7 @@ package CAS;
 
 import CAS.EquationObjects.MathInteger;
 import CAS.EquationObjects.MathObject;
-import CAS.EquationObjects.MathSymbol;
+import CAS.EquationObjects.MathOperator;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -22,7 +22,7 @@ public class EquationBuilderTest {
     @Test
     public void testTreeCreation() throws Exception {
         Equation test1 = builder.makeEquation("ADD ( 4 , 5 )");
-        Tree<MathObject> expectedTree1 = new Tree<>(new MathObject(MathSymbol.ADD));
+        Tree<MathObject> expectedTree1 = new Tree<>(new MathObject(MathOperator.ADD));
         expectedTree1.addChildWithData(new MathInteger(4));
         expectedTree1.addChildWithData(new MathInteger(5));
         assertEquals(new Equation(expectedTree1), test1);

@@ -8,11 +8,11 @@ import java.math.BigInteger;
 public class MathInteger extends MathObject {
     public BigInteger num;
     public MathInteger(int num){
-        super(MathSymbol.NUMBER);
+        super(MathOperator.NUMBER);
         this.num = BigInteger.valueOf(num);
     }
     public MathInteger(BigInteger num){
-        super(MathSymbol.NUMBER);
+        super(MathOperator.NUMBER);
         this.num = num;
     }
     @Override

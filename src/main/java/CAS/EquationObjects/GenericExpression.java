@@ -7,11 +7,11 @@ public class GenericExpression extends MathObject {
     public String tag;
     public boolean named;
     public GenericExpression(){
-        super(MathSymbol.EXPRESSION);
+        super(MathOperator.EXPRESSION);
         this.tag = null;
     }
     public GenericExpression(String tag){
-        super(MathSymbol.EXPRESSION);
+        super(MathOperator.EXPRESSION);
         this.tag = tag;
     }
 
