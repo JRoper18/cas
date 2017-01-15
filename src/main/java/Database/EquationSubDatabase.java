@@ -142,7 +142,39 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 else{
                     return newEq;
                 }
-            }), new MathObject(MathOperator.SIMPLIFY_RATIONAL_EXPRESSION))
+            }), new MathObject(MathOperator.SIMPLIFY_RATIONAL_EXPRESSION)),
+            new EquationSub((DirectOperation & Serializable) (eq -> {
+                if(eq.getRoot().getOperator() == MathOperator.BASE){
+                    Equation toEval = eq.getSubEquation(0);
+                    MathOperator op = toEval.getRoot().getOperator();
+                    if(op == MathOperator.POWER){
+                        return toEval.getSubEquation(0);
+                    }
+                    else if(toEval.isType(SimplificationType.INTEGER) || toEval.isType(SimplificationType.FRACTION_STANDARD_FORM)){
+                        return new Equation("UNDEFINED");
+                    }
+                    else{
+                        return toEval; //Assume exponent 1
+                    }
+                }
+                return eq;
+            }), new MathObject(MathOperator.BASE)),
+            new EquationSub((DirectOperation & Serializable) (eq -> {
+                if(eq.getRoot().getOperator() == MathOperator.EXPONENT){
+                    Equation toEval = eq.getSubEquation(0);
+                    MathOperator op = toEval.getRoot().getOperator();
+                    if(op == MathOperator.POWER){
+                        return toEval.getSubEquation(1);
+                    }
+                    else if(toEval.isType(SimplificationType.INTEGER) || toEval.isType(SimplificationType.FRACTION_STANDARD_FORM)){
+                        return new Equation("UNDEFINED");
+                    }
+                    else{
+                        return new Equation("1"); //Assume exponent 1, base expression
+                    }
+                }
+                return eq;
+            }), new MathObject(MathOperator.EXPONENT))
     };
     public static final HashSet<EquationSub> subs = new HashSet<EquationSub>(Arrays.asList(subsArray));
 }

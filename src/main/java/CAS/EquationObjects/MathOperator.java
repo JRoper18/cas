@@ -35,6 +35,8 @@ public enum MathOperator {
     CONTAINS(1, false, false, MathOperatorSubtype.META),
     SIMPLIFY_RATIONAL_FRACTION(1, false, false, MathOperatorSubtype.META),
     SIMPLIFY_RATIONAL_EXPRESSION(1, false, false, MathOperatorSubtype.META),
+    BASE(1, false, false, MathOperatorSubtype.META),
+    EXPONENT(1, false, false, MathOperatorSubtype.META),
     //Atomic/building block/unchanging values/symbols
     TRUE(0, false, false, MathOperatorSubtype.SYMBOL),
     FALSE(0, false, false, MathOperatorSubtype.SYMBOL),
