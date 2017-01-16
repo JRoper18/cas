@@ -12,6 +12,7 @@ import static CAS.SimplificationType.*;
  */
 public class Identifier {
     public static boolean isType(Equation equation, SimplificationType type){
+        MathOperator op = equation.getRoot().getOperator();
         switch(type){
             case INTEGER:
                 return equation.getRoot() instanceof MathInteger;
@@ -32,7 +33,6 @@ public class Identifier {
                 }
                 break;
             case RATIONAL_NUMBER_EXPRESSION:
-                MathOperator op = equation.getRoot().getOperator();
                 if(equation.isType(INTEGER) || op == MathOperator.FRACTION){
                     return true;
                 }
@@ -44,11 +44,136 @@ public class Identifier {
                 }
                 return false;
             case AUTOSIMPLIFIED_EXPRESSION: //See the 2nd computer algebra book, pdf page 101.
-                MathObject root = equation.getRoot();
-                if(equation.isType(INTEGER) || equation.isType(FRACTION_STANDARD_FORM) || (root.getOperator().getSubType()== MathOperatorSubtype.SYMBOL && root.getOperator() != MathOperator.UNDEFINED)) {
+                //All expressions should follow these rules by default.
+                if(equation.isType(INTEGER) || equation.isType(FRACTION_STANDARD_FORM) || (op.getSubType()== MathOperatorSubtype.SYMBOL && op != MathOperator.UNDEFINED)) {
+                    //If it's a constant, then it's already simplified (unless it's undefined)
                     return true;
                 }
-                break;
+                else if(op == MathOperator.MULTIPLY){
+                    boolean foundConstant = false; //At most we should have only one constant inside of a product, because they can be collected into a single term.
+                    for(int i = 0; i<equation.tree.getNumberOfChildren(); i++){ //For every operand of the product
+                        Equation sub = equation.getSubEquation(i);
+                        if(!sub.isType(AUTOSIMPLIFIED_EXPRESSION)){
+                            return false;
+                        }
+                        MathOperator subOp = sub.getRoot().getOperator();
+                        if(subOp == MathOperator.UNDEFINED){ //No undefined
+                            return false;
+                        }
+                        if(sub.isType(INTEGER)){
+                            if(((MathInteger) sub.getRoot()).num.intValue() == 0 || ((MathInteger) sub.getRoot()).num.intValue() == 1){ //Multiplication by 1 or 0 can be simplified.
+                                return false;
+                            }
+                            if(foundConstant){ //Again, only 1 constant
+                                return false;
+                            }
+                            foundConstant = true;
+                        }
+                        if(subOp == MathOperator.FRACTION){
+                            if(foundConstant){
+                                return false;
+                            }
+                            foundConstant = true;
+                        }
+                        if(!(subOp == MathOperator.ADD || subOp == MathOperator.POWER || subOp == MathOperator.FACTORIAL || subOp == MathOperator.CUSTOM_FUNCTION)){ //If we have another product inside of this,
+                            //It's not good
+                            return false;
+                        }
+                        for(int j = 0; j<equation.tree.getNumberOfChildren(); j++){
+                            Equation temp = equation.getSubEquation(j);
+                            if(i != j && new Equation("BASE(" + sub + ")").equals(new Equation("BASE(" + temp + ")"))){ //Make sure we share no like terms that we can compress.
+                                return false;
+                            }
+                            if(i < j){
+                                if(!(sub.compareTo(temp) < 0)){ //Check the ordering.
+                                    return false;
+                                }
+                            }
+                        }
+
+                    }
+                    //No like terms or unneccesary constants.
+                    return true;
+                }
+                else if(op == MathOperator.ADD){
+                    boolean foundConstant = false; //At most we should have only one constant inside of a sum, because they can be collected into a single term.
+                    for(int i = 0; i<equation.tree.getNumberOfChildren(); i++){ //For every operand
+                        Equation sub = equation.getSubEquation(i);
+                        if(!sub.isType(AUTOSIMPLIFIED_EXPRESSION)){
+                            return false;
+                        }
+                        MathOperator subOp = sub.getRoot().getOperator();
+                        if(subOp == MathOperator.UNDEFINED){ //No undefined
+                            return false;
+                        }
+                        if(sub.isType(INTEGER)){
+                            if(((MathInteger) sub.getRoot()).num.intValue() == 0){ //No addition by 0
+                                return false;
+                            }
+                            if(foundConstant){ //Again, only 1 constant
+                                return false;
+                            }
+                            foundConstant = true;
+                        }
+                        if(subOp == MathOperator.FRACTION){
+                            if(foundConstant){
+                                return false;
+                            }
+                            foundConstant = true;
+                        }
+                        if(!(subOp == MathOperator.ADD || subOp == MathOperator.POWER || subOp == MathOperator.FACTORIAL || subOp == MathOperator.CUSTOM_FUNCTION)){
+                            return false;
+                        }
+                        for(int j = 0; j<equation.tree.getNumberOfChildren(); j++){
+                            Equation temp = equation.getSubEquation(j);
+                            if(i != j && new Equation("TERM(" + sub + ")").equals(new Equation("TERM(" + temp + ")"))){ //Make sure we share no like terms that we can compress.
+                                return false;
+                            }
+                            if(i < j){
+                                if(!(sub.compareTo(temp) < 0)){ //Check the ordering.
+                                    return false;
+                                }
+                            }
+                        }
+
+                    }
+                    //No like terms or unneccesary constants.
+                    return true;
+                }
+                else if(op == MathOperator.POWER){
+                    Equation power = equation.getSubEquation(1);
+                    Equation base = equation.getSubEquation(0);
+                    if(!base.isType(AUTOSIMPLIFIED_EXPRESSION) || !power.isType(AUTOSIMPLIFIED_EXPRESSION)){
+                        return false;
+                    }
+                    if(power.equals(new Equation("1")) || power.equals(new Equation("0"))){
+                        return false;
+                    }
+                    if (!power.isType(INTEGER)) {
+                        if(base.equals(new Equation("0")) || base.equals(new Equation("1"))){
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                else if(op == MathOperator.FACTORIAL){
+                    if(equation.getSubEquation(0).isType(AUTOSIMPLIFIED_EXPRESSION)){
+                        if(equation.getSubEquation(0).isType(INTEGER)){
+                            return ((MathInteger) equation.getSubEquation(0).getRoot()).num.signum() < 0; //Only negative integer factorials can't be simplified
+                        }
+                        return true;
+                    }
+                    return false;
+                }
+                else if(op == MathOperator.CUSTOM_FUNCTION){
+                    for(int i = 0; i<equation.tree.getNumberOfChildren(); i++){
+                        if(!equation.getSubEquation(i).isType(AUTOSIMPLIFIED_EXPRESSION)){
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                return true;
         }
         return true;//DEFAULT
     }

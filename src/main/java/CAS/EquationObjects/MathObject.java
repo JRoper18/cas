@@ -10,10 +10,16 @@ public class MathObject implements Serializable {
     private boolean ordered;
     private boolean associative;
     private MathOperator operator;
-    public MathObject(MathOperator operator){
+    public MathObject(MathOperator operator) {
         this.args = operator.getArguments();
         this.ordered = operator.isOrdered();
         this.associative = operator.isAssociative();
+        this.operator = operator;
+    }
+    public MathObject(int args, boolean ordered, boolean associative, MathOperator operator){
+        this.args = args;
+        this.ordered = ordered;
+        this.associative = associative;
         this.operator = operator;
     }
     public int getArgs(){

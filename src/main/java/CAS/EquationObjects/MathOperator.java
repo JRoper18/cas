@@ -16,6 +16,7 @@ public enum MathOperator {
     COSINE(1, true, false, MathOperatorSubtype.MATH),
     TANGENT(1, true, false, MathOperatorSubtype.MATH),
     FACTORIAL(1, true, false, MathOperatorSubtype.MATH),
+    CUSTOM_FUNCTION(0, false, false, MathOperatorSubtype.MATH), //Placeholder values - check customfunction class
     //Pattern matching
     NUMBER(0, false, false, MathOperatorSubtype.PATTERN),
     EXPRESSION(0, false, false, MathOperatorSubtype.PATTERN),
@@ -37,6 +38,7 @@ public enum MathOperator {
     SIMPLIFY_RATIONAL_EXPRESSION(1, false, false, MathOperatorSubtype.META),
     BASE(1, false, false, MathOperatorSubtype.META),
     EXPONENT(1, false, false, MathOperatorSubtype.META),
+    TERM(1, false, false, MathOperatorSubtype.META),
     //Atomic/building block/unchanging values/symbols
     TRUE(0, false, false, MathOperatorSubtype.SYMBOL),
     FALSE(0, false, false, MathOperatorSubtype.SYMBOL),

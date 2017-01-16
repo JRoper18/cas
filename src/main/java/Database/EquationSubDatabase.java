@@ -4,6 +4,7 @@ import CAS.*;
 import CAS.EquationObjects.MathInteger;
 import CAS.EquationObjects.MathObject;
 import CAS.EquationObjects.MathOperator;
+import CAS.EquationObjects.MathOperatorSubtype;
 
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -174,7 +175,26 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     }
                 }
                 return eq;
-            }), new MathObject(MathOperator.EXPONENT))
+            }), new MathObject(MathOperator.EXPONENT)),
+            new EquationSub((DirectOperation & Serializable) (eq -> {
+              if(eq.getRoot().getOperator() == MathOperator.TERM){
+                  Equation sub = eq.getSubEquation(0).clone();
+                  MathOperator op = sub.getRoot().getOperator();
+                  if(op.getSubType() == MathOperatorSubtype.SYMBOL || op == MathOperator.POWER || op == MathOperator.FACTORIAL || op == MathOperator.CUSTOM_FUNCTION){
+                      return sub;
+                  }
+                  if(op == MathOperator.MULTIPLY){
+                      if(sub.getSubEquation(0).isType(SimplificationType.INTEGER) || sub.getSubEquation(0).isType(SimplificationType.FRACTION_STANDARD_FORM)){
+                          Equation temp = sub.clone();
+                          temp.tree.removeChild(0);
+                          return temp;
+                      }
+                      return sub;
+                  }
+                  return new Equation("UNDEFINED");
+              }
+              return eq;
+            }), new MathObject(MathOperator.TERM))
     };
     public static final HashSet<EquationSub> subs = new HashSet<EquationSub>(Arrays.asList(subsArray));
 }
