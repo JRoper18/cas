@@ -15,7 +15,7 @@ public class Identifier {
         MathOperator op = equation.getRoot().getOperator();
         switch(type){
             case INTEGER:
-                return equation.getRoot() instanceof MathInteger;
+                return (equation.getRoot() instanceof MathInteger);
             case FRACTION_STANDARD_FORM: //Page 57
                 return equation.getRoot().getOperator() == MathOperator.FRACTION && new Equation("GCD(OPERAND(" + equation + ", 1),OPERAND(" + equation + ",2))").equals(new Equation("1"));
             case EXPLICIT_ALGEBRAIC_NUMBER: //PDF page 76
@@ -60,7 +60,7 @@ public class Identifier {
                         if(subOp == MathOperator.UNDEFINED){ //No undefined
                             return false;
                         }
-                        if(sub.isType(INTEGER)){
+                        else if(sub.isType(INTEGER)){
                             if(((MathInteger) sub.getRoot()).num.intValue() == 0 || ((MathInteger) sub.getRoot()).num.intValue() == 1){ //Multiplication by 1 or 0 can be simplified.
                                 return false;
                             }
@@ -69,13 +69,13 @@ public class Identifier {
                             }
                             foundConstant = true;
                         }
-                        if(subOp == MathOperator.FRACTION){
+                        else if(subOp == MathOperator.FRACTION){
                             if(foundConstant){
                                 return false;
                             }
                             foundConstant = true;
                         }
-                        if(!(subOp == MathOperator.ADD || subOp == MathOperator.POWER || subOp == MathOperator.FACTORIAL || subOp == MathOperator.CUSTOM_FUNCTION)){ //If we have another product inside of this,
+                        else if(!(subOp == MathOperator.ADD || subOp == MathOperator.POWER || subOp == MathOperator.FACTORIAL || subOp == MathOperator.CUSTOM_FUNCTION || subOp.getSubType() == MathOperatorSubtype.SYMBOL)){ //If we have another product inside of this,
                             //It's not good
                             return false;
                         }
@@ -107,6 +107,7 @@ public class Identifier {
                             return false;
                         }
                         if(sub.isType(INTEGER)){
+                            sub.tree.print();
                             if(((MathInteger) sub.getRoot()).num.intValue() == 0){ //No addition by 0
                                 return false;
                             }
@@ -115,13 +116,14 @@ public class Identifier {
                             }
                             foundConstant = true;
                         }
-                        if(subOp == MathOperator.FRACTION){
+                        else if(subOp == MathOperator.FRACTION){
                             if(foundConstant){
                                 return false;
                             }
                             foundConstant = true;
+                            return true;
                         }
-                        if(!(subOp == MathOperator.ADD || subOp == MathOperator.POWER || subOp == MathOperator.FACTORIAL || subOp == MathOperator.CUSTOM_FUNCTION)){
+                        else if(!(subOp == MathOperator.MULTIPLY || subOp == MathOperator.POWER || subOp == MathOperator.FACTORIAL || subOp == MathOperator.CUSTOM_FUNCTION || subOp.getSubType() == MathOperatorSubtype.SYMBOL)){
                             return false;
                         }
                         for(int j = 0; j<equation.tree.getNumberOfChildren(); j++){
