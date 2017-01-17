@@ -11,6 +11,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import static CAS.EquationBuilder.makeUnprocessedEquation;
 import static CAS.Simplifier.simplifyByOperator;
@@ -44,7 +45,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
             }), new MathObject(MathOperator.OPERAND)),
             new EquationSub((Serializable & DirectOperation) (eq -> {
                 PatternMatcher matcher = new PatternMatcher();
-                if (matcher.patternMatch(eq, new Equation("TYPEOF ( _v1 )"))) {
+                if (matcher.patternMatch(eq, EquationBuilder.makeUnprocessedEquation("TYPEOF ( _v1 )"))) {
                     HashMap<String, Tree<MathObject>> vars = matcher.getLastMatchExpressions();
                     Tree<MathObject> objectTree = vars.get("v1");
                     if (objectTree.hasChildren()) {
@@ -72,6 +73,25 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 }
                 return eq; //No change
             }), (new MathObject(MathOperator.MULTIPLY))),
+            new EquationSub((Serializable & DirectOperation) (eq -> {
+                if (eq.tree.data.equals(new MathObject(MathOperator.SUBTRACT)) && eq.tree.getNumberOfChildren() == 2) {
+                    if (eq.tree.getChild(0).data instanceof MathInteger && eq.tree.getChild(1).data instanceof MathInteger) {
+                        return new Equation(((MathInteger) eq.tree.getChild(0).data).sub((MathInteger) eq.tree.getChild(1).data).toString());
+                    }
+                }
+                return eq; //No change
+            }), (new MathObject(MathOperator.SUBTRACT))),
+            new EquationSub((Serializable & DirectOperation) (eq -> {
+                if (eq.tree.data.equals(new MathObject(MathOperator.DIVIDE)) && eq.tree.getNumberOfChildren() == 2) {
+                    if(eq.getSubEquation(1).equals(new Equation("0"))){
+                        return new Equation("UNDEFINED");
+                    }
+                    if (eq.tree.getChild(0).data instanceof MathInteger && eq.tree.getChild(1).data instanceof MathInteger) {
+                        return new Equation("SIMPLIFY_RATIONAL_FRACTION(FRACTION(" + eq.getSubEquation(0) + "," + eq.getSubEquation(1) + "))");
+                    }
+                }
+                return eq; //No change
+            }), (new MathObject(MathOperator.DIVIDE))),
             new EquationSub((Serializable & DirectOperation) (eq -> {
                 PatternMatcher matcher = new PatternMatcher();
                 if(matcher.patternMatch(eq, new Equation("FRACTION ( _numer , _denom )"))) {
@@ -113,8 +133,8 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 if(newEq.isType(SimplificationType.INTEGER)){
                     return newEq;
                 }
-                else if(newEq.isType(SimplificationType.FRACTION_STANDARD_FORM)){
-                    if(new Equation("OPERAND(" + newEq + ",2").isUndefined()){
+                    else if(newEq.isType(SimplificationType.FRACTION_STANDARD_FORM)){
+                    if(new Equation("OPERAND(" + newEq + ",2").equals("0")){
                         return new Equation("UNDEFINED");
                     }
                     else return newEq;
@@ -131,14 +151,14 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     return simplifyByOperator(new Equation("POWER(" + newBase + ", " + power + ")"), new MathObject(MathOperator.POWER));
                 }
                 else if(newEq.tree.getNumberOfChildren() >= 2){
-                    if(newEq.getSubEquation(0).isUndefined() || newEq.getSubEquation(1).isUndefined()){
+                    if(newEq.getOperands().contains(new Equation("UNDEFINED"))){
                         return new Equation("UNDEFINED");
                     }
                     for(Tree<MathObject> child : newEq.tree.getChildren()){
                         Equation replace = new Equation("SIMPLIFY_RATIONAL_EXPRESSION(" + new Equation(child) + ")");
                         child.replaceWith(replace.tree);
                     }
-                    return Simplifier.simplifyByOperator(newEq);
+                    return Simplifier.simplifyByOperator(newEq, newEq.getRoot());
                 }
                 else{
                     return newEq;
@@ -197,6 +217,9 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
             }), new MathObject(MathOperator.TERM)),
             new EquationSub((DirectOperation & Serializable) (eq -> {
                 Equation newEq = eq.clone();
+                if(newEq.tree.containsData(new MathObject(MathOperator.UNDEFINED))){
+                    return new Equation("UNDEFINED");
+                }
                 if(newEq.isType(SimplificationType.INTEGER) || newEq.isType(MathOperatorSubtype.SYMBOL)){
                     return newEq;
                 }
@@ -283,7 +306,21 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     return new Equation("SIMPLIFY_PRODUCT(" + new Equation(construct) + ")");
                 }
                 return eq; //Give up
-            }, new MathObject(MathOperator.SIMPLIFY_POWER_INT))
+            }, new MathObject(MathOperator.SIMPLIFY_POWER_INT)),
+            new EquationSub((DirectOperation & Serializable) eq -> {
+                List<Equation> operands = eq.getOperands();
+                if(operands.contains(new Equation("UNDEFINED"))){
+                    return new Equation("UNDEFINED");
+                }
+                if(operands.contains(new Equation("0"))){
+                    return new Equation("0");
+                }
+                if(operands.size() == 1){
+                    return operands.get(0);
+                }
+
+                return eq;
+            })
     };
     public static final HashSet<EquationSub> subs = new HashSet<EquationSub>(Arrays.asList(subsArray));
 }

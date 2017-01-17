@@ -40,6 +40,7 @@ public enum MathOperator {
     SIMPLIFY_POWER_INT(1, false, false, MathOperatorSubtype.META),
     SIMPLIFY_SUM(1, false, false, MathOperatorSubtype.META),
     SIMPLIFY_PRODUCT(1, false, false, MathOperatorSubtype.META),
+    SIMPLIFY_PRODUCT_RECURSIVE(1, false, false, MathOperatorSubtype.META),
     SIMPLIFY_SUBTRACTION(1, false, false, MathOperatorSubtype.META),
     SIMPLIFY_DIVIDE(1, false, false, MathOperatorSubtype.META),
     SIMPLIFY_FACTORIAL(1, false, false, MathOperatorSubtype.META),

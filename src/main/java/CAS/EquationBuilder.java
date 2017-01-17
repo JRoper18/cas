@@ -36,9 +36,10 @@ public class EquationBuilder{
                 }
                 selected = selected.getParent().getChild(selected.getParent().getNumberOfChildren() - 1);
             } else if (equationObject instanceof RationalTempInfoHolder) {  //It's not syntax. Is it a temporary info holder?
-                selected.data = new MathObject(MathOperator.DIVIDE);
+                selected.data = new MathObject(MathOperator.FRACTION);
                 selected.addChildWithData(((RationalTempInfoHolder) equationObject).numer);
                 selected.addChildWithData(((RationalTempInfoHolder) equationObject).denom);
+                selected.replaceWith(makeUnprocessedEquation("SIMPLIFY_RATIONAL_FRACTION(" + new Equation(selected) + ")").tree);
             } else {
                 MathObject current = (MathObject) equationObject;
                 selected.data = current;
@@ -59,9 +60,12 @@ public class EquationBuilder{
                 }
             }
         }
-        if(tree.containsData(null)){
-            throw new UncheckedIOException(new IOException("You missed an ending parenthesis in the equation: " + equationStr));
+        try{
+            boolean catchThis = tree.containsData(null);
+        } catch(Exception e){
+            System.err.println("Missing a parenthesis on your equation: " + equationStr);
         }
+
         return tree;
     }
     private static List<Object> preProcess(String equationStr){
