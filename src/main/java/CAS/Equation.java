@@ -4,6 +4,8 @@ import CAS.EquationObjects.*;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jack on 12/30/2016.
@@ -53,11 +55,24 @@ public class Equation implements Serializable, Comparable<Equation>{
     public Equation getSubEquation(int index){
         return new Equation(this.tree.getChild(index));
     }
+    public List<Equation> getOperands(){
+        List<Equation> toReturn = new ArrayList<>();
+        for(Tree<MathObject> child : this.tree.getChildren()){
+            toReturn.add(new Equation(child));
+        }
+        return toReturn;
+    }
     public boolean isUndefined(){
         return this.getRoot().equals(new MathObject(MathOperator.UNDEFINED));
     }
     public int complexity(){
         return this.tree.size();
+    }
+    public boolean isType(MathOperator type){
+        return this.getRoot().getOperator() == type;
+    }
+    public boolean isType(MathOperatorSubtype type){
+        return this.getRoot().getOperator().getSubType() == type;
     }
     public boolean isType(SimplificationType type){
         return Identifier.isType(this, type);
@@ -69,10 +84,10 @@ public class Equation implements Serializable, Comparable<Equation>{
         MathOperator eq1Op = eq1.getRoot().getOperator();
         MathOperator eq2Op = eq2.getRoot().getOperator();
         if(!this.isType(SimplificationType.AUTOSIMPLIFIED_EXPRESSION)){
-           eq1 = Simplifier.simplify(this, SimplificationType.AUTOSIMPLIFIED_EXPRESSION);
+           eq1 = new Equation("AUTOSIMPLIFY(" + this + ")");
         }
         if(!equation.isType(SimplificationType.AUTOSIMPLIFIED_EXPRESSION)){
-            eq2 = Simplifier.simplify(equation, SimplificationType.AUTOSIMPLIFIED_EXPRESSION);
+            eq2 = new Equation("AUTOSIMPLIFY(" + equation + ")");
         }
         if((eq1.isType(SimplificationType.INTEGER) || eq1.isType(SimplificationType.FRACTION_STANDARD_FORM)) && ((eq2.isType(SimplificationType.FRACTION_STANDARD_FORM)) || eq2.isType(SimplificationType.INTEGER))){
             BigDecimal eq1Num = (eq1Op==MathOperator.FRACTION)? new BigDecimal(((MathInteger) eq1.getSubEquation(0).getRoot()).num).divide(new BigDecimal(((MathInteger) eq1.getSubEquation(1).getRoot()).num)) : new BigDecimal(((MathInteger) eq1.getRoot()).num);

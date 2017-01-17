@@ -10,6 +10,7 @@ import static org.junit.Assert.assertEquals;
 public class SimplifierTest {
     Simplifier s = new Simplifier();
 
+    /*
     @Test
     public void testGeneralSimplifier() throws Exception {
         assertEquals(new Equation("false"), s.simplify(new Equation("not ( not ( not ( not ( false ) ) ) )"))); //!!!!false == false
@@ -17,6 +18,7 @@ public class SimplifierTest {
         assertEquals(new Equation("-304"), s.simplify(new Equation("minus ( 1 , 305 )")));
         assertEquals(new Equation("10"), s.simplify(new Equation("plus ( 1 , 2 , 3 , 4 )")));
     }
+    */
 
     @Test
     public void testMetaFunctions() throws Exception {

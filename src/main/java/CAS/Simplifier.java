@@ -76,8 +76,4 @@ public class Simplifier {
         }
         return newEq;
     }
-    public static Equation simplify(Equation equation, SimplificationType type){ //Do later
-        Equation newEq = equation.clone();
-        return newEq;
-    }
 }

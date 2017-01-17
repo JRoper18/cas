@@ -194,7 +194,96 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                   return new Equation("UNDEFINED");
               }
               return eq;
-            }), new MathObject(MathOperator.TERM))
+            }), new MathObject(MathOperator.TERM)),
+            new EquationSub((DirectOperation & Serializable) (eq -> {
+                Equation newEq = eq.clone();
+                if(newEq.isType(SimplificationType.INTEGER) || newEq.isType(MathOperatorSubtype.SYMBOL)){
+                    return newEq;
+                }
+                else if(newEq.isType(MathOperator.FRACTION)){
+                    return new Equation("SIMPLIFY_RATIONAL_FRACTION(" + newEq + ")");
+                }
+                else{
+                    for(Tree<MathObject> child : newEq.tree.getChildren()){ //Recursivly get autosimplified expression.
+                        child.replaceWith(new Equation("AUTOSIMPLIFY(" + child + ")").tree);
+                    }
+                    switch(newEq.getRoot().getOperator()){
+                        case POWER:
+                            return new Equation("SIMPLIFY_POWER(" + newEq + ")");
+                        case ADD:
+                            return new Equation("SIMPLIFY_SUM(" + newEq + ")");
+                        case MULTIPLY:
+                            return new Equation("SIMPLIFY_PRODUCT(" + newEq + ")");
+                        case SUBTRACT:
+                            return new Equation("SIMPLIFY_SUBTRACTION(" + newEq + ")");
+                        case DIVIDE:
+                            return new Equation("SIMPLIFY_DIVISION(" + newEq + ")");
+                        case FACTORIAL:
+                            return new Equation("SIMPLIFY_FACTORIAL(" + newEq + ")");
+                        default:
+                            return newEq;
+                    }
+                }
+            }), new MathObject(MathOperator.AUTOSIMPLIFY)),
+            new EquationSub((DirectOperation & Serializable) eq -> {
+                Equation base = new Equation("BASE(" + eq + ")");
+                Equation exponent = new Equation("EXPONENT(" + eq + ")");
+                if(base.isType(MathOperator.UNDEFINED) || exponent.isType(MathOperator.UNDEFINED)){
+                    return new Equation("UNDEFINED");
+                }
+                if(base.equals(new Equation("0"))){
+                    boolean isPositive = false; //Can't have 0^-n, because that is 1/0. Check if it's positive
+                    if(exponent.isType(SimplificationType.INTEGER)){
+                        isPositive = (((MathInteger) exponent.getRoot()).num.signum() < 0);
+                    }
+                    else if(exponent.isType(MathOperator.FRACTION)){
+                        isPositive = (((MathInteger) exponent.getSubEquation(0).getRoot()).num.signum() / (((MathInteger) exponent.getSubEquation(0).getRoot()).num.signum()) < 0);
+                    }
+                    if(!isPositive){
+                        return new Equation("UNDEFINED");
+                    }
+                    return new Equation("0");
+                }
+                if(base.equals(new Equation("1"))){ //Duh. 1^anything = 1
+                    return base;
+                }
+                if(exponent.isType(SimplificationType.INTEGER)){
+                    return new Equation("SIMPLIFY_POWER_INT(" + eq + ")"); //Check for special rules for integer exponents
+                }
+                return eq; //Last resort;
+            }, new MathObject(MathOperator.SIMPLIFY_POWER)),
+            new EquationSub((DirectOperation & Serializable) eq -> {
+                Equation exponentInt = eq.getSubEquation(1);
+                Equation base = eq.getSubEquation(0);
+                if(exponentInt.isType(SimplificationType.INTEGER) || exponentInt.isType(MathOperator.FRACTION)){ //Just concrete, constant numbers.
+                    return new Equation("SIMPLIFY_RATIONAL_EXPRESSION(" + eq + ")");
+                }
+                if(exponentInt.equals(new Equation("0"))){ //Anything to the power of 0 is 1
+                    return new Equation("1");
+                }
+                if(exponentInt.equals(new Equation("1"))){ //Anything to the power of 1 is itself
+                    return base;
+                }
+                if(base.isType(MathOperator.POWER)){
+                    Equation sub = new Equation("SIMPLIFY_PRODUCT(TIMES(" + base.getSubEquation(0) + "," + base.getSubEquation(1) + "))");
+                    if(sub.isType(SimplificationType.INTEGER)){
+                        return new Equation("SIMPLIFY_POWER_INT(POWER(" + base.getSubEquation(0) + "," + sub + "))");
+                    }
+                    else {
+                        return new Equation("POWER(" + base.getSubEquation(0) + "," + sub + "))");
+                    }
+                }
+                if(base.isType(MathOperator.MULTIPLY)){
+                    Tree<MathObject> construct = new Tree<>();
+                    for(int i = 0; i<base.getOperands().size(); i++){ //If we have a lot of thing multiplied by each other and then to a power, just apply the power seperately.
+                        //AKA: (a * b * c)^2 => a^2 * b^2 * c^2
+                        Equation operand = base.getSubEquation(i);
+                        construct.addChild(new Equation("SIMPLIFY_POWER_INT(POWER(" + operand + "," + exponentInt + "))").tree);
+                    }
+                    return new Equation("SIMPLIFY_PRODUCT(" + new Equation(construct) + ")");
+                }
+                return eq; //Give up
+            }, new MathObject(MathOperator.SIMPLIFY_POWER_INT))
     };
     public static final HashSet<EquationSub> subs = new HashSet<EquationSub>(Arrays.asList(subsArray));
 }
