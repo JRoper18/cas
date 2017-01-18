@@ -5,6 +5,7 @@ package CAS;
  */
 public enum SimplificationType {
     INTEGER,
+    CONSTANT,
     FRACTION_STANDARD_FORM,
     EXPLICIT_ALGEBRAIC_NUMBER,
     RATIONAL_NUMBER_EXPRESSION,

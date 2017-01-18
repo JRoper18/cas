@@ -17,6 +17,7 @@ public enum MathOperator {
     TANGENT(1, true, false, MathOperatorSubtype.MATH),
     FACTORIAL(1, true, false, MathOperatorSubtype.MATH),
     CUSTOM_FUNCTION(0, false, false, MathOperatorSubtype.MATH), //Placeholder values - check customfunction class
+    LIST(1, true, true, MathOperatorSubtype.MATH),
     //Pattern matching
     NUMBER(0, false, false, MathOperatorSubtype.PATTERN),
     PATTERN_OR(2, false, true, MathOperatorSubtype.PATTERN),

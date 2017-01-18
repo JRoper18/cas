@@ -8,10 +8,7 @@ import CAS.EquationObjects.MathOperatorSubtype;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import static CAS.EquationBuilder.makeUnprocessedEquation;
 import static CAS.Simplifier.simplifyByOperator;
@@ -309,6 +306,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
             }, new MathObject(MathOperator.SIMPLIFY_POWER_INT)),
             new EquationSub((DirectOperation & Serializable) eq -> {
                 List<Equation> operands = eq.getOperands();
+
                 if(operands.contains(new Equation("UNDEFINED"))){
                     return new Equation("UNDEFINED");
                 }
@@ -318,9 +316,56 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 if(operands.size() == 1){
                     return operands.get(0);
                 }
-
+                else{
+                    List<String> operandStr = new ArrayList<>();
+                    for(Equation operand : operands){
+                        operandStr.add(operand.toString());
+                    }
+                    Equation sub = new Equation("SIMPLIFY_PRODUCT_RECURSIVE(LIST(" + String.join(",", operandStr) + "))");
+                }
                 return eq;
-            })
+            }, new MathObject(MathOperator.SIMPLIFY_PRODUCT)),
+            new EquationSub((DirectOperation & Serializable) eq -> {
+                List<Equation> operands;
+                if(eq.isType(MathOperator.LIST)){
+                    operands = eq.getOperands();
+                }
+                else{
+                    return eq;
+                }
+                if(operands.size() == 2 && !operands.get(0).isType(MathOperator.MULTIPLY) && !operands.get(1).isType(MathOperator.MULTIPLY)){
+                    Equation productSimp = new Equation("SIMPLIFY_RATIONAL_EXPRESSION(MULTIPLY(" + operands.get(0) + "," + operands.get(1) + "))");
+                    if(operands.get(0).isType(SimplificationType.CONSTANT) && operands.get(1).isType(SimplificationType.CONSTANT)){
+                        if(productSimp.equals("1")){
+                            return new Equation("LIST()");
+                        }
+                        return new Equation("LIST(" + productSimp + ")");
+                    }
+                    if(operands.get(0).equals(new Equation("1"))){
+                        return operands.get(1);
+                    }
+                    if(operands.get(1).equals(new Equation("1"))){
+                        return operands.get(0);
+                    }
+                    if(new Equation("BASE(" + operands.get(1) + ")").equals(new Equation("BASE(" + operands.get(0) + ")"))){
+                        Equation sum = new Equation("SIMPLIFY_SUM(ADD(" + new Equation("EXPONENT(" + operands.get(1)) + ", " + new Equation("EXPONENT(" + operands.get(0) + ")") + "))");
+                        Equation power = new Equation("SIMPLIFY_POWER(POWER(" + new Equation("BASE(" + operands.get(1) + ")") + "," + sum + "))");
+                        if(power.equals(new Equation("1"))){
+                            return new Equation("LIST()");
+                        }
+                        return new Equation("LIST(" + power + ")");
+                    }
+                    if(operands.get(1).compareTo(operands.get(0)) < 0){ //If the order is wrong, switch it
+                        return new Equation("SIMPLIFY_PRODUCT_RECURSIVE(" + operands.get(1) + "," + operands.get(0) + ")");
+                    }
+                }
+                if(operands.size() == 2 && (operands.get(0).isType(MathOperator.MULTIPLY) || operands.get(1).isType(MathOperator.MULTIPLY))) {
+                    if(operands.get(0).isType(MathOperator.MULTIPLY) && operands.get(1).isType(MathOperator.MULTIPLY)){
+                        return new Equation("TIMES(" + )
+                    }
+                }
+                return eq;//DEFAULT
+            }, new MathObject(MathOperator.SIMPLIFY_PRODUCT_RECURSIVE))
     };
     public static final HashSet<EquationSub> subs = new HashSet<EquationSub>(Arrays.asList(subsArray));
 }

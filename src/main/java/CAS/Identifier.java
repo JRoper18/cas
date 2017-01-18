@@ -1,9 +1,6 @@
 package CAS;
 
-import CAS.EquationObjects.MathInteger;
-import CAS.EquationObjects.MathObject;
-import CAS.EquationObjects.MathOperator;
-import CAS.EquationObjects.MathOperatorSubtype;
+import CAS.EquationObjects.*;
 
 import static CAS.SimplificationType.*;
 
@@ -16,6 +13,8 @@ public class Identifier {
         switch(type){
             case INTEGER:
                 return (equation.getRoot() instanceof MathInteger);
+            case CONSTANT:
+                return equation.tree.containsClass(GenericExpression.class);
             case FRACTION_STANDARD_FORM: //Page 57
                 return equation.getRoot().getOperator() == MathOperator.FRACTION && new Equation("GCD(OPERAND(" + equation + ", 1),OPERAND(" + equation + ",2))").equals(new Equation("1"));
             case EXPLICIT_ALGEBRAIC_NUMBER: //PDF page 76
