@@ -19,7 +19,6 @@ public enum MathOperator {
     CUSTOM_FUNCTION(0, false, false, MathOperatorSubtype.MATH), //Placeholder values - check customfunction class
     LIST(1, true, true, MathOperatorSubtype.MATH),
     //Pattern matching
-    NUMBER(0, false, false, MathOperatorSubtype.PATTERN),
     PATTERN_OR(2, false, true, MathOperatorSubtype.PATTERN),
     PATTERN_AND(2, false, true, MathOperatorSubtype.PATTERN),
     //Booleans and conditionals
@@ -49,6 +48,7 @@ public enum MathOperator {
     EXPONENT(1, false, false, MathOperatorSubtype.META),
     TERM(1, false, false, MathOperatorSubtype.META),
     //Atomic/building block/unchanging values/symbols
+    NUMBER(0, false, false, MathOperatorSubtype.SYMBOL),
     TRUE(0, false, false, MathOperatorSubtype.SYMBOL),
     FALSE(0, false, false, MathOperatorSubtype.SYMBOL),
     EXPRESSION(0, false, false, MathOperatorSubtype.SYMBOL),

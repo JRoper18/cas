@@ -361,7 +361,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 }
                 if(operands.size() == 2 && (operands.get(0).isType(MathOperator.MULTIPLY) || operands.get(1).isType(MathOperator.MULTIPLY))) {
                     if(operands.get(0).isType(MathOperator.MULTIPLY) && operands.get(1).isType(MathOperator.MULTIPLY)){
-                        return new Equation("TIMES(" + )
+
                     }
                 }
                 return eq;//DEFAULT

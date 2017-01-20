@@ -78,6 +78,55 @@ public class EquationBuilder{
                 equationObjectList.add(next);
             }
         }
+        //Reorder for infix to prefix
+        for(int i = 0; i<equationObjectList.size(); i++){
+            Object current = equationObjectList.get(i);
+            if(current instanceof AbbriviationData){
+                AbbriviationData data = (AbbriviationData) current;
+                if(data.isInfix){
+                    //Find the function right before this one.
+                    int checkBack = i;
+                    Object backwardsCurrent = equationObjectList.get(checkBack);
+                    int parenLevel = 0;
+                    do {
+                        checkBack--;
+                        backwardsCurrent = equationObjectList.get(checkBack);
+                        if(backwardsCurrent instanceof MathObject){
+                            if(((MathObject) backwardsCurrent).getOperator().getSubType() != MathOperatorSubtype.SYMBOL){ //Found a function
+                                parenLevel--;
+                            }
+                        }
+                        else if(backwardsCurrent instanceof SyntaxTerminator){
+                            parenLevel++;
+                        }
+                    } while(parenLevel != 0);
+                    //If parenleve is 0, backwardsCurrent is our function we need to switch.
+                    //Find the next complete function
+                    parenLevel = 0;
+                    int check = i;
+                    do {
+                        check++;
+                        backwardsCurrent = equationObjectList.get(check);
+                        if(backwardsCurrent instanceof MathObject){
+                            if(((MathObject) backwardsCurrent).getOperator().getSubType() != MathOperatorSubtype.SYMBOL){ //Found a function
+                                parenLevel++;
+                            }
+                        }
+                        else if(backwardsCurrent instanceof SyntaxTerminator){
+                            parenLevel--;
+                        }
+                    } while(parenLevel != 0);
+                    //Add the ending parenthesis:
+                    equationObjectList.add(check + 1, new EquationBuilder().new SyntaxTerminator());
+                    //Swap the infix operator with the first statement and remove the infix operator
+                    equationObjectList.remove(i);
+                    equationObjectList.add(checkBack, data.op);
+                }
+                else{
+                    equationObjectList.set(i, ((AbbriviationData) current).op); //Replace the abbriviationdata with it's operator
+                }
+            }
+        }
         return equationObjectList;
     }
     private static Equation toCorrectForm(Equation eq){
@@ -140,9 +189,9 @@ public class EquationBuilder{
         }
 
         //Check the abbriviations table
-        MathObject possibleObject = (MathObjectAbbriviations.abbriviations.get(str));
-        if(possibleObject != null){ //A HashMap's .get() method returns null if there's no key.
-            return possibleObject;
+        AbbriviationData abbrData = (MathObjectAbbriviations.abbriviations.get(str));
+        if(abbrData != null){ //A HashMap's .get() method returns null if there's no key.
+            return abbrData;
         }
         throw new UncheckedIOException(new IOException("Operator: " + str + " is not recognized by CAS.EquationBuilder. "));
     }
