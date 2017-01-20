@@ -1,6 +1,6 @@
 package Database;
 
-import CAS.EquationObjects.MathObjects.MathObject;
+import CAS.EquationObjects.MathObject;
 import CAS.EquationSub;
 
 import java.sql.*;
@@ -21,25 +21,26 @@ public class DatabaseConnection {
         try {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:subs.db");
+            System.out.println("Opened database successfully");
             Statement statement = connection.createStatement();
 
             statement.executeUpdate("drop table if exists subs");
-            statement.executeUpdate("drop table if exists structurals");
-            statement.executeUpdate("create table subs (algorithm blob, operator string)");
-            statement.executeUpdate("create table structurals (before string, after string, condition string)");
+            statement.executeUpdate("create table subs (id int primary key not null, algorithm blob not null, operator string, subtype string)");
+            int idCount = 0;
             for(EquationSub sub : EquationSubDatabase.subs){
-                String toPrepare = "insert into subs values(?, ?)";
+                String toPrepare = "insert into subs values(?, ?, ?, ?)";
                 PreparedStatement prepared = connection.prepareStatement(toPrepare);
-                prepared.setBytes(1, SubSerializer.serialize(sub));
+                prepared.setInt(1, idCount);
+                prepared.setBytes(2, SubSerializer.serialize(sub));
                 MathObject op = sub.rootOperator;
                 if(op != null){
-                    prepared.setString(2, op.toString());
-                }
-                else{
-                    prepared.setString(2, "NONE");
+                    prepared.setString(3, op.toString());
+                    prepared.setString(4, op.getOperator().getSubType().toString());
                 }
                 prepared.executeUpdate();
+                idCount++;
             }
+            System.out.println("Database initialized");
         } catch(SQLException e) {
             // if the error message is "out of memory",
             // it probably means no database file is found

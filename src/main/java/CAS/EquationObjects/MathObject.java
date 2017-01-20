@@ -1,20 +1,25 @@
-package CAS.EquationObjects.MathObjects;
-
-import CAS.EquationObjects.EquationObject;
+package CAS.EquationObjects;
 
 import java.io.Serializable;
 
 /**
  * Created by jack on 12/30/2016.
  */
-public class MathObject extends EquationObject implements Serializable {
+public class MathObject implements Serializable {
+    private int args;
     private boolean ordered;
     private boolean associative;
-    private MathSymbol operator;
-    public MathObject(MathSymbol operator){
-        super(operator.getArguments());
+    private MathOperator operator;
+    public MathObject(MathOperator operator) {
+        this.args = operator.getArguments();
         this.ordered = operator.isOrdered();
         this.associative = operator.isAssociative();
+        this.operator = operator;
+    }
+    public MathObject(int args, boolean ordered, boolean associative, MathOperator operator){
+        this.args = args;
+        this.ordered = ordered;
+        this.associative = associative;
         this.operator = operator;
     }
     public int getArgs(){
@@ -26,7 +31,7 @@ public class MathObject extends EquationObject implements Serializable {
     public boolean isAssociative(){
         return this.associative;
     }
-    public MathSymbol getOperator(){
+    public MathOperator getOperator(){
         return this.operator;
     }
     public String getName(){

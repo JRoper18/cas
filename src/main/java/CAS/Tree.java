@@ -46,7 +46,6 @@ public class Tree<T> implements Serializable{
             return false;
         }
         else{
-            System.out.println(data + " " + this.data);
             for(Tree<T> child : children){
                 if(child.containsData(data)){
                     return true;
@@ -116,6 +115,9 @@ public class Tree<T> implements Serializable{
             this.children = newTree.children;
             this.data = newTree.data;
         }
+    }
+    public boolean isRoot(){
+        return this.parent == null;
     }
     public int size(){
         int size = 1;

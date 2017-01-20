@@ -1,13 +1,11 @@
 package CAS;
 
-import CAS.EquationObjects.MathObjects.GenericExpression;
-import CAS.EquationObjects.MathObjects.MathObject;
-import Database.DatabaseConnection;
+
+import CAS.EquationObjects.GenericExpression;
+import CAS.EquationObjects.MathObject;
 import com.rits.cloning.Cloner;
 
 import java.io.Serializable;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 
 /**
@@ -17,35 +15,13 @@ public class StructuralSub extends EquationSub implements Serializable {
     public Equation before;
     public Equation after;
     public Equation condition;
-    public StructuralSub(String before, String after){
-        this(new Equation(before), new Equation(after));
-    }
-    public StructuralSub(String before, String after, String condition){
-        this(new Equation(before), new Equation(after), new Equation(condition));
-    }
     public StructuralSub(Equation before, Equation after, Equation condition){
         super((DirectOperation & Serializable) ( equation -> {
-            return substitute(before, after, condition, equation);
-        }), getProbableAssignedOperator(before));
-        this.before = before;
-        this.after = after;
-        this.condition = condition;
-    }
-    public StructuralSub(Equation before, Equation after){
-        super((DirectOperation & Serializable) (eq -> {
-            return substitute(before, after, null, eq);
-        }), getProbableAssignedOperator(before));
-        this.before = before;
-        this.after = after;
-        this.condition = null;
-    }
-    private static Equation substitute(Equation before, Equation after, Equation condition, Equation equation){
-        PatternMatcher matcher = new PatternMatcher();
-        if(matcher.patternMatch(equation, before)) {
-            Equation newEquation = new Equation(after); //Quick clone
-            HashMap<String, Tree<MathObject>> values = matcher.getLastMatchExpressions();
-            //Go through conditions
-            if(condition != null){
+            PatternMatcher matcher = new PatternMatcher();
+            if(matcher.patternMatch(equation, before)) {
+                Equation newEquation = new Equation(after); //Quick clone
+                HashMap<String, Tree<MathObject>> values = matcher.getLastMatchExpressions();
+                //Go through conditions
                 Cloner cloner = new Cloner();
                 Equation temp = cloner.deepClone(condition);
                 //Replace generics
@@ -58,34 +34,45 @@ public class StructuralSub extends EquationSub implements Serializable {
                 if(simplified.equals(new Equation("FALSE"))){
                     return equation; //Again, do nothing to the equation.
                 }
-            }
-            for (String var : values.keySet()) {
-                Tree<MathObject> substitution = values.get(var);
-                GenericExpression genExToLookFor = new GenericExpression(var);
-                newEquation.tree.replaceAll(new Tree(genExToLookFor), substitution);
-            }
-            return newEquation;
-        }
-        else {
-            //Can we change the equation so it fits the before pattern equation?
-            Tree<MathObject> whatWeWanted = matcher.getExpectedTree();
-            Tree<MathObject> whatWeGot = equation.tree.getChildThroughPath(matcher.getPathToFail());
-            //Now search the database for that pattern
-            try {
-                Equation newEq = equation.clone();
-                ResultSet results = DatabaseConnection.runQuery("select * from structurals where (before == '" + new Equation(whatWeGot).toString() + "' AND after == '" + new Equation(whatWeWanted).toString() + "')");
-                while(results.next()){
-                    newEq = new StructuralSub(results.getString("before"), results.getString("after"), results.getString("condition")).apply(newEq);
+                for (String var : values.keySet()) {
+                    Tree<MathObject> substitution = values.get(var);
+                    GenericExpression genExToLookFor = new GenericExpression(var);
+                    newEquation.tree.replaceAll(new Tree(genExToLookFor), substitution);
                 }
-                if(newEq.equals(equation)){
-                    return equation; //Nothing we can do.
-                }
-                return substitute(before, after, condition, newEq);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return null;
+                return newEquation;
             }
-        }
+            else {
+                //Can we change the equation to Fix the before algorithm?
+            }
+            return equation;
+        }), getProbableAssignedOperator(before));
+        this.before = before;
+        this.after = after;
+        this.condition = condition;
+    }
+    public StructuralSub(Equation before, Equation after){
+        super((DirectOperation & Serializable) ( equation -> {
+            PatternMatcher matcher = new PatternMatcher();
+            if(matcher.patternMatch(equation, before)) {
+                Equation newEquation = new Equation(after); //Quick clone
+                HashMap<String, Tree<MathObject>> values = matcher.getLastMatchExpressions();
+                //Go through conditions
+                for (String var : values.keySet()) {
+                    Tree<MathObject> substitution = values.get(var);
+                    GenericExpression genExToLookFor = new GenericExpression(var);
+                    newEquation.tree.replaceAll(new Tree(genExToLookFor), substitution);
+                }
+                return newEquation;
+            }
+            else {
+                //Can we change the equation to Fix the before algorithm?
+
+            }
+            return equation;
+        }), getProbableAssignedOperator(before));
+        this.before = before;
+        this.after = after;
+        this.condition = null;
     }
     private static MathObject getProbableAssignedOperator(Equation equation){
         MathObject probableOperator = null;

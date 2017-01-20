@@ -1,10 +1,6 @@
 package CAS;
 
 import CAS.EquationObjects.*;
-import CAS.EquationObjects.MathObjects.GenericExpression;
-import CAS.EquationObjects.MathObjects.MathInteger;
-import CAS.EquationObjects.MathObjects.MathObject;
-import CAS.EquationObjects.MathObjects.MathSymbol;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -19,71 +15,85 @@ public class EquationBuilder{
         return new Equation(makeEquationTree(str));
     }
     private static Tree<MathObject> makeEquationTree(String equationStr) { //This stakes a string input of which I hope is correctly formatted.
-        List<EquationObject> equationObjectList = preProcess(equationStr);
+
+        //NOTE TO FUTURE ME: At one point you might try to change this algorithm so that it implements infix notation or something. DO NOT DO THAT. Instead, Change the preprocess function.
+        //If you ever think editing this function is a good idea, just remember the all-nighter you pulled trying to fix a bug in it, and where for every bug you fixed 3 more popped up.
+        //This is your final warning. DO NOT TOUCH THIS FUNCTION.
+        List<Object> equationObjectList = preProcess(equationStr);
         Tree<MathObject> tree = new Tree<>();
         Tree<MathObject> selected = tree;
-        for (EquationObject equationObject : equationObjectList) {
-            if (equationObject instanceof SyntaxObject) {
-                SyntaxObjectType objType = ((SyntaxObject) equationObject).syntax;
-                switch (objType) {
-                    case OPEN_PAREN:
-                        //An open paren means arguments are beginning.
-                        selected.addEmptyChild();
-                        selected = selected.getChild(selected.getNumberOfChildren() - 1);
-                        break;
-                    case CLOSE_PAREN:
-                        selected = selected.getParent();
-                        //Check the number of args isn't too little.
-                        MathObject operator = (MathObject) selected.data;
-                        if (operator.getArgs() > selected.getNumberOfChildren()) {
-                            throw new UncheckedIOException(new IOException("You have the wrong number of arguments for the operator: " + selected.data + ". It takes " + operator.getArgs() + " arguments, but you put in too little. "));
-                        }
-                        break;
-                    case COMMA:
-                        selected = selected.getParent();
-                        //Check to see if we have too many arguments
-                        MathObject parentOperator = ((MathObject) selected.data);
-                        int argsNeeded = parentOperator.getArgs();
-                        if (argsNeeded <= selected.getNumberOfChildren() && !parentOperator.isAssociative()) { //Too many arguments
-                            throw new UncheckedIOException(new IOException("You have the wrong number of arguments for the operator: " + selected.data + ". It takes " + argsNeeded + " arguments, but you put in too much. "));
-                        }
-                        selected.addEmptyChild();
-                        selected = selected.getChild(selected.getNumberOfChildren() - 1);
-                        break;
-                    default:
+        for (Object equationObject : equationObjectList) {
+            if (equationObject instanceof SyntaxTerminator) {
+                selected = selected.getParent();
+                selected.removeChild(selected.getNumberOfChildren() - 1);
+                if (selected.isRoot()) {
+                    break;
                 }
-            } else if(equationObject instanceof RationalTempInfoHolder){  //It's not syntax. Is it a temporary info holder?
-                selected.data = new MathObject(MathSymbol.DIVIDE);
-                    selected.addChildWithData(((RationalTempInfoHolder) equationObject).numer);
-                    selected.addChildWithData(((RationalTempInfoHolder) equationObject).denom);
-            }
-            else {
-                selected.data = (MathObject) equationObject;
+                MathObject operator = (MathObject) selected.data;
+                //Check the number of args isn't too little.
+                if (operator.getArgs() > selected.getNumberOfChildren()) {
+                    throw new UncheckedIOException(new IOException("You have the wrong number of arguments for the operator: " + selected.data + ". It takes " + operator.getArgs() + " arguments, but you put in too little. "));
+                }
+                selected = selected.getParent().getChild(selected.getParent().getNumberOfChildren() - 1);
+            } else if (equationObject instanceof RationalTempInfoHolder) {  //It's not syntax. Is it a temporary info holder?
+                selected.data = new MathObject(MathOperator.FRACTION);
+                selected.addChildWithData(((RationalTempInfoHolder) equationObject).numer);
+                selected.addChildWithData(((RationalTempInfoHolder) equationObject).denom);
+                selected.replaceWith(makeUnprocessedEquation("SIMPLIFY_RATIONAL_FRACTION(" + new Equation(selected) + ")").tree);
+            } else {
+                MathObject current = (MathObject) equationObject;
+                selected.data = current;
+                if (current.getArgs() > 0){
+                    if (!selected.isRoot()) {
+                        selected.getParent().addEmptyChild();
+                        selected.addEmptyChild();
+                        selected = selected.getChild(selected.getNumberOfChildren() - 1);
+                    } else {
+                        selected.addEmptyChild();
+                        selected = selected.getChild(0);
+                    }
+                } else {
+                    if(!selected.isRoot()){
+                        selected.getParent().addEmptyChild();
+                        selected = selected.getParent().getChild(selected.getParent().getNumberOfChildren() - 1);
+                    }
+                }
             }
         }
+        try{
+            boolean catchThis = tree.containsData(null);
+        } catch(Exception e){
+            System.err.println("Missing a parenthesis on your equation: " + equationStr);
+        }
+
         return tree;
     }
-    private static List<EquationObject> preProcess(String equationStr){
-        String[] tokens = equationStr.trim().split(" ");
-        List<EquationObject> equationObjectList = new ArrayList<>();
+    private static List<Object> preProcess(String equationStr){
+        String newStr = equationStr.replace(")", " )");
+        String[] tokens = newStr.trim().split("[ (,]");
+        List<Object> equationObjectList = new ArrayList<>();
         for(int i = 0; i<tokens.length; i++){
-            equationObjectList.add(parseString(tokens[i]));
+            Object next = parseString(tokens[i]);
+            if(next != null){
+                equationObjectList.add(next);
+            }
         }
         return equationObjectList;
     }
     private static Equation toCorrectForm(Equation eq){
-        List<EquationSub> subs = new ArrayList<>();
-        subs.add(new StructuralSub(makeUnprocessedEquation("MINUS ( _v1 , _v2 )"), makeUnprocessedEquation("PLUS ( _v1 , TIMES ( -1 , _v2 ) )")));
-        subs.add(new StructuralSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("FRACTION ( _v1 , _v2 )"), makeUnprocessedEquation("AND ( EQUALS ( TYPEOF ( _v1 ) , NUMBER ) , EQUALS ( TYPEOF ( _v2 ) , NUMBER ) , NOT ( EQUALS ( _v2 , 0 )"))); //Division between two ints
-        subs.add(new StructuralSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("TIMES ( _v1 , FRACTION ( 1 , _v2 ) )"), makeUnprocessedEquation("AND ( EQUALS ( TYPEOF ( _v1 ) , EXPRESSION ) , EQUALS ( TYPEOF ( _v2 ) , NUMBER )"))); //Denominator is an int
-        subs.add(new StructuralSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("TIMES ( _v1 , POWER ( _v2 , -1 ) )")));
-        for(EquationSub sub : subs){
-            eq = sub.applyEverywhere(eq);
-        }
-        return eq;
+        //Until I solve the infinite loop issue below,
+        return Simplifier.simplifyMetaFunctions(eq);
+        //return Simplifier.simplify(Simplifier.simplifyMetaFunctions(eq), SimplificationType.AUTOSIMPLIFIED_EXPRESSION);
     }
-    public static EquationObject parseString(String str){
-        //First, check for numbers
+    public static Object parseString(String str){
+        if(str.length() == 0){
+            return null;
+        }
+        //Check it it's a terminator
+        if(str.equals(")")){
+            return new EquationBuilder().new SyntaxTerminator();
+        }
+        //Next, check for numbers
         try{
             double num = Double.parseDouble(str);
             if(Math.floor(num) == num){ //Easy way to check if num is an int
@@ -100,7 +110,7 @@ public class EquationBuilder{
 
             int denom = (int) Math.pow(10, afterDecLength);
             int numer = (int) (num * denom);
-            return new RationalTempInfoHolder(new MathInteger(numer), new MathInteger(denom));
+            return new EquationBuilder().new RationalTempInfoHolder(new MathInteger(numer), new MathInteger(denom));
         } catch(NumberFormatException e){
             //IGNORE IT
         }
@@ -111,31 +121,46 @@ public class EquationBuilder{
                 return new GenericExpression();
             }
             String name = str.substring(1, str.length());
-            return new GenericExpression(name);
+            GenericExpression genEx = new GenericExpression(name);
+            if(str.charAt(1) == '_'){
+                //Double underscore means it's named
+                genEx.named = true;
+            }
+            return genEx;
         }
         //It's not a generic, so we don't need to base case sensitive at this point
         str = str.toUpperCase();
         //Check the list of mathematical operators.
         try{
-            MathObject obj = new MathObject(MathSymbol.valueOf(str));
+            MathObject obj = new MathObject(MathOperator.valueOf(str));
             //If no error, we found our math object. USE IT!
             return obj;
         } catch (IllegalArgumentException er){
             //IGNORED (I'm such a badass)
         }
 
-        //Now do the same for syntax operators
-        try{
-            SyntaxObjectType obj = (SyntaxObjectType.valueOf(str));
-            return new SyntaxObject(obj);
-        } catch (IllegalArgumentException er){
-        }
-
         //Check the abbriviations table
-        EquationObject possibleObject = (EquationObjectAbbriviations.abbriviations.get(str));
+        MathObject possibleObject = (MathObjectAbbriviations.abbriviations.get(str));
         if(possibleObject != null){ //A HashMap's .get() method returns null if there's no key.
             return possibleObject;
         }
         throw new UncheckedIOException(new IOException("Operator: " + str + " is not recognized by CAS.EquationBuilder. "));
     }
+    private class RationalTempInfoHolder{
+        public MathInteger numer;
+        public MathInteger denom;
+        public RationalTempInfoHolder(MathInteger numer, MathInteger denom){
+            this.numer = numer;
+            this.denom = denom;
+        }
+
+        @Override
+        public boolean equals(Object n){
+            if(n instanceof RationalTempInfoHolder){
+                return this.numer.equals(((RationalTempInfoHolder) n).numer) && this.denom.equals(((RationalTempInfoHolder) n).denom);
+            }
+            return false;
+        }
+    }
+    private class SyntaxTerminator{}
 }
