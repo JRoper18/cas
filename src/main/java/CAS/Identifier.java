@@ -16,13 +16,14 @@ public class Identifier {
             case CONSTANT:
                 return equation.tree.containsClass(GenericExpression.class);
             case FRACTION_STANDARD_FORM: //Page 57
-                return equation.getRoot().getOperator() == MathOperator.FRACTION && new Equation("GCD(OPERAND(" + equation + ", 1),OPERAND(" + equation + ",2))").equals(new Equation("1"));
+                equation.tree.print();
+                return equation.getRoot().getOperator() == MathOperator.FRACTION && new Equation("GCD(OPERAND(" + equation + ", 0),OPERAND(" + equation + ",1))", 1).equals(new Equation("1", 0));
             case EXPLICIT_ALGEBRAIC_NUMBER: //PDF page 76
                 Equation typeofEq = new Equation("TYPEOF(" + equation.getRoot() + ")");
                 if(equation.isType(INTEGER)|| typeofEq.equals("FRACTION")){
                     return true;
                 }
-                else if(typeofEq.equals(new Equation("PLUS")) || typeofEq.equals(new Equation("TIMES"))){
+                else if(typeofEq.equals(new Equation("PLUS", 0)) || typeofEq.equals(new Equation("TIMES", 0))){
                     for(Tree<MathObject> child : equation.tree.getChildren()){
                         if(!new Equation(child).isType(EXPLICIT_ALGEBRAIC_NUMBER)){
                             return false;
@@ -35,7 +36,7 @@ public class Identifier {
                 if(equation.isType(INTEGER) || op == MathOperator.FRACTION){
                     return true;
                 }
-                if((op == MathOperator.ADD || op == MathOperator.SUBTRACT || op == MathOperator.MULTIPLY) && new Equation("NUMBER_OF_OPERANDS (" + equation + ")").equals(new Equation("2"))){
+                if((op == MathOperator.ADD || op == MathOperator.SUBTRACT || op == MathOperator.MULTIPLY) && new Equation("NUMBER_OF_OPERANDS (" + equation + ")", 1).equals(new Equation("2"))){
                     return equation.getSubEquation(0).isType(RATIONAL_NUMBER_EXPRESSION) && equation.getSubEquation(1).isType(RATIONAL_NUMBER_EXPRESSION);
                 }
                 if(op == MathOperator.POWER){
@@ -80,7 +81,7 @@ public class Identifier {
                         }
                         for(int j = 0; j<equation.tree.getNumberOfChildren(); j++){
                             Equation temp = equation.getSubEquation(j);
-                            if(i != j && new Equation("BASE(" + sub + ")").equals(new Equation("BASE(" + temp + ")"))){ //Make sure we share no like terms that we can compress.
+                            if(i != j && new Equation("BASE(" + sub + ")", 1).equals(new Equation("BASE(" + temp + ")", 1))){ //Make sure we share no like terms that we can compress.
                                 return false;
                             }
                             if(i < j){
@@ -106,7 +107,6 @@ public class Identifier {
                             return false;
                         }
                         if(sub.isType(INTEGER)){
-                            sub.tree.print();
                             if(((MathInteger) sub.getRoot()).num.intValue() == 0){ //No addition by 0
                                 return false;
                             }
@@ -127,7 +127,7 @@ public class Identifier {
                         }
                         for(int j = 0; j<equation.tree.getNumberOfChildren(); j++){
                             Equation temp = equation.getSubEquation(j);
-                            if(i != j && new Equation("TERM(" + sub + ")").equals(new Equation("TERM(" + temp + ")"))){ //Make sure we share no like terms that we can compress.
+                            if(i != j && new Equation("TERM(" + sub + ")", 1).equals(new Equation("TERM(" + temp + ")",1))){ //Make sure we share no like terms that we can compress.
                                 return false;
                             }
                             if(i < j){

@@ -18,6 +18,9 @@ public class Equation implements Serializable, Comparable<Equation>{
     public Equation(String str){
         this.tree = EquationBuilder.makeEquation(str).tree;
     }
+    public Equation(String str, int autoSimplifyLevel){
+        this.tree = EquationBuilder.makeEquation(str, autoSimplifyLevel).tree;
+    }
     public Equation(Equation prev){
         this.tree = prev.tree;
     }
@@ -84,10 +87,10 @@ public class Equation implements Serializable, Comparable<Equation>{
         MathOperator eq1Op = eq1.getRoot().getOperator();
         MathOperator eq2Op = eq2.getRoot().getOperator();
         if(!this.isType(SimplificationType.AUTOSIMPLIFIED_EXPRESSION)){
-           eq1 = new Equation("AUTOSIMPLIFY(" + this + ")");
+           eq1 = new Equation("AUTOSIMPLIFY(" + this + ")", 1);
         }
         if(!equation.isType(SimplificationType.AUTOSIMPLIFIED_EXPRESSION)){
-            eq2 = new Equation("AUTOSIMPLIFY(" + equation + ")");
+            eq2 = new Equation("AUTOSIMPLIFY(" + equation + ")", 1);
         }
         if((eq1.isType(SimplificationType.INTEGER) || eq1.isType(SimplificationType.FRACTION_STANDARD_FORM)) && ((eq2.isType(SimplificationType.FRACTION_STANDARD_FORM)) || eq2.isType(SimplificationType.INTEGER))){
             BigDecimal eq1Num = (eq1Op==MathOperator.FRACTION)? new BigDecimal(((MathInteger) eq1.getSubEquation(0).getRoot()).num).divide(new BigDecimal(((MathInteger) eq1.getSubEquation(1).getRoot()).num)) : new BigDecimal(((MathInteger) eq1.getRoot()).num);
@@ -95,9 +98,11 @@ public class Equation implements Serializable, Comparable<Equation>{
             return eq1Num.compareTo(eq2Num);
         }
         else if(eq1Op == MathOperator.EXPRESSION && eq2Op == MathOperator.EXPRESSION){
+
             return ((GenericExpression) eq1.getRoot()).tag.compareTo(((GenericExpression) eq2.getRoot()).tag);
         }
         else if(eq1Op.getSubType() == MathOperatorSubtype.SYMBOL && eq2Op.getSubType() == MathOperatorSubtype.SYMBOL){
+
             return eq1Op.toString().compareTo(eq2Op.toString());
         }
         else if((eq1Op == MathOperator.ADD && eq2Op == MathOperator.ADD) || (eq1Op == MathOperator.MULTIPLY && eq2Op == MathOperator.MULTIPLY)){
@@ -111,8 +116,8 @@ public class Equation implements Serializable, Comparable<Equation>{
             return new Integer(eq1Children).compareTo(new Integer(eq2Children));
         }
         else if(eq1Op == MathOperator.POWER && eq2Op == MathOperator.POWER){
-            if(!new Equation("BASE(" + eq1 + ")").equals(new Equation("BASE(" + eq2 + ")"))){
-                return new Equation("BASE(" + eq1 + ")").compareTo(new Equation("BASE(" + eq2 + ")"));
+            if(!new Equation("BASE(" + eq1 + ")", 1).equals(new Equation("BASE(" + eq2 + ")", 1))){
+                return new Equation("BASE(" + eq1 + ")", 1).compareTo(new Equation("BASE(" + eq2 + ")", 1));
             }
            return new Equation("EXPONENT(" + eq1 + ")").compareTo(new Equation("EXPONENT(" + eq2 + ")"));
         }
@@ -123,6 +128,7 @@ public class Equation implements Serializable, Comparable<Equation>{
             return ((CustomFunction) eq1.getRoot()).functionName.compareTo(((CustomFunction) eq2.getRoot()).functionName);
         }
         else if((eq1.isType(SimplificationType.INTEGER) || eq1.isType(SimplificationType.FRACTION_STANDARD_FORM)) && !(eq2.isType(SimplificationType.INTEGER) || eq2.isType(SimplificationType.FRACTION_STANDARD_FORM))){
+            System.out.println("EY");
             return 1;
         }
         else if(eq1Op == MathOperator.MULTIPLY && (eq2Op == MathOperator.POWER || eq2Op == MathOperator.ADD || eq2Op == MathOperator.FACTORIAL || eq2Op == MathOperator.CUSTOM_FUNCTION || eq2Op.getSubType()==MathOperatorSubtype.SYMBOL)){
@@ -141,11 +147,13 @@ public class Equation implements Serializable, Comparable<Equation>{
             return this.compareTo(new Equation("FACTORIAL(" + eq2 + ")"));
         }
         else if(eq1Op == MathOperator.CUSTOM_FUNCTION && eq2Op.getSubType() == MathOperatorSubtype.SYMBOL){
+
             if(eq1Op.toString().equals(eq2Op.toString())){
                 return -1;
             }
             return eq1Op.toString().compareTo(eq2Op.toString());
         }
+        System.out.println("EY");
         return -1 * equation.compareTo(this);
     }
 }

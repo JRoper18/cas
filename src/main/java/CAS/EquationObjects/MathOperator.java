@@ -10,7 +10,7 @@ public enum MathOperator {
     DIVIDE(2, true, false, MathOperatorSubtype.MATH),
     FRACTION(2, true, false, MathOperatorSubtype.MATH),
     REMAINDER(2, true, false, MathOperatorSubtype.MATH),
-    GREATEST_COMMON_DENOMINATOR(2, false, true, MathOperatorSubtype.MATH),
+    GREATEST_COMMON_DENOMINATOR(2, false, true, MathOperatorSubtype.META),
     POWER(2, true, false, MathOperatorSubtype.MATH),
     SINE(1, true, false, MathOperatorSubtype.MATH),
     COSINE(1, true, false, MathOperatorSubtype.MATH),

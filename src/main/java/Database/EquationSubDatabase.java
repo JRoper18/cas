@@ -17,12 +17,8 @@ import static CAS.Simplifier.simplifyByOperator;
 /**
  * Created by jack on 1/8/2017.
  */
-public class EquationSubDatabase { //NOTE: I know, I know, this should be in the actual SQLite database. I WILL do that, but I want to keep these here in case something goes wrong or I want to reference them directly. Once every sub is in the database I can remove this, but UNTIL THEN, it's a good idea to keep these here just in case.
+public class EquationSubDatabase { //NOTE: I know, I know, this should be in the actual SQLite database. I WILL do that, but I want to keep these here in case something goes wrong or I want to reference them directly. Once every sub is in the database I can remove this, but UNTIL THEN, it's a good idea to keep these here, in memory just in case.
     private static final EquationSub[] subsArray = {
-            new StructuralSub(makeUnprocessedEquation("MINUS ( _v1 , _v2 )"), makeUnprocessedEquation("PLUS ( _v1 , TIMES ( -1 , _v2 ) )")),
-            new StructuralSub(makeUnprocessedEquation("DIVIDE( _v1 , _v2 )"), makeUnprocessedEquation("FRACTION ( _v1 , _v2 )"),makeUnprocessedEquation("AND ( EQUALS ( TYPEOF ( _v1 ) , NUMBER ) , EQUALS ( TYPEOF ( _v2 ) , NUMBER ) , NOT ( EQUALS ( _v2 , 0 ) ) )")),
-            new StructuralSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("TIMES ( _v1 , FRACTION ( 1 , _v2 ) )"), makeUnprocessedEquation("AND ( EQUALS ( TYPEOF ( _v1 ) , EXPRESSION ) , EQUALS ( TYPEOF ( _v2 ) , NUMBER ) )")),
-            new StructuralSub(makeUnprocessedEquation("DIVIDE ( _v1 , _v2 )"), makeUnprocessedEquation("TIMES ( _v1 , POWER ( _v2 , -1 ) )")),
             new StructuralSub(new Equation("PATTERN_OR ( OR ( TRUE , FALSE ) , OR ( FALSE , TRUE ) , OR ( TRUE , TRUE ) )"), new Equation("TRUE")),
             new StructuralSub(new Equation("OR ( FALSE , FALSE )"), new Equation("FALSE")),
             new StructuralSub(new Equation("AND ( TRUE , TRUE )"), new Equation("TRUE")),
@@ -32,6 +28,16 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
             new StructuralSub(new Equation("NOT ( FALSE )"), new Equation("TRUE")),
             new StructuralSub(new Equation("NOT ( TRUE )"), new Equation("FALSE")),
             new StructuralSub(new Equation("TIMES( FRACTION (_v1, _v2), FRACTION(_v3, _v4))"), new Equation("FRACTION(TIMES(_v1, _v3),TIMES(_v2,_v4))")),
+            new EquationSub((Serializable & DirectOperation) (eq -> {
+                BigInteger gcd = ((MathInteger) Simplifier.simplifyMetaFunctions(eq.getSubEquation(0)).getRoot()).num.gcd(((MathInteger) Simplifier.simplifyMetaFunctions(eq.getSubEquation(1)).getRoot()).num);
+                if(eq.getOperands().size() > 1){
+                    for(int i = 2; i<eq.getOperands().size(); i++){
+                        Equation currentEq = eq.getSubEquation(i);
+                        gcd = ((MathInteger) currentEq.getRoot()).num.gcd(gcd);
+                    }
+                }
+                return new Equation(new Tree<>(new MathInteger(gcd)));
+            }), new MathObject(MathOperator.GREATEST_COMMON_DENOMINATOR)),
             new EquationSub((Serializable & DirectOperation) (eq -> {
                 return new Equation(new Tree<MathObject>(new MathInteger(eq.tree.getNumberOfChildren())));
             }), new MathObject(MathOperator.NUMBER_OF_OPERANDS)),
@@ -91,7 +97,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
             }), (new MathObject(MathOperator.DIVIDE))),
             new EquationSub((Serializable & DirectOperation) (eq -> {
                 PatternMatcher matcher = new PatternMatcher();
-                if(matcher.patternMatch(eq, new Equation("FRACTION ( _numer , _denom )"))) {
+                if(matcher.patternMatch(eq, new Equation("FRACTION ( _numer , _denom )", 1))) {
                     MathInteger numer = (MathInteger) matcher.getLastMatchExpressions().get("numer").data;
                     MathInteger denom = (MathInteger) matcher.getLastMatchExpressions().get("denom").data;
                     if(denom.equals(new MathInteger(0))){
@@ -100,7 +106,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     BigInteger gcd = numer.num.gcd(denom.num);
                     BigInteger newNumer = numer.num.divide(gcd);
                     BigInteger newDenom = denom.num.divide(gcd);
-                    return new Equation("FRACTION ( " + newNumer + " , " + newDenom + " )");
+                    return new Equation("FRACTION ( " + newNumer + " , " + newDenom + " )", 1);
                 }
                 return eq; //CHANGE THIS
             }),(new MathObject(MathOperator.FRACTION))),
@@ -113,7 +119,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     MathInteger numer = (MathInteger) newEq.getSubEquation(0).getRoot();
                     MathInteger denom = (MathInteger) newEq.getSubEquation(1).getRoot();
                     MathInteger gcd = new MathInteger(((MathInteger) newEq.tree.getChild(0).data).num.gcd(((MathInteger) newEq.tree.getChild(1).data).num));
-                    return new Equation("FRACTION(" + numer.div(gcd) + "," + denom.div(gcd) + ")");
+                    return new Equation("FRACTION(" + numer.div(gcd) + "," + denom.div(gcd) + ")", 1);
                 }
                 else{
                     return newEq;
@@ -130,8 +136,9 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 if(newEq.isType(SimplificationType.INTEGER)){
                     return newEq;
                 }
-                    else if(newEq.isType(SimplificationType.FRACTION_STANDARD_FORM)){
-                    if(new Equation("OPERAND(" + newEq + ",2").equals("0")){
+                else if(newEq.isType(SimplificationType.FRACTION_STANDARD_FORM)){
+                    if(new Equation("OPERAND(" + newEq + ",1)", 1).equals("0")){
+
                         return new Equation("UNDEFINED");
                     }
                     else return newEq;
@@ -140,7 +147,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     return new Equation("UNDEFINED");
                 }
                 else if(newEq.getRoot().equals(new MathObject(MathOperator.POWER))){
-                    Equation newBase = new Equation("SIMPLIFY_RATIONAL_EXPRESSION(OPERAND(" + newEq + ", 1))");
+                    Equation newBase = new Equation("SIMPLIFY_RATIONAL_EXPRESSION(OPERAND(" + newEq + ", 0))", 1);
                     Equation power = newEq.getSubEquation(1);
                     if(newBase.isUndefined()){
                         return new Equation("UNDEFINED");
@@ -152,7 +159,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                         return new Equation("UNDEFINED");
                     }
                     for(Tree<MathObject> child : newEq.tree.getChildren()){
-                        Equation replace = new Equation("SIMPLIFY_RATIONAL_EXPRESSION(" + new Equation(child) + ")");
+                        Equation replace = new Equation("SIMPLIFY_RATIONAL_EXPRESSION(" + new Equation(child) + ")", 2);
                         child.replaceWith(replace.tree);
                     }
                     return Simplifier.simplifyByOperator(newEq, newEq.getRoot());

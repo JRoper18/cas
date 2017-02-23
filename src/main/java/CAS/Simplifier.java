@@ -1,11 +1,14 @@
 package CAS;
 
 import CAS.EquationObjects.MathObject;
+import CAS.EquationObjects.MathOperator;
 import CAS.EquationObjects.MathOperatorSubtype;
 import Database.DatabaseConnection;
 import Database.SubSerializer;
 import com.rits.cloning.Cloner;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.sql.ResultSet;
 
 /**
@@ -24,6 +27,14 @@ public class Simplifier {
             ex.printStackTrace();
         }
         return newEq;
+    }
+    public static Equation simplifyWithMetaFunction(Equation eq, MathOperator metaFunction){
+        if(metaFunction.getSubType() != MathOperatorSubtype.META){
+            throw new UncheckedIOException(new IOException("Function provided is not a meta function!"));
+        }
+        Tree<MathObject> newTree = new Tree<>(new MathObject(metaFunction));
+        newTree.addChild(eq.tree);
+        return simplifyMetaFunctions(new Equation(newTree));
     }
     public static Equation simplifyByOperator(Equation eq){
         return simplifyByOperator(eq, eq.getRoot());

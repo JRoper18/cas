@@ -1,6 +1,7 @@
 package CAS;
 
 import CAS.EquationObjects.*;
+import Database.EquationSubDatabase;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -8,8 +9,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EquationBuilder{
+    public static Equation makeEquation(String str, int autoSimplifyLevel){
+        Equation processedEquation;
+        if(autoSimplifyLevel == 0){
+            return new Equation(makeEquationTree(str));
+        }
+        else{
+            processedEquation = makeEquation(str, autoSimplifyLevel-1);
+            if(processedEquation.tree.containsData(new MathObject(MathOperator.UNDEFINED))){
+                return new Equation("UNDEFINED", 0);
+            }
+            switch(autoSimplifyLevel){
+                case 1: //Only do meta-functions.
+                    return Simplifier.simplifyMetaFunctions(processedEquation);
+                case 2: //Simplify only definitive numbers -- fractions, rationals, and so on. Nothing with variables.... yet.
+                    return Simplifier.simplifyWithMetaFunction(processedEquation, MathOperator.SIMPLIFY_RATIONAL_EXPRESSION);
+                default:
+                    return new Equation(makeEquationTree(str));
+            }
+        }
+    }
     public static Equation makeEquation(String str){
-        return toCorrectForm(new Equation(makeEquationTree(str)));
+        return makeEquation(str, 2);
     }
     public static Equation makeUnprocessedEquation(String str){
         return new Equation(makeEquationTree(str));

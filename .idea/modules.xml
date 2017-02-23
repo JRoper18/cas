@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CAS.iml" filepath="$PROJECT_DIR$/CAS.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cas-project.iml" filepath="$PROJECT_DIR$/cas-project.iml" />
     </modules>
   </component>
 </project>

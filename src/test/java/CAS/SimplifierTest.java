@@ -33,9 +33,9 @@ public class SimplifierTest {
 
     @Test
     public void testRationalSimplification() throws Exception {
-        assertEquals(new Equation("3"), new Equation("SIMPLIFY_RATIONAL_EXPRESSION(TIMES ( 1 , PLUS(1, 2)))"));
-        assertEquals(new Equation("FRACTION(-1,2)"), new Equation("SIMPLIFY_RATIONAL_EXPRESSION(DIVIDE(MINUS(1, 2), 2))"));
-        assertEquals(new Equation("4.5"), new Equation("SIMPLIFY_RATIONAL_EXPRESSION(DIVIDE(PLUS(8, 1), 2))"));
-        assertEquals(new Equation("UNDEFINED"), new Equation("SIMPLIFY_RATIONAL_EXPRESSION(DIVIDE(1, 0))"));
+        assertEquals(new Equation("3"), new Equation("(TIMES ( 1 , PLUS(1, 2)))"));
+        assertEquals(new Equation("FRACTION(-1,2)"), new Equation("(DIVIDE(MINUS(1, 2), 2))"));
+        assertEquals(new Equation("4.5"), new Equation("(DIVIDE(PLUS(8, 1), 2))"));
+        assertEquals(new Equation("UNDEFINED"), new Equation("(DIVIDE(1, 0))"));
     }
 }
