@@ -128,7 +128,6 @@ public class Equation implements Serializable, Comparable<Equation>{
             return ((CustomFunction) eq1.getRoot()).functionName.compareTo(((CustomFunction) eq2.getRoot()).functionName);
         }
         else if((eq1.isType(SimplificationType.INTEGER) || eq1.isType(SimplificationType.FRACTION_STANDARD_FORM)) && !(eq2.isType(SimplificationType.INTEGER) || eq2.isType(SimplificationType.FRACTION_STANDARD_FORM))){
-            System.out.println("EY");
             return 1;
         }
         else if(eq1Op == MathOperator.MULTIPLY && (eq2Op == MathOperator.POWER || eq2Op == MathOperator.ADD || eq2Op == MathOperator.FACTORIAL || eq2Op == MathOperator.CUSTOM_FUNCTION || eq2Op.getSubType()==MathOperatorSubtype.SYMBOL)){
@@ -153,7 +152,6 @@ public class Equation implements Serializable, Comparable<Equation>{
             }
             return eq1Op.toString().compareTo(eq2Op.toString());
         }
-        System.out.println("EY");
         return -1 * equation.compareTo(this);
     }
 }

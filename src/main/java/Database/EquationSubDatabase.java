@@ -232,7 +232,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 }
                 else{
                     for(Tree<MathObject> child : newEq.tree.getChildren()){ //Recursivly get autosimplified expression.
-                        child.replaceWith(new Equation("AUTOSIMPLIFY(" + child + ")").tree);
+                        child.replaceWith(new Equation("AUTOSIMPLIFY(" + new Equation(child).toString() + ")", 1).tree);
                     }
                     switch(newEq.getRoot().getOperator()){
                         case POWER:
