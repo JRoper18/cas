@@ -9,28 +9,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EquationBuilder{
+    public static int level = 2;
+    public static void setLevel(int toSet){
+        level = toSet;
+    }
     public static Equation makeEquation(String str, int autoSimplifyLevel){
+        return simplifyTree(makeEquationTree(str), autoSimplifyLevel);
+    }
+    public static Equation simplifyTree(Tree<MathObject> tree, int autoSimplifyLevel){
+        Equation eq = new Equation(tree);
         Equation processedEquation;
         if(autoSimplifyLevel == 0){
-            return new Equation(makeEquationTree(str));
+            return new Equation(tree);
         }
         else{
-            processedEquation = makeEquation(str, autoSimplifyLevel-1);
+            processedEquation = simplifyTree(tree, autoSimplifyLevel-1);
             if(processedEquation.tree.containsData(new MathObject(MathOperator.UNDEFINED))){
                 return new Equation("UNDEFINED", 0);
             }
             switch(autoSimplifyLevel){
                 case 1: //Only do meta-functions.
                     return Simplifier.simplifyMetaFunctions(processedEquation);
-                case 2: //Simplify only definitive numbers -- fractions, rationals, and so on. Nothing with variables.... yet.
-                    return Simplifier.simplifyWithMetaFunction(processedEquation, MathOperator.SIMPLIFY_RATIONAL_EXPRESSION);
+                case 2: //Autosimplify this
+                    return Simplifier.simplifyWithMetaFunction(processedEquation, MathOperator.AUTOSIMPLIFY);
                 default:
-                    return new Equation(makeEquationTree(str));
+                    return processedEquation;
             }
         }
     }
     public static Equation makeEquation(String str){
-        return makeEquation(str, 2);
+        return makeEquation(str, level);
     }
     public static Equation makeUnprocessedEquation(String str){
         return new Equation(makeEquationTree(str));

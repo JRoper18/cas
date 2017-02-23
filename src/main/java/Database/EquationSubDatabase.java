@@ -39,7 +39,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 return new Equation(new Tree<>(new MathInteger(gcd)));
             }), new MathObject(MathOperator.GREATEST_COMMON_DENOMINATOR)),
             new EquationSub((Serializable & DirectOperation) (eq -> {
-                return new Equation(new Tree<MathObject>(new MathInteger(eq.tree.getNumberOfChildren())));
+                return new Equation(new Tree<MathObject>(new MathInteger(eq.getSubEquation(0).tree.getNumberOfChildren())));
             }), new MathObject(MathOperator.NUMBER_OF_OPERANDS)),
             new EquationSub((Serializable & DirectOperation) (eq -> {
                 Tree<MathObject> toEval = eq.tree.getChild(0);
@@ -220,7 +220,18 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
               return eq;
             }), new MathObject(MathOperator.TERM)),
             new EquationSub((DirectOperation & Serializable) (eq -> {
-                Equation newEq = eq.clone();
+                Equation newEq = eq.getSubEquation(0); //Autosimplify is the root term
+                EquationBuilder.setLevel(1);
+                EquationSub sub = new EquationSub((DirectOperation) (equation -> {
+                    if(equation.isType(MathOperator.DIVIDE)){
+                        return new Equation("MULTIPLY(" + equation.getSubEquation(0) + "," + "POWER(" + equation.getSubEquation(1) + ", -1))");
+                    }
+                    if(equation.isType(MathOperator.SUBTRACT)){
+                        return new Equation("PLUS(" + equation.getSubEquation(0) + "," + "MULTIPLY(" + equation.getSubEquation(1) + ", -1))");
+                    }
+                    return equation;
+                }));
+                newEq = sub.applyEverywhere(newEq);
                 if(newEq.tree.containsData(new MathObject(MathOperator.UNDEFINED))){
                     return new Equation("UNDEFINED");
                 }
@@ -230,26 +241,37 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 else if(newEq.isType(MathOperator.FRACTION)){
                     return new Equation("SIMPLIFY_RATIONAL_FRACTION(" + newEq + ")");
                 }
+                else if(newEq.isType(SimplificationType.RATIONAL_NUMBER_EXPRESSION)){
+                    return new Equation("SIMPLIFY_RATIONAL_EXPRESSION(" + newEq + ")");
+                }
                 else{
                     for(Tree<MathObject> child : newEq.tree.getChildren()){ //Recursivly get autosimplified expression.
-                        child.replaceWith(new Equation("AUTOSIMPLIFY(" + new Equation(child).toString() + ")", 1).tree);
+                        child.replaceWith(new Equation(child, 1).tree);
                     }
+                    Equation toReturn;
                     switch(newEq.getRoot().getOperator()){
                         case POWER:
-                            return new Equation("SIMPLIFY_POWER(" + newEq + ")");
+                            toReturn = new Equation("SIMPLIFY_POWER(" + newEq + ")");
+                            break;
                         case ADD:
-                            return new Equation("SIMPLIFY_SUM(" + newEq + ")");
+                            toReturn = new Equation("SIMPLIFY_SUM(" + newEq + ")");
+                            break;
                         case MULTIPLY:
-                            return new Equation("SIMPLIFY_PRODUCT(" + newEq + ")");
+                            toReturn = new Equation("SIMPLIFY_PRODUCT(" + newEq + ")");
+                            break;
                         case SUBTRACT:
-                            return new Equation("SIMPLIFY_SUBTRACTION(" + newEq + ")");
+                            toReturn = new Equation("SIMPLIFY_SUM(" + newEq + ")");
+                            break;
                         case DIVIDE:
-                            return new Equation("SIMPLIFY_DIVISION(" + newEq + ")");
+                            toReturn = new Equation("SIMPLIFY_DIVISION(" + newEq + ")");
+                            break;
                         case FACTORIAL:
-                            return new Equation("SIMPLIFY_FACTORIAL(" + newEq + ")");
+                            toReturn = new Equation("SIMPLIFY_FACTORIAL(" + newEq + ")");
+                            break;
                         default:
-                            return newEq;
+                            toReturn = newEq;
                     }
+                    return toReturn;
                 }
             }), new MathObject(MathOperator.AUTOSIMPLIFY)),
             new EquationSub((DirectOperation & Serializable) eq -> {
@@ -317,7 +339,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 if(operands.contains(new Equation("UNDEFINED"))){
                     return new Equation("UNDEFINED");
                 }
-                if(operands.contains(new Equation("0"))){
+                if(operands.contains(new Equation("0",0))){
                     return new Equation("0");
                 }
                 if(operands.size() == 1){
@@ -328,7 +350,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     for(Equation operand : operands){
                         operandStr.add(operand.toString());
                     }
-                    Equation sub = new Equation("SIMPLIFY_PRODUCT_RECURSIVE(LIST(" + String.join(",", operandStr) + "))");
+                    Equation sub = new Equation("SIMPLIFY_PRODUCT_RECURSIVE(LIST(" + String.join(",", operandStr) + "))",1);
                 }
                 return eq;
             }, new MathObject(MathOperator.SIMPLIFY_PRODUCT)),

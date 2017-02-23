@@ -15,6 +15,9 @@ public class Equation implements Serializable, Comparable<Equation>{
     public Equation(Tree<MathObject> tree){
         this.tree = tree;
     }
+    public Equation(Tree<MathObject> tree, int autoSimplifyLevel){
+        this.tree = EquationBuilder.simplifyTree(tree, autoSimplifyLevel).tree;
+    }
     public Equation(String str){
         this.tree = EquationBuilder.makeEquation(str).tree;
     }
@@ -86,12 +89,14 @@ public class Equation implements Serializable, Comparable<Equation>{
         Equation eq2 = equation.clone();
         MathOperator eq1Op = eq1.getRoot().getOperator();
         MathOperator eq2Op = eq2.getRoot().getOperator();
+        /*
         if(!this.isType(SimplificationType.AUTOSIMPLIFIED_EXPRESSION)){
-           eq1 = new Equation("AUTOSIMPLIFY(" + this + ")", 1);
+           eq1 = new Equation("AUTOSIMPLIFY(" + this.toString() + ")", 1);
         }
         if(!equation.isType(SimplificationType.AUTOSIMPLIFIED_EXPRESSION)){
-            eq2 = new Equation("AUTOSIMPLIFY(" + equation + ")", 1);
+            eq2 = new Equation("AUTOSIMPLIFY(" + equation.toString() + ")", 1);
         }
+        */
         if((eq1.isType(SimplificationType.INTEGER) || eq1.isType(SimplificationType.FRACTION_STANDARD_FORM)) && ((eq2.isType(SimplificationType.FRACTION_STANDARD_FORM)) || eq2.isType(SimplificationType.INTEGER))){
             BigDecimal eq1Num = (eq1Op==MathOperator.FRACTION)? new BigDecimal(((MathInteger) eq1.getSubEquation(0).getRoot()).num).divide(new BigDecimal(((MathInteger) eq1.getSubEquation(1).getRoot()).num)) : new BigDecimal(((MathInteger) eq1.getRoot()).num);
             BigDecimal eq2Num = (eq2Op==MathOperator.FRACTION)? new BigDecimal(((MathInteger) eq2.getSubEquation(0).getRoot()).num).divide(new BigDecimal(((MathInteger) eq2.getSubEquation(1).getRoot()).num)) : new BigDecimal(((MathInteger) eq2.getRoot()).num);
@@ -119,7 +124,7 @@ public class Equation implements Serializable, Comparable<Equation>{
             if(!new Equation("BASE(" + eq1 + ")", 1).equals(new Equation("BASE(" + eq2 + ")", 1))){
                 return new Equation("BASE(" + eq1 + ")", 1).compareTo(new Equation("BASE(" + eq2 + ")", 1));
             }
-           return new Equation("EXPONENT(" + eq1 + ")").compareTo(new Equation("EXPONENT(" + eq2 + ")"));
+           return new Equation("EXPONENT(" + eq1 + ")", 1).compareTo(new Equation("EXPONENT(" + eq2 + ")", 1));
         }
         else if(eq1Op == MathOperator.FACTORIAL && eq2Op == MathOperator.FACTORIAL){
             return eq1.getSubEquation(0).compareTo(eq2.getSubEquation(0));
@@ -131,19 +136,19 @@ public class Equation implements Serializable, Comparable<Equation>{
             return 1;
         }
         else if(eq1Op == MathOperator.MULTIPLY && (eq2Op == MathOperator.POWER || eq2Op == MathOperator.ADD || eq2Op == MathOperator.FACTORIAL || eq2Op == MathOperator.CUSTOM_FUNCTION || eq2Op.getSubType()==MathOperatorSubtype.SYMBOL)){
-            return this.compareTo(new Equation("TIMES ( 1, " + eq2 + ")"));
+            return this.compareTo(new Equation("TIMES ( 1, " + eq2 + ")", 0));
         }
         else if(eq1Op == MathOperator.POWER && (eq2Op == MathOperator.ADD || eq2Op == MathOperator.FACTORIAL || eq2Op == MathOperator.CUSTOM_FUNCTION || eq2Op.getSubType()==MathOperatorSubtype.SYMBOL)){
-            return this.compareTo(new Equation("POWER(" + eq2 + ",1)"));
+            return this.compareTo(new Equation("POWER(" + eq2 + ",1)", 0));
         }
         else if(eq1Op == MathOperator.ADD && (eq2Op == MathOperator.FACTORIAL || eq2Op == MathOperator.CUSTOM_FUNCTION || eq2Op.getSubType()==MathOperatorSubtype.SYMBOL)){
-            return this.compareTo(new Equation("ADD ( 0, " + eq2 + ")"));
+            return this.compareTo(new Equation("ADD ( 0, " + eq2 + ")", 0));
         }
         else if(eq1Op == MathOperator.FACTORIAL && (eq2Op == MathOperator.CUSTOM_FUNCTION || eq2Op.getSubType()==MathOperatorSubtype.SYMBOL)){
             if(eq1.getSubEquation(0).equals(eq2)){
                 return -1;
             }
-            return this.compareTo(new Equation("FACTORIAL(" + eq2 + ")"));
+            return this.compareTo(new Equation("FACTORIAL(" + eq2 + ")",0));
         }
         else if(eq1Op == MathOperator.CUSTOM_FUNCTION && eq2Op.getSubType() == MathOperatorSubtype.SYMBOL){
 
@@ -152,6 +157,7 @@ public class Equation implements Serializable, Comparable<Equation>{
             }
             return eq1Op.toString().compareTo(eq2Op.toString());
         }
+        System.out.println(eq1Op);
         return -1 * equation.compareTo(this);
     }
 }
