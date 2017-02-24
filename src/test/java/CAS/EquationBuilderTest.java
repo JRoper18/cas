@@ -27,17 +27,4 @@ public class EquationBuilderTest {
         expectedTree1.addChildWithData(new MathInteger(5));
         assertEquals(new Equation(expectedTree1), test1);
     }
-    @Test
-    public void testPreSimplification() throws Exception {
-        assertEquals(new Equation("FRACTION ( 1 , 3 )"), new Equation("DIVIDE ( 1 , 3 )"));
-        assertNotEquals(new Equation("FRACTION ( 1 , _v1 )"), new Equation("DIVIDE ( 1 , _v1 )"));
-    }
-
-    @Test
-    public void testInfixToPrefix() throws Exception {
-        assertEquals(new Equation("PLUS(1,2)"),new Equation("1 + 2"));
-        assertEquals(new Equation("MINUS(1,2)"),new Equation("1 - 2"));
-        assertEquals(new Equation("PLUS(1,TIMES(2, 4))"),new Equation("1 + ( 2 * 4 )"));
-
-    }
 }

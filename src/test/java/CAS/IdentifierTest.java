@@ -22,7 +22,7 @@ public class IdentifierTest {
         assertEquals(false, new Equation("TIMES(1, _x)",0).isType(SimplificationType.AUTOSIMPLIFIED_EXPRESSION)); //No 1* anything
         assertEquals(true, new Equation("_x",0).isType(SimplificationType.AUTOSIMPLIFIED_EXPRESSION));
         assertEquals(false, new Equation("PLUS ( _x , TIMES ( 2, _x))",0).isType(SimplificationType.AUTOSIMPLIFIED_EXPRESSION));
-        //assertEquals(false, new Equation("PLUS ( _x , TIMES ( _x, _2))").isType(SimplificationType.AUTOSIMPLIFIED_EXPRESSION)); //x + 2x could be simplified
+        //assertEquals(false, new Equation("PLUS ( _x , TIMES ( _x, 2))").isType(SimplificationType.AUTOSIMPLIFIED_EXPRESSION)); //x + 2x could be simplified
         //assertEquals(true, new Equation("PLUS(_y, 3)").isType(SimplificationType.AUTOSIMPLIFIED_EXPRESSION));
         //assertEquals(false, new Equation("PLUS(3, _y)").isType(SimplificationType.AUTOSIMPLIFIED_EXPRESSION)); //Wrong order
         //assertEquals(true, new Equation("TIMES(POWER(_x, 2)), _x)").isType(SimplificationType.AUTOSIMPLIFIED_EXPRESSION)); //x^2*x => x^3

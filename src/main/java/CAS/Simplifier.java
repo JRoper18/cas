@@ -70,21 +70,36 @@ public class Simplifier {
         return newEq;
     }
     public static Equation simplifyMetaFunctions(Equation equation){
-        Equation newEq = equation.clone();
-        Equation last = null;
-        while (newEq.getRoot().getOperator().getSubType() == MathOperatorSubtype.META && !newEq.equals(last)){
-            last = newEq.clone();
-            try{
-                String sql = "select algorithm from subs where (subtype =='META' and operator == '" + equation.getRoot().toString() + "')";
-                ResultSet results = DatabaseConnection.runQuery(sql);
-                while(results.next()){
-                    EquationSub tempSub = SubSerializer.deserialize(results.getBytes("algorithm"));
-                    newEq = tempSub.apply(newEq);
-                }
-            } catch (Exception ex){
-                ex.printStackTrace();
+        EquationSub sub = new EquationSub((DirectOperation) eq -> {
+            if(eq.isType(MathOperator.DIVIDE)){
+                return new Equation("TIMES(" + eq.getSubEquation(0) + ", POWER(" + eq.getSubEquation(1) + ", -1))", 0);
+            }
+            if (eq.isType(MathOperator.SUBTRACT)) {
+                return new Equation("ADD(" + eq.getSubEquation(0) + ", TIMES(" + eq.getSubEquation(1) + ", -1))", 0);
+            }
+            return eq;
+        });
+        Equation newEq = sub.applyEverywhere(equation);
+        return recursiveApplyMeta(newEq.tree);
+    }
+    private static Equation recursiveApplyMeta(Tree<MathObject> applyTo){
+        if(applyTo.hasChildren()){
+            for(Tree<MathObject> child : applyTo.getChildren()){
+                child.replaceWith(recursiveApplyMeta(child).tree);
             }
         }
-        return newEq;
+        try{
+            Equation newEq = new Equation(applyTo);
+            String sql = "select algorithm from subs where (subtype =='META' and operator == '" + applyTo.data.toString() + "')";
+            ResultSet results = DatabaseConnection.runQuery(sql);
+            while(results.next()){
+                EquationSub tempSub = SubSerializer.deserialize(results.getBytes("algorithm"));
+                newEq = tempSub.apply(newEq);
+            }
+            return newEq;
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
     }
 }

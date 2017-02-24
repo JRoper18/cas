@@ -133,6 +133,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 if(eq.getRoot().equals(new MathObject(MathOperator.SIMPLIFY_RATIONAL_EXPRESSION))){
                     newEq = eq.getSubEquation(0).clone();
                 }
+
                 if(newEq.isType(SimplificationType.INTEGER)){
                     return newEq;
                 }
@@ -258,12 +259,6 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                             break;
                         case MULTIPLY:
                             toReturn = new Equation("SIMPLIFY_PRODUCT(" + newEq + ")");
-                            break;
-                        case SUBTRACT:
-                            toReturn = new Equation("SIMPLIFY_SUM(" + newEq + ")");
-                            break;
-                        case DIVIDE:
-                            toReturn = new Equation("SIMPLIFY_DIVISION(" + newEq + ")");
                             break;
                         case FACTORIAL:
                             toReturn = new Equation("SIMPLIFY_FACTORIAL(" + newEq + ")");
