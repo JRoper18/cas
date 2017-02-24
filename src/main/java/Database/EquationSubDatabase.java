@@ -27,6 +27,8 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
             new StructuralSub(new Equation("EQUALS ( _v1 , _v2 )"), new Equation("FALSE")),
             new StructuralSub(new Equation("NOT ( FALSE )"), new Equation("TRUE")),
             new StructuralSub(new Equation("NOT ( TRUE )"), new Equation("FALSE")),
+            new StructuralSub(new Equation("SUBTRACT( _v1, _v2)"), new Equation("PLUS(_v1, TIMES(_v2, -1))")),
+            new StructuralSub(new Equation("DIVIDE( _v1, _v2)", 1), new Equation("TIMES( _v1, POWER(_v2, -1))", 1)),
             new StructuralSub(new Equation("TIMES( FRACTION (_v1, _v2), FRACTION(_v3, _v4))"), new Equation("FRACTION(TIMES(_v1, _v3),TIMES(_v2,_v4))")),
             new EquationSub((Serializable & DirectOperation) (eq -> {
                 BigInteger gcd = ((MathInteger) Simplifier.simplifyMetaFunctions(eq.getSubEquation(0)).getRoot()).num.gcd(((MathInteger) Simplifier.simplifyMetaFunctions(eq.getSubEquation(1)).getRoot()).num);
@@ -71,7 +73,9 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
             new EquationSub((Serializable & DirectOperation) (eq -> {
                 if (eq.tree.data.equals(new MathObject(MathOperator.MULTIPLY)) && eq.tree.getNumberOfChildren() == 2) {
                     if (eq.tree.getChild(0).data instanceof MathInteger && eq.tree.getChild(1).data instanceof MathInteger) {
-                        return new Equation(((MathInteger) eq.tree.getChild(0).data).mul((MathInteger) eq.tree.getChild(1).data).toString());
+                        BigInteger num1 = ((MathInteger) eq.tree.getChild(0).data).num;
+                        BigInteger num2 = ((MathInteger) eq.tree.getChild(1).data).num;
+                        return new Equation(num1.multiply(num2).toString());
                     }
                 }
                 return eq; //No change
@@ -119,6 +123,9 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     MathInteger numer = (MathInteger) newEq.getSubEquation(0).getRoot();
                     MathInteger denom = (MathInteger) newEq.getSubEquation(1).getRoot();
                     MathInteger gcd = new MathInteger(((MathInteger) newEq.tree.getChild(0).data).num.gcd(((MathInteger) newEq.tree.getChild(1).data).num));
+                    if(denom.div(gcd).num.compareTo(new BigInteger("1")) == 0){
+                        return new Equation(numer.div(gcd).num.toString());
+                    }
                     return new Equation("FRACTION(" + numer.div(gcd) + "," + denom.div(gcd) + ")", 1);
                 }
                 else{
@@ -130,6 +137,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     return eq;
                 }
                 Equation newEq = eq.clone();
+                newEq.tree.print();
                 if(eq.getRoot().equals(new MathObject(MathOperator.SIMPLIFY_RATIONAL_EXPRESSION))){
                     newEq = eq.getSubEquation(0).clone();
                 }
@@ -160,10 +168,10 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                         return new Equation("UNDEFINED");
                     }
                     for(Tree<MathObject> child : newEq.tree.getChildren()){
-                        Equation replace = new Equation("SIMPLIFY_RATIONAL_EXPRESSION(" + new Equation(child) + ")", 2);
+                        Equation replace = new Equation("SIMPLIFY_RATIONAL_EXPRESSION(" + new Equation(child) + ")", 1);
                         child.replaceWith(replace.tree);
                     }
-                    return Simplifier.simplifyByOperator(newEq, newEq.getRoot());
+                    return Simplifier.simplifyByOperator(newEq);
                 }
                 else{
                     return newEq;

@@ -31,6 +31,9 @@ public class EquationBuilder{
                 case 1: //Only do meta-functions.
                     return Simplifier.simplifyMetaFunctions(processedEquation);
                 case 2: //Autosimplify this
+                    if(processedEquation.isType(SimplificationType.RATIONAL_NUMBER_EXPRESSION)){
+                        processedEquation = Simplifier.simplifyWithMetaFunction(processedEquation, MathOperator.SIMPLIFY_RATIONAL_EXPRESSION);
+                    }
                     return Simplifier.simplifyWithMetaFunction(processedEquation, MathOperator.AUTOSIMPLIFY);
                 default:
                     return processedEquation;

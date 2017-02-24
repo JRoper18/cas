@@ -5,13 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0ba3a60f-56b4-4d4a-9bf1-cc9202c65bbb" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/CAS/Equation.java" afterPath="$PROJECT_DIR$/src/main/java/CAS/Equation.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/CAS/Simplifier.java" afterPath="$PROJECT_DIR$/src/main/java/CAS/Simplifier.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/CAS/EquationBuilder.java" afterPath="$PROJECT_DIR$/src/main/java/CAS/EquationBuilder.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/Database/EquationSubDatabase.java" afterPath="$PROJECT_DIR$/src/main/java/Database/EquationSubDatabase.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/CAS/EquationBuilderTest.java" afterPath="$PROJECT_DIR$/src/test/java/CAS/EquationBuilderTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/CAS/IdentifierTest.java" afterPath="$PROJECT_DIR$/src/test/java/CAS/IdentifierTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/CAS/SimplifierTest.java" afterPath="$PROJECT_DIR$/src/test/java/CAS/SimplifierTest.java" />
     </list>
     <ignored path="CAS.iws" />
@@ -37,12 +33,10 @@
       <file leaf-file-name="Equation.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Equation.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="412">
+            <state relative-caret-position="-165">
               <caret line="61" column="0" lean-forward="false" selection-start-line="61" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#560#561#0" expanded="true" />
-                <element signature="e#626#627#0" expanded="true" />
                 <element signature="e#1868#1869#0" expanded="true" />
               </folding>
             </state>
@@ -52,10 +46,32 @@
       <file leaf-file-name="Tree.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Tree.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="427">
+            <state relative-caret-position="825">
               <caret line="38" column="0" lean-forward="false" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
               <folding>
-                <element signature="e#997#998#0" expanded="true" />
+                <element signature="imports" expanded="false" />
+                <element signature="e#349#350#0" expanded="false" />
+                <element signature="e#380#381#0" expanded="false" />
+                <element signature="e#437#438#0" expanded="false" />
+                <element signature="e#471#472#0" expanded="false" />
+                <element signature="e#511#512#0" expanded="false" />
+                <element signature="e#547#548#0" expanded="false" />
+                <element signature="e#581#582#0" expanded="false" />
+                <element signature="e#628#629#0" expanded="false" />
+                <element signature="e#865#866#0" expanded="false" />
+                <element signature="e#915#916#0" expanded="false" />
+                <element signature="e#3752#3753#0" expanded="false" />
+                <element signature="e#3794#3795#0" expanded="false" />
+                <element signature="e#4049#4050#0" expanded="false" />
+                <element signature="e#4089#4090#0" expanded="false" />
+                <element signature="e#4131#4132#0" expanded="false" />
+                <element signature="e#4183#4184#0" expanded="false" />
+                <element signature="e#4373#4374#0" expanded="false" />
+                <element signature="e#4416#4417#0" expanded="false" />
+                <element signature="e#4454#4455#0" expanded="false" />
+                <element signature="e#4497#4498#0" expanded="false" />
+                <element signature="e#4671#4672#0" expanded="false" />
+                <element signature="e#4700#4701#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -64,28 +80,18 @@
       <file leaf-file-name="EquationBuilder.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/CAS/EquationBuilder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="346">
-              <caret line="19" column="41" lean-forward="false" selection-start-line="19" selection-start-column="41" selection-end-line="19" selection-end-column="41" />
+            <state relative-caret-position="858">
+              <caret line="34" column="142" lean-forward="false" selection-start-line="34" selection-start-column="142" selection-end-line="34" selection-end-column="142" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Identifier.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Identifier.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="258">
-              <caret line="34" column="31" lean-forward="false" selection-start-line="34" selection-start-column="31" selection-end-line="34" selection-end-column="31" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="EquationSubDatabase.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="EquationSubDatabase.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/Database/EquationSubDatabase.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="457">
-              <caret line="150" column="0" lean-forward="false" selection-start-line="150" selection-start-column="0" selection-end-line="150" selection-end-column="0" />
+            <state relative-caret-position="192">
+              <caret line="139" column="35" lean-forward="false" selection-start-line="139" selection-start-column="35" selection-end-line="139" selection-end-column="35" />
               <folding />
             </state>
           </provider>
@@ -94,18 +100,18 @@
       <file leaf-file-name="Simplifier.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Simplifier.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1118">
-              <caret line="92" column="0" lean-forward="false" selection-start-line="92" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
+            <state relative-caret-position="165">
+              <caret line="14" column="7" lean-forward="false" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="7" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SimplifierTest.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="SimplifierTest.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/CAS/SimplifierTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1089">
-              <caret line="35" column="0" lean-forward="false" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
+            <state relative-caret-position="907">
+              <caret line="43" column="95" lean-forward="false" selection-start-line="43" selection-start-column="95" selection-end-line="43" selection-end-column="95" />
               <folding />
             </state>
           </provider>
@@ -127,6 +133,9 @@
       <find>AUTOSIMPL</find>
       <find>print</find>
       <find>2OP</find>
+      <find>DIVIDE</find>
+      <find>FRACTION</find>
+      <find>REA</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -192,9 +201,9 @@
         <option value="$PROJECT_DIR$/src/test/java/CAS/EquationBuilderTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/CAS/Equation.java" />
         <option value="$PROJECT_DIR$/src/test/java/CAS/IdentifierTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/CAS/Simplifier.java" />
         <option value="$PROJECT_DIR$/src/main/java/CAS/EquationBuilder.java" />
         <option value="$PROJECT_DIR$/src/main/java/Database/EquationSubDatabase.java" />
-        <option value="$PROJECT_DIR$/src/main/java/CAS/Simplifier.java" />
         <option value="$PROJECT_DIR$/src/test/java/CAS/SimplifierTest.java" />
       </list>
     </option>
@@ -233,8 +242,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
+      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -349,7 +359,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -358,7 +367,6 @@
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit4" />
     <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.annotationProcessors" />
-    <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RecentsManager">
@@ -394,32 +402,6 @@
       <option name="PACKAGE_NAME" value="CAS" />
       <option name="MAIN_CLASS_NAME" value="CAS.SimplifierTest" />
       <option name="METHOD_NAME" value="testRationalSimplification" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-      <method />
-    </configuration>
-    <configuration default="false" name="SimplifierTest.testFractionSimplification" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="CAS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <module name="cas-project" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="CAS" />
-      <option name="MAIN_CLASS_NAME" value="CAS.SimplifierTest" />
-      <option name="METHOD_NAME" value="testFractionSimplification" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -499,6 +481,32 @@
       <option name="MAIN_CLASS_NAME" value="CAS.IdentifierTest" />
       <option name="METHOD_NAME" />
       <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="false" name="SimplifierTest.testSimplifyByOperation" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="CAS.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <module name="cas-project" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="CAS" />
+      <option name="MAIN_CLASS_NAME" value="CAS.SimplifierTest" />
+      <option name="METHOD_NAME" value="testSimplifyByOperation" />
+      <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
@@ -717,18 +725,18 @@
     </configuration>
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="JUnit.SimplifierTest.testRationalSimplification" />
-      <item index="1" class="java.lang.String" itemvalue="JUnit.SimplifierTest.testFractionSimplification" />
-      <item index="2" class="java.lang.String" itemvalue="JUnit.SimplifierTest.testMetaFunctions" />
-      <item index="3" class="java.lang.String" itemvalue="JUnit.SimplifierTest" />
-      <item index="4" class="java.lang.String" itemvalue="JUnit.IdentifierTest" />
+      <item index="1" class="java.lang.String" itemvalue="JUnit.SimplifierTest.testMetaFunctions" />
+      <item index="2" class="java.lang.String" itemvalue="JUnit.SimplifierTest" />
+      <item index="3" class="java.lang.String" itemvalue="JUnit.IdentifierTest" />
+      <item index="4" class="java.lang.String" itemvalue="JUnit.SimplifierTest.testSimplifyByOperation" />
     </list>
     <recent_temporary>
       <list size="5">
         <item index="0" class="java.lang.String" itemvalue="JUnit.SimplifierTest.testRationalSimplification" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.SimplifierTest.testMetaFunctions" />
-        <item index="2" class="java.lang.String" itemvalue="JUnit.IdentifierTest" />
-        <item index="3" class="java.lang.String" itemvalue="JUnit.SimplifierTest" />
-        <item index="4" class="java.lang.String" itemvalue="JUnit.SimplifierTest.testFractionSimplification" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.SimplifierTest.testSimplifyByOperation" />
+        <item index="2" class="java.lang.String" itemvalue="JUnit.SimplifierTest.testMetaFunctions" />
+        <item index="3" class="java.lang.String" itemvalue="JUnit.IdentifierTest" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.SimplifierTest" />
       </list>
     </recent_temporary>
     <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android Application">
@@ -928,39 +936,46 @@
       <option name="project" value="LOCAL" />
       <updated>1484689066779</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Doing bottom-up meta function simplification">
+      <created>1487912883811</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1487912883811</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="SimplifierTest_testRationalSimplification - 2017.02.23 at 22h 01m 34s.xml">
+    <history-entry file="SimplifierTest_testRationalSimplification - 2017.02.24 at 06h 46m 17s.xml">
       <configuration name="SimplifierTest.testRationalSimplification" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SimplifierTest_testRationalSimplification - 2017.02.23 at 22h 02m 22s.xml">
+    <history-entry file="SimplifierTest_testRationalSimplification - 2017.02.24 at 06h 47m 04s.xml">
       <configuration name="SimplifierTest.testRationalSimplification" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SimplifierTest_testRationalSimplification - 2017.02.23 at 22h 02m 48s.xml">
+    <history-entry file="SimplifierTest_testRationalSimplification - 2017.02.24 at 06h 47m 19s.xml">
       <configuration name="SimplifierTest.testRationalSimplification" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SimplifierTest_testRationalSimplification - 2017.02.23 at 22h 04m 05s.xml">
+    <history-entry file="SimplifierTest_testRationalSimplification - 2017.02.24 at 06h 47m 22s.xml">
       <configuration name="SimplifierTest.testRationalSimplification" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SimplifierTest_testRationalSimplification - 2017.02.23 at 22h 04m 42s.xml">
+    <history-entry file="SimplifierTest_testRationalSimplification - 2017.02.24 at 06h 47m 50s.xml">
       <configuration name="SimplifierTest.testRationalSimplification" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SimplifierTest_testRationalSimplification - 2017.02.23 at 22h 05m 53s.xml">
+    <history-entry file="SimplifierTest_testRationalSimplification - 2017.02.24 at 06h 48m 30s.xml">
       <configuration name="SimplifierTest.testRationalSimplification" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SimplifierTest_testRationalSimplification - 2017.02.23 at 22h 06m 17s.xml">
+    <history-entry file="SimplifierTest_testRationalSimplification - 2017.02.24 at 06h 48m 42s.xml">
       <configuration name="SimplifierTest.testRationalSimplification" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SimplifierTest_testRationalSimplification - 2017.02.23 at 22h 06m 48s.xml">
-      <configuration name="SimplifierTest.testRationalSimplification" configurationId="JUnit" />
+    <history-entry file="SimplifierTest_testSimplifyByOperation - 2017.02.24 at 06h 45m 09s.xml">
+      <configuration name="SimplifierTest.testSimplifyByOperation" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SimplifierTest_testRationalSimplification - 2017.02.23 at 22h 07m 09s.xml">
-      <configuration name="SimplifierTest.testRationalSimplification" configurationId="JUnit" />
+    <history-entry file="SimplifierTest_testSimplifyByOperation - 2017.02.24 at 06h 45m 27s.xml">
+      <configuration name="SimplifierTest.testSimplifyByOperation" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SimplifierTest_testRationalSimplification - 2017.02.23 at 22h 07m 27s.xml">
-      <configuration name="SimplifierTest.testRationalSimplification" configurationId="JUnit" />
+    <history-entry file="SimplifierTest_testSimplifyByOperation - 2017.02.24 at 06h 46m 11s.xml">
+      <configuration name="SimplifierTest.testSimplifyByOperation" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
@@ -969,16 +984,16 @@
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3275488" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.47085202" sideWeight="0.50104934" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32975942" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27548808" sideWeight="0.4989507" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27548808" sideWeight="0.4989507" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -986,14 +1001,14 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295964" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32976446" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
@@ -1053,7 +1068,8 @@
     <MESSAGE value="Bug fixing for autosimplified identification." />
     <MESSAGE value="I did the power simplification, haven't tested it yet" />
     <MESSAGE value="Fixed bugs with rational number simplification" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed bugs with rational number simplification" />
+    <MESSAGE value="Doing bottom-up meta function simplification" />
+    <option name="LAST_COMMIT_MESSAGE" value="Doing bottom-up meta function simplification" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1206,10 +1222,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
           <caret line="14" column="33" lean-forward="false" selection-start-line="14" selection-start-column="33" selection-end-line="14" selection-end-column="33" />
-          <folding>
-            <element signature="e#418#419#0" expanded="false" />
-            <element signature="e#458#459#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1244,41 +1256,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Identifier.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="258">
-          <caret line="34" column="31" lean-forward="false" selection-start-line="34" selection-start-column="31" selection-end-line="34" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/EquationBuilder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="346">
-          <caret line="19" column="41" lean-forward="false" selection-start-line="19" selection-start-column="41" selection-end-line="19" selection-end-column="41" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Tree.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="427">
+        <state relative-caret-position="825">
           <caret line="38" column="0" lean-forward="false" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
           <folding>
-            <element signature="e#997#998#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Equation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="412">
-          <caret line="61" column="0" lean-forward="false" selection-start-line="61" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#560#561#0" expanded="true" />
-            <element signature="e#626#627#0" expanded="true" />
-            <element signature="e#1868#1869#0" expanded="true" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#349#350#0" expanded="false" />
+            <element signature="e#380#381#0" expanded="false" />
+            <element signature="e#437#438#0" expanded="false" />
+            <element signature="e#471#472#0" expanded="false" />
+            <element signature="e#511#512#0" expanded="false" />
+            <element signature="e#547#548#0" expanded="false" />
+            <element signature="e#581#582#0" expanded="false" />
+            <element signature="e#628#629#0" expanded="false" />
+            <element signature="e#865#866#0" expanded="false" />
+            <element signature="e#915#916#0" expanded="false" />
+            <element signature="e#3752#3753#0" expanded="false" />
+            <element signature="e#3794#3795#0" expanded="false" />
+            <element signature="e#4049#4050#0" expanded="false" />
+            <element signature="e#4089#4090#0" expanded="false" />
+            <element signature="e#4131#4132#0" expanded="false" />
+            <element signature="e#4183#4184#0" expanded="false" />
+            <element signature="e#4373#4374#0" expanded="false" />
+            <element signature="e#4416#4417#0" expanded="false" />
+            <element signature="e#4454#4455#0" expanded="false" />
+            <element signature="e#4497#4498#0" expanded="false" />
+            <element signature="e#4671#4672#0" expanded="false" />
+            <element signature="e#4700#4701#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1307,26 +1312,53 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Database/EquationSubDatabase.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Equation.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="457">
-          <caret line="150" column="0" lean-forward="false" selection-start-line="150" selection-start-column="0" selection-end-line="150" selection-end-column="0" />
+        <state relative-caret-position="-165">
+          <caret line="61" column="0" lean-forward="false" selection-start-line="61" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1868#1869#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Identifier.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-336">
+          <caret line="37" column="71" lean-forward="true" selection-start-line="37" selection-start-column="71" selection-end-line="37" selection-end-column="73" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Simplifier.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/EquationBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1118">
-          <caret line="92" column="0" lean-forward="false" selection-start-line="92" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
+        <state relative-caret-position="858">
+          <caret line="34" column="142" lean-forward="false" selection-start-line="34" selection-start-column="142" selection-end-line="34" selection-end-column="142" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/CAS/SimplifierTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1089">
-          <caret line="35" column="0" lean-forward="false" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
+        <state relative-caret-position="907">
+          <caret line="43" column="95" lean-forward="false" selection-start-line="43" selection-start-column="95" selection-end-line="43" selection-end-column="95" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Simplifier.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="14" column="7" lean-forward="false" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Database/EquationSubDatabase.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="139" column="35" lean-forward="false" selection-start-line="139" selection-start-column="35" selection-end-line="139" selection-end-column="35" />
           <folding />
         </state>
       </provider>
