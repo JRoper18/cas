@@ -77,6 +77,11 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                         BigInteger num2 = ((MathInteger) eq.tree.getChild(1).data).num;
                         return new Equation(num1.multiply(num2).toString());
                     }
+                    else if(eq.getSubEquation(0).isType(SimplificationType.INTEGER) && eq.getSubEquation(1).isType(SimplificationType.FRACTION_STANDARD_FORM)){
+                        BigInteger num1 = ((MathInteger) eq.getSubEquation(0).getRoot()).num;
+                        BigInteger numer = ((MathInteger) eq.getSubEquation(1).getSubEquation(0).getRoot()).num;
+                        return new Equation("SIMPLIFY_RATIONAL_FRACTION(FRACTION(" + num1.multiply(numer) + "," + eq.getSubEquation(1).getSubEquation(1) + "))");
+                    }
                 }
                 return eq; //No change
             }), (new MathObject(MathOperator.MULTIPLY))),
@@ -133,11 +138,26 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 }
             }), new MathObject(MathOperator.SIMPLIFY_RATIONAL_FRACTION)),
             new EquationSub((Serializable & DirectOperation) (eq -> {
+                if(eq.isType(MathOperator.POWER)){
+                    for(Equation child: eq.getOperands()){
+                        if(!child.isType(SimplificationType.INTEGER)){
+                            return eq; //DO this later
+                        }
+                    }
+                    BigInteger base = ((MathInteger) eq.getSubEquation(0).getRoot()).num;
+                    BigInteger expo = ((MathInteger) eq.getSubEquation(1).getRoot()).num;
+                    if(expo.intValue() < 0){
+                        return new Equation("FRACTION(1," + base.pow(-1 * expo.intValueExact()) + ")");
+                    }
+                    return new Equation(base.pow(expo.intValueExact()).toString(), 0);
+                }
+                return eq;
+            }), new MathObject(MathOperator.POWER)),
+            new EquationSub((Serializable & DirectOperation) (eq -> {
                 if (eq.isType(SimplificationType.RATIONAL_NUMBER_EXPRESSION)) {
                     return eq;
                 }
                 Equation newEq = eq.clone();
-                newEq.tree.print();
                 if(eq.getRoot().equals(new MathObject(MathOperator.SIMPLIFY_RATIONAL_EXPRESSION))){
                     newEq = eq.getSubEquation(0).clone();
                 }
@@ -161,7 +181,8 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     if(newBase.isUndefined()){
                         return new Equation("UNDEFINED");
                     }
-                    return simplifyByOperator(new Equation("POWER(" + newBase + ", " + power + ")"), new MathObject(MathOperator.POWER));
+                    Equation toReturn = simplifyByOperator(new Equation("POWER(" + newBase + ", " + power + ")", 0));
+                    return toReturn;
                 }
                 else if(newEq.tree.getNumberOfChildren() >= 2){
                     if(newEq.getOperands().contains(new Equation("UNDEFINED"))){
