@@ -51,6 +51,8 @@ public class EquationBuilder{
         //NOTE TO FUTURE ME: At one point you might try to change this algorithm so that it implements infix notation or something. DO NOT DO THAT. Instead, Change the preprocess function.
         //If you ever think editing this function is a good idea, just remember the all-nighter you pulled trying to fix a bug in it, and where for every bug you fixed 3 more popped up.
         //This is your final warning. DO NOT TOUCH THIS FUNCTION.
+
+        //Note from 3/27/17. Hey, I actually changed it. Not impossible, just a pain in the ass. Wouldn't do it again.
         List<Object> equationObjectList = preProcess(equationStr);
         Tree<MathObject> tree = new Tree<>();
         Tree<MathObject> selected = tree;
@@ -68,10 +70,14 @@ public class EquationBuilder{
                 }
                 selected = selected.getParent().getChild(selected.getParent().getNumberOfChildren() - 1);
             } else if (equationObject instanceof RationalTempInfoHolder) {  //It's not syntax. Is it a temporary info holder?
+                System.out.println("CHANGE");
                 selected.data = new MathObject(MathOperator.FRACTION);
                 selected.addChildWithData(((RationalTempInfoHolder) equationObject).numer);
                 selected.addChildWithData(((RationalTempInfoHolder) equationObject).denom);
-                selected.replaceWith(makeUnprocessedEquation("SIMPLIFY_RATIONAL_FRACTION(" + new Equation(selected) + ")").tree);
+                selected.replaceWith(new Equation("SIMPLIFY_RATIONAL_FRACTION(" + new Equation(selected) + ")", 1).tree);
+                if(!selected.isRoot()){
+                    selected.getParent().addEmptyChild();
+                }
             } else {
                 MathObject current = (MathObject) equationObject;
                 selected.data = current;

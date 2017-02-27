@@ -21,10 +21,18 @@ public class EquationBuilderTest {
 
     @Test
     public void testTreeCreation() throws Exception {
-        Equation test1 = builder.makeEquation("ADD ( 4 , 5 )");
+        Equation test1 = builder.makeEquation("ADD ( 4 , 5 )", 0);
         Tree<MathObject> expectedTree1 = new Tree<>(new MathObject(MathOperator.ADD));
         expectedTree1.addChildWithData(new MathInteger(4));
         expectedTree1.addChildWithData(new MathInteger(5));
         assertEquals(new Equation(expectedTree1), test1);
+    }
+
+    @Test
+    public void testDecimalToFraction() throws Exception {
+        assertEquals(new Equation("FRACTION(1, 2)", 0), new Equation(".5"));
+        assertEquals(new Equation("FRACTION(-1, 2)", 0), new Equation("-.5"));
+        assertEquals(new Equation("FRACTION(-1, 2)", 0), new Equation("-0.5"));
+        assertEquals(new Equation("TIMES(1, FRACTION(1, 2))", 0), new Equation("TIMES(1, .5)",0));
     }
 }

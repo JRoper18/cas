@@ -80,7 +80,12 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     else if(eq.getSubEquation(0).isType(SimplificationType.INTEGER) && eq.getSubEquation(1).isType(SimplificationType.FRACTION_STANDARD_FORM)){
                         BigInteger num1 = ((MathInteger) eq.getSubEquation(0).getRoot()).num;
                         BigInteger numer = ((MathInteger) eq.getSubEquation(1).getSubEquation(0).getRoot()).num;
-                        return new Equation("SIMPLIFY_RATIONAL_FRACTION(FRACTION(" + num1.multiply(numer) + "," + eq.getSubEquation(1).getSubEquation(1) + "))");
+                        return new Equation("SIMPLIFY_RATIONAL_FRACTION(FRACTION(" + num1.multiply(numer) + "," + eq.getSubEquation(1).getSubEquation(1) + "))", 1);
+                    }
+                    else if(eq.getSubEquation(0).isType(SimplificationType.FRACTION_STANDARD_FORM) && eq.getSubEquation(1).isType(SimplificationType.INTEGER)){
+                        BigInteger num1 = ((MathInteger) eq.getSubEquation(1).getRoot()).num;
+                        BigInteger numer = ((MathInteger) eq.getSubEquation(0).getSubEquation(0).getRoot()).num;
+                        return new Equation("SIMPLIFY_RATIONAL_FRACTION(FRACTION(" + num1.multiply(numer) + "," + eq.getSubEquation(0).getSubEquation(1) + "))");
                     }
                 }
                 return eq; //No change
