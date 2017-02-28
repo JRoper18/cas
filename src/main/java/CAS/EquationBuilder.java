@@ -31,9 +31,7 @@ public class EquationBuilder{
                 case 1: //Only do meta-functions.
                     return Simplifier.simplifyMetaFunctions(processedEquation);
                 case 2: //Autosimplify this
-                    if(processedEquation.isType(SimplificationType.RATIONAL_NUMBER_EXPRESSION)){
-                        processedEquation = Simplifier.simplifyWithMetaFunction(processedEquation, MathOperator.SIMPLIFY_RATIONAL_EXPRESSION);
-                    }
+                    processedEquation = Simplifier.simplifyWithMetaFunction(processedEquation, MathOperator.SIMPLIFY_RATIONAL_EXPRESSION);
                     return Simplifier.simplifyWithMetaFunction(processedEquation, MathOperator.AUTOSIMPLIFY);
                 default:
                     return processedEquation;
@@ -165,11 +163,6 @@ public class EquationBuilder{
             }
         }
         return equationObjectList;
-    }
-    private static Equation toCorrectForm(Equation eq){
-        //Until I solve the infinite loop issue below,
-        return Simplifier.simplifyMetaFunctions(eq);
-        //return Simplifier.simplify(Simplifier.simplifyMetaFunctions(eq), SimplificationType.AUTOSIMPLIFIED_EXPRESSION);
     }
     public static Object parseString(String str){
         if(str.length() == 0){

@@ -33,6 +33,8 @@ public enum MathOperator {
     NUMBER_OF_OPERANDS(2, true, false, MathOperatorSubtype.META),
     OPERAND(2, true, false, MathOperatorSubtype.META),
     CONTAINS(1, false, false, MathOperatorSubtype.META),
+    ADJOIN(2, false, false, MathOperatorSubtype.META),
+    REST(1, false, false, MathOperatorSubtype.META),
     SIMPLIFY_RATIONAL_FRACTION(1, false, false, MathOperatorSubtype.META),
     SIMPLIFY_RATIONAL_EXPRESSION(1, false, false, MathOperatorSubtype.META),
     AUTOSIMPLIFY(1, false, false, MathOperatorSubtype.META),
@@ -47,6 +49,7 @@ public enum MathOperator {
     BASE(1, false, false, MathOperatorSubtype.META),
     EXPONENT(1, false, false, MathOperatorSubtype.META),
     TERM(1, false, false, MathOperatorSubtype.META),
+    MERGE_PRODUCTS(2, false, false, MathOperatorSubtype.META),
     //Atomic/building block/unchanging values/symbols
     NUMBER(0, false, false, MathOperatorSubtype.SYMBOL),
     TRUE(0, false, false, MathOperatorSubtype.SYMBOL),
@@ -80,6 +83,9 @@ public enum MathOperator {
     }
     public boolean isOrdered(){
         return this.ordered;
+    }
+    public boolean isDistributive() {
+        return !this.ordered;
     }
     public boolean isAssociative(){
         return this.associative;

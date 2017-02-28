@@ -23,6 +23,7 @@ public class SimplifierTest {
     @Test
     public void testMetaFunctions() throws Exception {
         assertEquals(EquationBuilder.makeUnprocessedEquation("2"), s.simplifyMetaFunctions(EquationBuilder.makeUnprocessedEquation("OPERAND(PLUS(4,2),1)")));
+        assertEquals(new Equation("ADJOIN(OPERAND(LIST(23, 4), 1), LIST(2,3,4))", 1), new Equation("LIST(4,2,3,4)"));
     }
 
     @Test
@@ -42,7 +43,7 @@ public class SimplifierTest {
     public void testRationalSimplification() throws Exception {
         assertEquals(new Equation("3"), new Equation("TIMES ( 1 , PLUS(1, 2))", 2));
         assertEquals(new Equation("FRACTION(-1,2)"), new Equation("(DIVIDE(MINUS(1, 2), 2))", 2));
-        assertEquals(new Equation("4.5"), new Equation("DIVIDE(PLUS(8, 1), 2)"));
-        assertEquals(new Equation("UNDEFINED"), new Equation("(DIVIDE(1, 0))"));
+        assertEquals(new Equation("4.5"), new Equation("DIVIDE(PLUS(8, 1), 2)", 2));
+        assertEquals(new Equation("UNDEFINED"), new Equation("(DIVIDE(1, 0))", 2));
     }
 }

@@ -8,5 +8,6 @@ public enum MathOperatorSubtype {
     BOOLEAN,
     META,
     PATTERN,
-    SYMBOL;
+    SYMBOL,
+    LIST;
 }

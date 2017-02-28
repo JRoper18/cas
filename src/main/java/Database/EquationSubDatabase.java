@@ -19,16 +19,7 @@ import static CAS.Simplifier.simplifyByOperator;
  */
 public class EquationSubDatabase { //NOTE: I know, I know, this should be in the actual SQLite database. I WILL do that, but I want to keep these here in case something goes wrong or I want to reference them directly. Once every sub is in the database I can remove this, but UNTIL THEN, it's a good idea to keep these here, in memory just in case.
     private static final EquationSub[] subsArray = {
-            new StructuralSub(new Equation("PATTERN_OR ( OR ( TRUE , FALSE ) , OR ( FALSE , TRUE ) , OR ( TRUE , TRUE ) )"), new Equation("TRUE")),
-            new StructuralSub(new Equation("OR ( FALSE , FALSE )"), new Equation("FALSE")),
-            new StructuralSub(new Equation("AND ( TRUE , TRUE )"), new Equation("TRUE")),
-            new StructuralSub(new Equation("PATTERN_OR ( AND ( TRUE , FALSE ) , AND ( FALSE , TRUE ) , AND ( FALSE , FALSE ) )"), new Equation("FALSE")),
-            new StructuralSub(new Equation("EQUALS ( _v1 , _v1 )"), new Equation("TRUE")),
-            new StructuralSub(new Equation("EQUALS ( _v1 , _v2 )"), new Equation("FALSE")),
-            new StructuralSub(new Equation("NOT ( FALSE )"), new Equation("TRUE")),
-            new StructuralSub(new Equation("NOT ( TRUE )"), new Equation("FALSE")),
-            new StructuralSub(new Equation("SUBTRACT( _v1, _v2)"), new Equation("PLUS(_v1, TIMES(_v2, -1))")),
-            new StructuralSub(new Equation("DIVIDE( _v1, _v2)", 1), new Equation("TIMES( _v1, POWER(_v2, -1))", 1)),
+
             new EquationSub((Serializable & DirectOperation) (eq -> {
                 BigInteger gcd = ((MathInteger) Simplifier.simplifyMetaFunctions(eq.getSubEquation(0)).getRoot()).num.gcd(((MathInteger) Simplifier.simplifyMetaFunctions(eq.getSubEquation(1)).getRoot()).num);
                 if(eq.getOperands().size() > 1){
@@ -446,11 +437,46 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 }
                 if(operands.size() == 2 && (operands.get(0).isType(MathOperator.MULTIPLY) || operands.get(1).isType(MathOperator.MULTIPLY))) {
                     if(operands.get(0).isType(MathOperator.MULTIPLY) && operands.get(1).isType(MathOperator.MULTIPLY)){
-
+                        return new Equation("MERGE_PRODUCTS(" + Equation.fromList(operands.get(0).getOperands()) + "," + Equation.fromList(operands.get(0).getOperands()) + ")");
                     }
                 }
                 return eq;//DEFAULT
-            }, new MathObject(MathOperator.SIMPLIFY_PRODUCT_RECURSIVE))
+            }, new MathObject(MathOperator.SIMPLIFY_PRODUCT_RECURSIVE)),
+            new EquationSub((DirectOperation & Serializable) eq -> {
+                List<Equation> p = eq.getSubEquation(0).toList();
+                List<Equation> q = eq.getSubEquation(1).toList();
+                if(p.isEmpty()){
+                    return Equation.fromList(q);
+                }
+                if(q.isEmpty()){
+                    return Equation.fromList(p);
+                }
+                List<Equation> firstProd = new Equation("SIMPLIFY_PRODUCT_RECURSIVE(LIST(" + p.get(0) + "," + q.get(0) + "))",1 ).toList();
+                if(firstProd.isEmpty()){
+                    return new Equation("MERGE_PRODUCTS(REST(" + eq.getSubEquation(0) + ")" + q.subList(1, q.size()) + ")", 1);
+                }
+                if(firstProd.size() == 1){
+
+                }
+                return eq; //DEFAULT
+            }, new MathObject(MathOperator.MERGE_PRODUCTS)),
+            new EquationSub((DirectOperation & Serializable) eq -> {
+                if(eq.isType(MathOperator.ADJOIN)){
+                    Equation list = eq.getSubEquation(1);
+                    List<Equation> newList = list.toList();
+                    newList.add(0, eq.getSubEquation(0));
+                    return Equation.fromList(newList);
+                }
+                return eq;
+            }, new MathObject(MathOperator.ADJOIN)),
+            new EquationSub((DirectOperation & Serializable) eq -> {
+                if(eq.isType(MathOperator.REST)){
+                    List<Equation> list = eq.getSubEquation(0).toList();
+                    list.remove(0);
+                    return Equation.fromList(list);
+                }
+                return eq;
+            }, new MathObject(MathOperator.REST))
     };
     public static final HashSet<EquationSub> subs = new HashSet<EquationSub>(Arrays.asList(subsArray));
 }

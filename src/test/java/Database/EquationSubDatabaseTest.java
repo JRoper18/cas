@@ -65,4 +65,17 @@ public class EquationSubDatabaseTest {
         assertEquals(new Equation("FRACTION(2, 9)",1), new Equation("SIMPLIFY_RATIONAL_EXPRESSION(TIMES(DIVIDE(1, 3), DIVIDE(2, 3))))",1));
         assertEquals(new Equation("UNDEFINED",1), new Equation("SIMPLIFY_RATIONAL_EXPRESSION(DIVIDE(PLUS(2, 1), 0))",1));
     }
+
+    @Test
+    public void testListOperations() throws Exception {
+        assertEquals(new Equation("LIST(1,2,3,4)", 0), new Equation("ADJOIN(1, LIST(2,3,4))", 1));
+        assertEquals(new Equation("LIST(1,2,3,4)", 0), new Equation("REST(LIST(0, 1, 2, 3, 4))", 1));
+        assertEquals(new Equation("LIST(1,2,3,4)", 0), new Equation("ADJOIN(1, LIST(2,3,4))", 1));
+
+    }
+
+    @Test
+    public void testPlusSimplification() throws Exception {
+        assertEquals(new Equation("TIMES(2, _x)"), new Equation("SIMPLIFY_SUM(PLUS(_x, _x))", 1));
+    }
 }

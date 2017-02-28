@@ -2,7 +2,9 @@ package CAS;
 
 import CAS.EquationObjects.*;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.io.UncheckedIOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,20 @@ public class Equation implements Serializable, Comparable<Equation>{
     }
     public Equation(Tree<MathObject> tree, int autoSimplifyLevel){
         this.tree = EquationBuilder.simplifyTree(tree, autoSimplifyLevel).tree;
+    }
+    public static Equation fromList(List<Equation> list){
+        String build = "";
+        for(Equation eq : list){
+            build += eq.toString() + ",";
+        }
+        build = build.substring(0, build.length() - 1); //Remove last paren
+        return new Equation("LIST(" + build + ")");
+    }
+    public List<Equation> toList(){
+        if(!this.isType(MathOperator.LIST)){
+            throw new UncheckedIOException(new IOException("This equation is not a list!"));
+        }
+        return this.getOperands();
     }
     public Equation(String str){
         this.tree = EquationBuilder.makeEquation(str).tree;
