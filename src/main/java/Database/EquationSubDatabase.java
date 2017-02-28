@@ -29,7 +29,6 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
             new StructuralSub(new Equation("NOT ( TRUE )"), new Equation("FALSE")),
             new StructuralSub(new Equation("SUBTRACT( _v1, _v2)"), new Equation("PLUS(_v1, TIMES(_v2, -1))")),
             new StructuralSub(new Equation("DIVIDE( _v1, _v2)", 1), new Equation("TIMES( _v1, POWER(_v2, -1))", 1)),
-            new StructuralSub(new Equation("TIMES( FRACTION (_v1, _v2), FRACTION(_v3, _v4))"), new Equation("FRACTION(TIMES(_v1, _v3),TIMES(_v2,_v4))")),
             new EquationSub((Serializable & DirectOperation) (eq -> {
                 BigInteger gcd = ((MathInteger) Simplifier.simplifyMetaFunctions(eq.getSubEquation(0)).getRoot()).num.gcd(((MathInteger) Simplifier.simplifyMetaFunctions(eq.getSubEquation(1)).getRoot()).num);
                 if(eq.getOperands().size() > 1){
@@ -67,6 +66,22 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     if (eq.tree.getChild(0).data instanceof MathInteger && eq.tree.getChild(1).data instanceof MathInteger) {
                         return new Equation(((MathInteger) eq.tree.getChild(0).data).add((MathInteger) eq.tree.getChild(1).data).toString());
                     }
+                    Equation arg1 = eq.getSubEquation(0);
+                    Equation arg2 = eq.getSubEquation(1);
+                    if(arg1.isType(SimplificationType.INTEGER)){
+                        arg1 = new Equation("FRACTION(" + arg1 + ", 1)", 0);
+                    }
+                    if(arg2.isType(SimplificationType.INTEGER)){
+                        arg2 = new Equation("FRACTION(" + arg2 + ", 1)", 0);
+                    }
+                    if(arg1.isType(MathOperator.FRACTION) && arg2.isType(MathOperator.FRACTION)){
+                        //FInd any common denominator of both fractions. Don't worry, we'll simplify it later.
+                        MathInteger newDenom = ((MathInteger) arg1.getSubEquation(1).getRoot()).mul((MathInteger) arg2.getSubEquation(1).getRoot());
+                        MathInteger arg1Scale = newDenom.div((MathInteger) arg1.getSubEquation(1).getRoot());
+                        MathInteger arg2Scale = newDenom.div((MathInteger) arg2.getSubEquation(1).getRoot());
+                        MathInteger newNumer = ((MathInteger) arg1.getSubEquation(0).getRoot()).mul(arg1Scale).add(((MathInteger) arg2.getSubEquation(0).getRoot()).mul(arg2Scale));
+                        return new Equation("SIMPLIFY_RATIONAL_FRACTION(FRACTION(" + newNumer + "," + newDenom + "))", 1);
+                    }
                 }
                 return eq; //No change
             }), (new MathObject(MathOperator.ADD))),
@@ -77,15 +92,18 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                         BigInteger num2 = ((MathInteger) eq.tree.getChild(1).data).num;
                         return new Equation(num1.multiply(num2).toString());
                     }
-                    else if(eq.getSubEquation(0).isType(SimplificationType.INTEGER) && eq.getSubEquation(1).isType(SimplificationType.FRACTION_STANDARD_FORM)){
-                        BigInteger num1 = ((MathInteger) eq.getSubEquation(0).getRoot()).num;
-                        BigInteger numer = ((MathInteger) eq.getSubEquation(1).getSubEquation(0).getRoot()).num;
-                        return new Equation("SIMPLIFY_RATIONAL_FRACTION(FRACTION(" + num1.multiply(numer) + "," + eq.getSubEquation(1).getSubEquation(1) + "))", 1);
+                    Equation arg1 = eq.getSubEquation(0);
+                    Equation arg2 = eq.getSubEquation(1);
+                    if(arg1.isType(SimplificationType.INTEGER)){
+                        arg1 = new Equation("FRACTION(" + arg1 + ", 1)");
                     }
-                    else if(eq.getSubEquation(0).isType(SimplificationType.FRACTION_STANDARD_FORM) && eq.getSubEquation(1).isType(SimplificationType.INTEGER)){
-                        BigInteger num1 = ((MathInteger) eq.getSubEquation(1).getRoot()).num;
-                        BigInteger numer = ((MathInteger) eq.getSubEquation(0).getSubEquation(0).getRoot()).num;
-                        return new Equation("SIMPLIFY_RATIONAL_FRACTION(FRACTION(" + num1.multiply(numer) + "," + eq.getSubEquation(0).getSubEquation(1) + "))");
+                    if(arg2.isType(SimplificationType.INTEGER)){
+                        arg2 = new Equation("FRACTION(" + arg2 + ", 1)");
+                    }
+                    if(arg1.isType(MathOperator.FRACTION) && arg2.isType(MathOperator.FRACTION)){
+                        MathInteger newNumer = ((MathInteger) arg1.getSubEquation(0).getRoot()).mul((MathInteger) arg2.getSubEquation(0).getRoot());
+                        MathInteger newDenom = ((MathInteger) arg1.getSubEquation(1).getRoot()).mul((MathInteger) arg2.getSubEquation(1).getRoot());
+                        return new Equation("SIMPLIFY_RATIONAL_FRACTION(FRACTION(" + newNumer + "," + newDenom + "))", 1);
                     }
                 }
                 return eq; //No change
@@ -132,11 +150,19 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 if(newEq.getRoot().getOperator() == MathOperator.FRACTION && new Equation(newEq.tree.getChild(0)).isType(SimplificationType.INTEGER) && new Equation(newEq.tree.getChild(1)).isType(SimplificationType.INTEGER)){
                     MathInteger numer = (MathInteger) newEq.getSubEquation(0).getRoot();
                     MathInteger denom = (MathInteger) newEq.getSubEquation(1).getRoot();
+                    if(denom.num.signum() == -1){ //Either: they're both divisible by negative 1, so just get rid of that, or the denominator only is negative, so we make the numerator negative (for consistency)
+                        numer = new MathInteger(numer.num.negate());
+                        denom = new MathInteger(denom.num.negate());
+                    }
                     MathInteger gcd = new MathInteger(((MathInteger) newEq.tree.getChild(0).data).num.gcd(((MathInteger) newEq.tree.getChild(1).data).num));
-                    if(denom.div(gcd).num.compareTo(new BigInteger("1")) == 0){
+                    MathInteger newDenom = denom.div(gcd);
+                    if(newDenom.num.compareTo(new BigInteger("1")) == 0){
                         return new Equation(numer.div(gcd).num.toString());
                     }
-                    return new Equation("FRACTION(" + numer.div(gcd) + "," + denom.div(gcd) + ")", 1);
+                    if(newDenom.num.signum() == 0){ //If it's 0
+                        return new Equation("UNDEFINED");
+                    }
+                    return new Equation("FRACTION(" + numer.div(gcd) + "," + newDenom + ")", 1);
                 }
                 else{
                     return newEq;
@@ -197,7 +223,8 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                         Equation replace = new Equation("SIMPLIFY_RATIONAL_EXPRESSION(" + new Equation(child) + ")", 1);
                         child.replaceWith(replace.tree);
                     }
-                    return Simplifier.simplifyByOperator(newEq);
+                    Equation operatorSimplified =  Simplifier.simplifyByOperator(newEq);
+                    return Simplifier.simplifyWithMetaFunction(operatorSimplified, MathOperator.SIMPLIFY_RATIONAL_FRACTION);
                 }
                 else{
                     return newEq;

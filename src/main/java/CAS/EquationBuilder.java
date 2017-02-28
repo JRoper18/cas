@@ -70,7 +70,6 @@ public class EquationBuilder{
                 }
                 selected = selected.getParent().getChild(selected.getParent().getNumberOfChildren() - 1);
             } else if (equationObject instanceof RationalTempInfoHolder) {  //It's not syntax. Is it a temporary info holder?
-                System.out.println("CHANGE");
                 selected.data = new MathObject(MathOperator.FRACTION);
                 selected.addChildWithData(((RationalTempInfoHolder) equationObject).numer);
                 selected.addChildWithData(((RationalTempInfoHolder) equationObject).denom);

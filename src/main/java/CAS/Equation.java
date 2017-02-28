@@ -85,6 +85,7 @@ public class Equation implements Serializable, Comparable<Equation>{
     }
 
     public int compareTo(Equation equation){ //Meant to satisfy the triangle operator, Joel Cohen's book pdf page 104/5
+        //Or, if you don't read, this basically defines a predefined order for which arguements should be in.
         Equation eq1 = this.clone();
         Equation eq2 = equation.clone();
         MathOperator eq1Op = eq1.getRoot().getOperator();
