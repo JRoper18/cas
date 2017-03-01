@@ -443,20 +443,26 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 return eq;//DEFAULT
             }, new MathObject(MathOperator.SIMPLIFY_PRODUCT_RECURSIVE)),
             new EquationSub((DirectOperation & Serializable) eq -> {
-                List<Equation> p = eq.getSubEquation(0).toList();
-                List<Equation> q = eq.getSubEquation(1).toList();
-                if(p.isEmpty()){
+                List<Equation> pList = eq.getSubEquation(0).toList();
+                List<Equation> qList = eq.getSubEquation(1).toList();
+                if(pList.isEmpty()){
                     return Equation.fromList(q);
                 }
-                if(q.isEmpty()){
+                if(qList.isEmpty()){
                     return Equation.fromList(p);
                 }
-                List<Equation> firstProd = new Equation("SIMPLIFY_PRODUCT_RECURSIVE(LIST(" + p.get(0) + "," + q.get(0) + "))",1 ).toList();
+                List<Equation> firstProd = new Equation("SIMPLIFY_PRODUCT_RECURSIVE(LIST(" + pList.get(0) + "," + qList.get(0) + "))",1 ).toList();
                 if(firstProd.isEmpty()){
-                    return new Equation("MERGE_PRODUCTS(REST(" + eq.getSubEquation(0) + ")" + q.subList(1, q.size()) + ")", 1);
+                    return new Equation("MERGE_PRODUCTS(REST(" + eq.getSubEquation(0) + "), REST(" + eq.getSubEquation(1) + "))", 1);
                 }
                 if(firstProd.size() == 1){
-
+                    return new Equation("ADJOIN(" + firstProd.get(0) + ", MERGE_PRODUCTS(REST(" + eq.getSubEquation(0) + "), REST(" + eq.getSubEquation(1) + ")))",1);
+                }
+                if(firstProd.get(0).equals(pList.get(0))){
+                    return new Equation("ADJOIN(" + pList.get(0) + ", MERGE_PRODUCTS(REST(" + eq.getSubEquation(0) + ")," + eq.getSubEquation(1) + "))",1);
+                }
+                if(firstProd.get(0).equals(qList.get(0))) {
+                    return new Equation("ADJOIN(" + qList.get(0) + ", MERGE_PRODUCTS(" + eq.getSubEquation(0) + ", REST(" + eq.getSubEquation(1) + ")))",1);
                 }
                 return eq; //DEFAULT
             }, new MathObject(MathOperator.MERGE_PRODUCTS)),
