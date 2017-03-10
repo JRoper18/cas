@@ -10,6 +10,9 @@ import com.rits.cloning.Cloner;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by jack on 1/5/2017.
@@ -81,6 +84,24 @@ public class Simplifier {
         });
         Equation newEq = sub.applyEverywhere(equation);
         return recursiveApplyMeta(newEq.tree);
+    }
+    public static Equation orderEquation(Equation equation){
+        Tree<MathObject> eqTree = equation.tree.clone();
+        List<Equation> newChildren = equation.getOperands();
+        if(eqTree.hasChildren()){
+            newChildren.clear();
+            for(int i = 0; i<eqTree.getNumberOfChildren(); i++){
+                Equation child = equation.getSubEquation(i);
+                newChildren.add(orderEquation(child));
+            }
+        }
+        Collections.sort(newChildren);
+        List<Tree<MathObject>> newOperands = new ArrayList<>();
+        for(Equation newChild : newChildren){
+            newOperands.add(newChild.tree);
+        }
+        eqTree.setChildren(newOperands);
+        return new Equation(eqTree);
     }
     private static Equation recursiveApplyMeta(Tree<MathObject> applyTo){
         if(applyTo.hasChildren()){

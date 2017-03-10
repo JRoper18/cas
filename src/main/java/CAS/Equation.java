@@ -20,6 +20,12 @@ public class Equation implements Serializable, Comparable<Equation>{
     public Equation(Tree<MathObject> tree, int autoSimplifyLevel){
         this.tree = EquationBuilder.simplifyTree(tree, autoSimplifyLevel).tree;
     }
+    public static Equation fromList(Equation list){
+        if(list.isType(MathOperator.LIST)){
+            return list;
+        }
+        return new Equation("LIST(" + list.toString() + ")", 0);
+    }
     public static Equation fromList(List<Equation> list){
         String build = "";
         for(Equation eq : list){
@@ -106,12 +112,14 @@ public class Equation implements Serializable, Comparable<Equation>{
         Equation eq2 = equation.clone();
         MathOperator eq1Op = eq1.getRoot().getOperator();
         MathOperator eq2Op = eq2.getRoot().getOperator();
+        /*
         if(!this.isType(SimplificationType.AUTOSIMPLIFIED_EXPRESSION)){
            eq1 = new Equation("AUTOSIMPLIFY(" + this.toString() + ")", 1);
         }
         if(!equation.isType(SimplificationType.AUTOSIMPLIFIED_EXPRESSION)){
             eq2 = new Equation("AUTOSIMPLIFY(" + equation.toString() + ")", 1);
         }
+        */
         if((eq1.isType(SimplificationType.INTEGER) || eq1.isType(SimplificationType.FRACTION_STANDARD_FORM)) && ((eq2.isType(SimplificationType.FRACTION_STANDARD_FORM)) || eq2.isType(SimplificationType.INTEGER))){
             BigDecimal eq1Num = (eq1Op==MathOperator.FRACTION)? new BigDecimal(((MathInteger) eq1.getSubEquation(0).getRoot()).num).divide(new BigDecimal(((MathInteger) eq1.getSubEquation(1).getRoot()).num)) : new BigDecimal(((MathInteger) eq1.getRoot()).num);
             BigDecimal eq2Num = (eq2Op==MathOperator.FRACTION)? new BigDecimal(((MathInteger) eq2.getSubEquation(0).getRoot()).num).divide(new BigDecimal(((MathInteger) eq2.getSubEquation(1).getRoot()).num)) : new BigDecimal(((MathInteger) eq2.getRoot()).num);

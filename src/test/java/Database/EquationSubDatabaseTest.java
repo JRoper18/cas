@@ -73,10 +73,21 @@ public class EquationSubDatabaseTest {
         assertEquals(new Equation("LIST(1,2,3,4)", 0), new Equation("ADJOIN(1, LIST(2,3,4))", 1));
     }
 
-    
+    @Test
+    public void testBase() throws Exception {
+        assertEquals(new Equation("_x", 0), new Equation("BASE(POWER(_x, 2))", 1));
+        assertEquals(new Equation("_x", 0), new Equation("BASE(POWER(_x, 3))", 1));
+        assertEquals(new Equation("3", 0), new Equation("BASE(POWER(3, 2))", 1));
+        assertEquals(new Equation("3", 0), new Equation("BASE(3)", 1));
+        assertEquals(new Equation("ADD(2, 3)", 0), new Equation("BASE(ADD(2, 3))", 1));
+    }
 
     @Test
-    public void testPlusSimplification() throws Exception {
-        assertEquals(new Equation("TIMES(2, _x)"), new Equation("SIMPLIFY_SUM(PLUS(_x, _x))", 1));
+    public void testExponent() throws Exception {
+        assertEquals(new Equation("2", 0), new Equation("EXPONENT(POWER(3, 2))", 1));
+        assertEquals(new Equation("_x", 0), new Equation("EXPONENT(POWER(3, _x))", 1));
+        assertEquals(new Equation("1", 0), new Equation("EXPONENT(POWER(3, 1))", 1));
+        assertEquals(new Equation("1", 0), new Equation("EXPONENT(3)", 1));
+        assertEquals(new Equation("ADD(2, 3)", 0), new Equation("EXPONENT(POWER(1, ADD(2, 3)))", 1));
     }
 }

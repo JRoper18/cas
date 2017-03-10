@@ -6,7 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="0ba3a60f-56b4-4d4a-9bf1-cc9202c65bbb" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/CAS/Equation.java" afterPath="$PROJECT_DIR$/src/main/java/CAS/Equation.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/CAS/EquationBuilder.java" afterPath="$PROJECT_DIR$/src/main/java/CAS/EquationBuilder.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/CAS/Simplifier.java" afterPath="$PROJECT_DIR$/src/main/java/CAS/Simplifier.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/Database/EquationSubDatabase.java" afterPath="$PROJECT_DIR$/src/main/java/Database/EquationSubDatabase.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/CAS/EquationTest.java" afterPath="$PROJECT_DIR$/src/test/java/CAS/EquationTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/CAS/SimplifierTest.java" afterPath="$PROJECT_DIR$/src/test/java/CAS/SimplifierTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/Database/EquationSubDatabaseTest.java" afterPath="$PROJECT_DIR$/src/test/java/Database/EquationSubDatabaseTest.java" />
     </list>
     <ignored path="CAS.iws" />
@@ -28,22 +33,12 @@
     <favorites_list name="CAS" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="600">
       <file leaf-file-name="EquationSubDatabaseTest.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/Database/EquationSubDatabaseTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1171">
-              <caret line="75" column="4" lean-forward="false" selection-start-line="75" selection-start-column="4" selection-end-line="75" selection-end-column="4" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SimplifierTest.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/CAS/SimplifierTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="874">
-              <caret line="43" column="52" lean-forward="false" selection-start-line="43" selection-start-column="52" selection-end-line="43" selection-end-column="52" />
+            <state relative-caret-position="1105">
+              <caret line="90" column="101" lean-forward="false" selection-start-line="90" selection-start-column="101" selection-end-line="90" selection-end-column="101" />
               <folding />
             </state>
           </provider>
@@ -52,18 +47,45 @@
       <file leaf-file-name="EquationSubDatabase.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/Database/EquationSubDatabase.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="991">
-              <caret line="466" column="36" lean-forward="true" selection-start-line="466" selection-start-column="36" selection-end-line="466" selection-end-column="36" />
+            <state relative-caret-position="879">
+              <caret line="241" column="82" lean-forward="false" selection-start-line="241" selection-start-column="82" selection-end-line="241" selection-end-column="82" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MathOperator.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/CAS/EquationObjects/MathOperator.java">
+      <file leaf-file-name="Simplifier.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Simplifier.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="679">
-              <caret line="37" column="63" lean-forward="false" selection-start-line="37" selection-start-column="63" selection-end-line="37" selection-end-column="63" />
+            <state relative-caret-position="1171">
+              <caret line="103" column="36" lean-forward="false" selection-start-line="103" selection-start-column="36" selection-end-line="103" selection-end-column="36" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="EquationBuilder.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/CAS/EquationBuilder.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="590">
+              <caret line="34" column="84" lean-forward="false" selection-start-line="34" selection-start-column="84" selection-end-line="34" selection-end-column="84" />
+              <folding>
+                <element signature="e#1684#1685#0" expanded="true" />
+                <element signature="e#1731#1732#0" expanded="true" />
+                <element signature="method#makeEquationTree#0;class#EquationBuilder#0" expanded="false" />
+                <element signature="method#preProcess#0;class#EquationBuilder#0" expanded="false" />
+                <element signature="method#parseString#0;class#EquationBuilder#0" expanded="false" />
+                <element signature="class#RationalTempInfoHolder#0;class#EquationBuilder#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="EquationTest.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/CAS/EquationTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="561">
+              <caret line="19" column="63" lean-forward="true" selection-start-line="19" selection-start-column="63" selection-end-line="19" selection-end-column="63" />
               <folding />
             </state>
           </provider>
@@ -100,6 +122,7 @@
       <find>MULTIPL</find>
       <find>MERGE</find>
       <find>list</find>
+      <find>TERM</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -157,16 +180,16 @@
         <option value="$PROJECT_DIR$/src/main/java/CAS/EquationObjects/AbbriviationData.java" />
         <option value="$PROJECT_DIR$/src/main/java/CAS/EquationObjects/EquationObjectAbbriviations.java" />
         <option value="$PROJECT_DIR$/src/main/java/CAS/EquationObjects/MathObjectAbbriviations.java" />
-        <option value="$PROJECT_DIR$/src/test/java/CAS/EquationTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/CAS/Identifier.java" />
         <option value="$PROJECT_DIR$/src/test/java/CAS/IdentifierTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/CAS/EquationBuilderTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/CAS/Simplifier.java" />
-        <option value="$PROJECT_DIR$/src/main/java/CAS/EquationBuilder.java" />
-        <option value="$PROJECT_DIR$/src/main/java/CAS/Equation.java" />
         <option value="$PROJECT_DIR$/src/main/java/CAS/EquationObjects/MathOperatorSubtype.java" />
-        <option value="$PROJECT_DIR$/src/test/java/CAS/SimplifierTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/CAS/EquationObjects/MathOperator.java" />
+        <option value="$PROJECT_DIR$/src/main/java/CAS/Simplifier.java" />
+        <option value="$PROJECT_DIR$/src/main/java/CAS/Equation.java" />
+        <option value="$PROJECT_DIR$/src/test/java/CAS/EquationTest.java" />
+        <option value="$PROJECT_DIR$/src/test/java/CAS/SimplifierTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/CAS/EquationBuilder.java" />
         <option value="$PROJECT_DIR$/src/main/java/Database/EquationSubDatabase.java" />
         <option value="$PROJECT_DIR$/src/test/java/Database/EquationSubDatabaseTest.java" />
       </list>
@@ -206,7 +229,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
@@ -378,7 +401,7 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -409,8 +432,8 @@
       <recent name="C:\Users\jack\Documents\GitHub\CAS\src\main\java" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.EquationSubDatabaseTest.testListOperations">
-    <configuration default="false" name="SimplifierTest.testRationalSimplification" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="JUnit.EquationSubDatabaseTest.testExponent">
+    <configuration default="false" name="SimplifierTest.testSortEquation" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
           <option name="PATTERN" value="CAS.*" />
@@ -422,7 +445,7 @@
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="CAS" />
       <option name="MAIN_CLASS_NAME" value="CAS.SimplifierTest" />
-      <option name="METHOD_NAME" value="testRationalSimplification" />
+      <option name="METHOD_NAME" value="testSortEquation" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -436,7 +459,7 @@
       <patterns />
       <method />
     </configuration>
-    <configuration default="false" name="SimplifierTest.testFractionSimplification" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration default="false" name="EquationTest.testCompareTo" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
           <option name="PATTERN" value="CAS.*" />
@@ -447,8 +470,8 @@
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="CAS" />
-      <option name="MAIN_CLASS_NAME" value="CAS.SimplifierTest" />
-      <option name="METHOD_NAME" value="testFractionSimplification" />
+      <option name="MAIN_CLASS_NAME" value="CAS.EquationTest" />
+      <option name="METHOD_NAME" value="testCompareTo" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -462,7 +485,7 @@
       <patterns />
       <method />
     </configuration>
-    <configuration default="false" name="EquationSubDatabaseTest.testPlusSimplification" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration default="false" name="EquationSubDatabaseTest.testTerm" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
           <option name="PATTERN" value="Database.*" />
@@ -474,7 +497,7 @@
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="Database" />
       <option name="MAIN_CLASS_NAME" value="Database.EquationSubDatabaseTest" />
-      <option name="METHOD_NAME" value="testPlusSimplification" />
+      <option name="METHOD_NAME" value="testTerm" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -488,33 +511,7 @@
       <patterns />
       <method />
     </configuration>
-    <configuration default="false" name="SimplifierTest.testMetaFunctions" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="CAS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <module name="cas-project" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="CAS" />
-      <option name="MAIN_CLASS_NAME" value="CAS.SimplifierTest" />
-      <option name="METHOD_NAME" value="testMetaFunctions" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-      <method />
-    </configuration>
-    <configuration default="false" name="EquationSubDatabaseTest.testListOperations" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration default="false" name="EquationSubDatabaseTest.testBase" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
           <option name="PATTERN" value="Database.*" />
@@ -526,7 +523,33 @@
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="Database" />
       <option name="MAIN_CLASS_NAME" value="Database.EquationSubDatabaseTest" />
-      <option name="METHOD_NAME" value="testListOperations" />
+      <option name="METHOD_NAME" value="testBase" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="false" name="EquationSubDatabaseTest.testExponent" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="Database.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <module name="cas-project" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="Database" />
+      <option name="MAIN_CLASS_NAME" value="Database.EquationSubDatabaseTest" />
+      <option name="METHOD_NAME" value="testExponent" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -745,19 +768,19 @@
       <method />
     </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="JUnit.SimplifierTest.testRationalSimplification" />
-      <item index="1" class="java.lang.String" itemvalue="JUnit.SimplifierTest.testFractionSimplification" />
-      <item index="2" class="java.lang.String" itemvalue="JUnit.EquationSubDatabaseTest.testPlusSimplification" />
-      <item index="3" class="java.lang.String" itemvalue="JUnit.SimplifierTest.testMetaFunctions" />
-      <item index="4" class="java.lang.String" itemvalue="JUnit.EquationSubDatabaseTest.testListOperations" />
+      <item index="0" class="java.lang.String" itemvalue="JUnit.SimplifierTest.testSortEquation" />
+      <item index="1" class="java.lang.String" itemvalue="JUnit.EquationTest.testCompareTo" />
+      <item index="2" class="java.lang.String" itemvalue="JUnit.EquationSubDatabaseTest.testTerm" />
+      <item index="3" class="java.lang.String" itemvalue="JUnit.EquationSubDatabaseTest.testBase" />
+      <item index="4" class="java.lang.String" itemvalue="JUnit.EquationSubDatabaseTest.testExponent" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JUnit.EquationSubDatabaseTest.testListOperations" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.SimplifierTest.testMetaFunctions" />
-        <item index="2" class="java.lang.String" itemvalue="JUnit.EquationSubDatabaseTest.testPlusSimplification" />
-        <item index="3" class="java.lang.String" itemvalue="JUnit.SimplifierTest.testRationalSimplification" />
-        <item index="4" class="java.lang.String" itemvalue="JUnit.SimplifierTest.testFractionSimplification" />
+        <item index="0" class="java.lang.String" itemvalue="JUnit.EquationSubDatabaseTest.testExponent" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.EquationSubDatabaseTest.testBase" />
+        <item index="2" class="java.lang.String" itemvalue="JUnit.EquationSubDatabaseTest.testTerm" />
+        <item index="3" class="java.lang.String" itemvalue="JUnit.EquationTest.testCompareTo" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.SimplifierTest.testSortEquation" />
       </list>
     </recent_temporary>
     <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android Application">
@@ -999,39 +1022,46 @@
       <option name="project" value="LOCAL" />
       <updated>1488319282968</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="Merge products worked on but not tested">
+      <created>1488342227992</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1488342227992</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="EquationSubDatabaseTest_testListOperations - 2017.02.28 at 15h 00m 32s.xml">
-      <configuration name="EquationSubDatabaseTest.testListOperations" configurationId="JUnit" />
+    <history-entry file="EquationSubDatabaseTest_testBase - 2017.03.09 at 20h 56m 40s.xml">
+      <configuration name="EquationSubDatabaseTest.testBase" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="EquationSubDatabaseTest_testListOperations - 2017.02.28 at 15h 00m 53s.xml">
-      <configuration name="EquationSubDatabaseTest.testListOperations" configurationId="JUnit" />
+    <history-entry file="EquationSubDatabaseTest_testBase - 2017.03.09 at 20h 57m 27s.xml">
+      <configuration name="EquationSubDatabaseTest.testBase" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="EquationSubDatabaseTest_testPlusSimplification - 2017.02.28 at 12h 52m 18s.xml">
-      <configuration name="EquationSubDatabaseTest.testPlusSimplification" configurationId="JUnit" />
+    <history-entry file="EquationSubDatabaseTest_testBase - 2017.03.09 at 20h 58m 04s.xml">
+      <configuration name="EquationSubDatabaseTest.testBase" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="EquationSubDatabaseTest_testPlusSimplification - 2017.02.28 at 12h 52m 24s.xml">
-      <configuration name="EquationSubDatabaseTest.testPlusSimplification" configurationId="JUnit" />
+    <history-entry file="EquationSubDatabaseTest_testBase - 2017.03.09 at 20h 58m 15s.xml">
+      <configuration name="EquationSubDatabaseTest.testBase" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="EquationSubDatabaseTest_testPlusSimplification - 2017.02.28 at 14h 54m 16s.xml">
-      <configuration name="EquationSubDatabaseTest.testPlusSimplification" configurationId="JUnit" />
+    <history-entry file="EquationSubDatabaseTest_testBase - 2017.03.09 at 20h 59m 00s.xml">
+      <configuration name="EquationSubDatabaseTest.testBase" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SimplifierTest_testMetaFunctions - 2017.02.28 at 14h 54m 25s.xml">
-      <configuration name="SimplifierTest.testMetaFunctions" configurationId="JUnit" />
+    <history-entry file="EquationSubDatabaseTest_testExponent - 2017.03.09 at 20h 59m 01s.xml">
+      <configuration name="EquationSubDatabaseTest.testExponent" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SimplifierTest_testMetaFunctions - 2017.02.28 at 14h 55m 03s.xml">
-      <configuration name="SimplifierTest.testMetaFunctions" configurationId="JUnit" />
+    <history-entry file="EquationSubDatabaseTest_testExponent - 2017.03.09 at 20h 59m 44s.xml">
+      <configuration name="EquationSubDatabaseTest.testExponent" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SimplifierTest_testMetaFunctions - 2017.02.28 at 14h 55m 22s.xml">
-      <configuration name="SimplifierTest.testMetaFunctions" configurationId="JUnit" />
+    <history-entry file="EquationSubDatabaseTest_testExponent - 2017.03.09 at 21h 00m 06s.xml">
+      <configuration name="EquationSubDatabaseTest.testExponent" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SimplifierTest_testMetaFunctions - 2017.02.28 at 14h 57m 53s.xml">
-      <configuration name="SimplifierTest.testMetaFunctions" configurationId="JUnit" />
+    <history-entry file="EquationSubDatabaseTest_testTerm - 2017.03.09 at 20h 54m 51s.xml">
+      <configuration name="EquationSubDatabaseTest.testTerm" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SimplifierTest_testMetaFunctions - 2017.02.28 at 15h 00m 27s.xml">
-      <configuration name="SimplifierTest.testMetaFunctions" configurationId="JUnit" />
+    <history-entry file="EquationSubDatabaseTest_testTerm - 2017.03.09 at 20h 56m 36s.xml">
+      <configuration name="EquationSubDatabaseTest.testTerm" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
@@ -1100,7 +1130,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added conditionals for equation substitution. I didn't find any bugs, and I wrote it correctly on the first try. What did I fuck up on......" />
     <MESSAGE value="Added conditionals for equation substitution. I didn't find any bugs, and I wrote it correctly on the first try. Now we wait for the demon bug." />
     <MESSAGE value="Direct operations for equation substitution added." />
     <MESSAGE value="Working on boolean trees so I can get rid of non-equation conditions" />
@@ -1125,11 +1154,12 @@
     <MESSAGE value="Fixed decimal to fraction issue with EquationBuilder" />
     <MESSAGE value="Added 1 metric fuckton (U.S buttload) of unit tests and add and multiple now work for fractions" />
     <MESSAGE value="Working on list operations" />
-    <option name="LAST_COMMIT_MESSAGE" value="Working on list operations" />
+    <MESSAGE value="Merge products worked on but not tested" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge products worked on but not tested" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="21" />
+      <option name="time" value="24" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1270,13 +1300,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/CAS/EquationTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="627">
-          <caret line="21" column="8" lean-forward="false" selection-start-line="21" selection-start-column="8" selection-end-line="21" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Tree.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="825">
@@ -1329,37 +1352,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Simplifier.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="759">
-          <caret line="82" column="0" lean-forward="false" selection-start-line="82" selection-start-column="0" selection-end-line="82" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/EquationBuilder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1254">
-          <caret line="166" column="0" lean-forward="false" selection-start-line="166" selection-start-column="0" selection-end-line="166" selection-end-column="0" />
-          <folding>
-            <element signature="e#1599#1600#0" expanded="false" />
-            <element signature="e#1646#1647#0" expanded="false" />
-            <element signature="method#makeEquationTree#0;class#EquationBuilder#0" expanded="false" />
-            <element signature="method#preProcess#0;class#EquationBuilder#0" expanded="false" />
-            <element signature="method#parseString#0;class#EquationBuilder#0" expanded="false" />
-            <element signature="class#RationalTempInfoHolder#0;class#EquationBuilder#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Equation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="825">
-          <caret line="34" column="34" lean-forward="false" selection-start-line="34" selection-start-column="34" selection-end-line="34" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/CAS/EquationObjects/MathOperatorSubtype.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="363">
@@ -1370,32 +1362,87 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/CAS/EquationObjects/MathOperator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="679">
+        <state relative-caret-position="1221">
           <caret line="37" column="63" lean-forward="false" selection-start-line="37" selection-start-column="63" selection-end-line="37" selection-end-column="63" />
+          <folding>
+            <element signature="e#3439#3440#0" expanded="false" />
+            <element signature="e#3510#3511#0" expanded="false" />
+            <element signature="e#3967#3968#0" expanded="false" />
+            <element signature="e#4002#4003#0" expanded="false" />
+            <element signature="e#4033#4034#0" expanded="false" />
+            <element signature="e#4070#4071#0" expanded="false" />
+            <element signature="e#4102#4103#0" expanded="false" />
+            <element signature="e#4137#4138#0" expanded="false" />
+            <element signature="e#4175#4176#0" expanded="false" />
+            <element signature="e#4211#4212#0" expanded="false" />
+            <element signature="e#4247#4248#0" expanded="false" />
+            <element signature="e#4286#4287#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Equation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="775">
+          <caret line="177" column="53" lean-forward="false" selection-start-line="177" selection-start-column="53" selection-end-line="177" selection-end-column="53" />
+          <folding>
+            <element signature="e#3377#3378#0" expanded="false" />
+            <element signature="e#3429#3430#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/CAS/EquationTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="561">
+          <caret line="19" column="63" lean-forward="true" selection-start-line="19" selection-start-column="63" selection-end-line="19" selection-end-column="63" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Database/EquationSubDatabase.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/EquationBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="991">
-          <caret line="466" column="36" lean-forward="true" selection-start-line="466" selection-start-column="36" selection-end-line="466" selection-end-column="36" />
+        <state relative-caret-position="590">
+          <caret line="34" column="84" lean-forward="false" selection-start-line="34" selection-start-column="84" selection-end-line="34" selection-end-column="84" />
+          <folding>
+            <element signature="e#1684#1685#0" expanded="true" />
+            <element signature="e#1731#1732#0" expanded="true" />
+            <element signature="method#makeEquationTree#0;class#EquationBuilder#0" expanded="false" />
+            <element signature="method#preProcess#0;class#EquationBuilder#0" expanded="false" />
+            <element signature="method#parseString#0;class#EquationBuilder#0" expanded="false" />
+            <element signature="class#RationalTempInfoHolder#0;class#EquationBuilder#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/CAS/Simplifier.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1171">
+          <caret line="103" column="36" lean-forward="false" selection-start-line="103" selection-start-column="36" selection-end-line="103" selection-end-column="36" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/CAS/SimplifierTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="874">
-          <caret line="43" column="52" lean-forward="false" selection-start-line="43" selection-start-column="52" selection-end-line="43" selection-end-column="52" />
+        <state relative-caret-position="1006">
+          <caret line="52" column="122" lean-forward="false" selection-start-line="52" selection-start-column="122" selection-end-line="52" selection-end-column="122" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Database/EquationSubDatabase.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="879">
+          <caret line="241" column="82" lean-forward="false" selection-start-line="241" selection-start-column="82" selection-end-line="241" selection-end-column="82" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/Database/EquationSubDatabaseTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1171">
-          <caret line="75" column="4" lean-forward="false" selection-start-line="75" selection-start-column="4" selection-end-line="75" selection-end-column="4" />
+        <state relative-caret-position="1105">
+          <caret line="90" column="101" lean-forward="false" selection-start-line="90" selection-start-column="101" selection-end-line="90" selection-end-column="101" />
           <folding />
         </state>
       </provider>

@@ -228,12 +228,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     if(op == MathOperator.POWER){
                         return toEval.getSubEquation(0);
                     }
-                    else if(toEval.isType(SimplificationType.INTEGER) || toEval.isType(SimplificationType.FRACTION_STANDARD_FORM)){
-                        return new Equation("UNDEFINED");
-                    }
-                    else{
-                        return toEval; //Assume exponent 1
-                    }
+                    return toEval; //Assume exponent 1
                 }
                 return eq;
             }), new MathObject(MathOperator.BASE)),
@@ -244,34 +239,10 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     if(op == MathOperator.POWER){
                         return toEval.getSubEquation(1);
                     }
-                    else if(toEval.isType(SimplificationType.INTEGER) || toEval.isType(SimplificationType.FRACTION_STANDARD_FORM)){
-                        return new Equation("UNDEFINED");
-                    }
-                    else{
-                        return new Equation("1"); //Assume exponent 1, base expression
-                    }
+                    return new Equation("1"); //Assume exponent 1, base expression
                 }
                 return eq;
             }), new MathObject(MathOperator.EXPONENT)),
-            new EquationSub((DirectOperation & Serializable) (eq -> {
-              if(eq.getRoot().getOperator() == MathOperator.TERM){
-                  Equation sub = eq.getSubEquation(0).clone();
-                  MathOperator op = sub.getRoot().getOperator();
-                  if(op.getSubType() == MathOperatorSubtype.SYMBOL || op == MathOperator.POWER || op == MathOperator.FACTORIAL || op == MathOperator.CUSTOM_FUNCTION){
-                      return sub;
-                  }
-                  if(op == MathOperator.MULTIPLY){
-                      if(sub.getSubEquation(0).isType(SimplificationType.INTEGER) || sub.getSubEquation(0).isType(SimplificationType.FRACTION_STANDARD_FORM)){
-                          Equation temp = sub.clone();
-                          temp.tree.removeChild(0);
-                          return temp;
-                      }
-                      return sub;
-                  }
-                  return new Equation("UNDEFINED");
-              }
-              return eq;
-            }), new MathObject(MathOperator.TERM)),
             new EquationSub((DirectOperation & Serializable) (eq -> {
                 Equation newEq = eq.getSubEquation(0); //Autosimplify is the root term
                 EquationBuilder.setLevel(1);
@@ -322,150 +293,10 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 }
             }), new MathObject(MathOperator.AUTOSIMPLIFY)),
             new EquationSub((DirectOperation & Serializable) eq -> {
-                Equation base = new Equation("BASE(" + eq + ")");
-                Equation exponent = new Equation("EXPONENT(" + eq + ")");
-                if(base.isType(MathOperator.UNDEFINED) || exponent.isType(MathOperator.UNDEFINED)){
-                    return new Equation("UNDEFINED");
-                }
-                if(base.equals(new Equation("0"))){
-                    boolean isPositive = false; //Can't have 0^-n, because that is 1/0. Check if it's positive
-                    if(exponent.isType(SimplificationType.INTEGER)){
-                        isPositive = (((MathInteger) exponent.getRoot()).num.signum() < 0);
-                    }
-                    else if(exponent.isType(MathOperator.FRACTION)){
-                        isPositive = (((MathInteger) exponent.getSubEquation(0).getRoot()).num.signum() / (((MathInteger) exponent.getSubEquation(0).getRoot()).num.signum()) < 0);
-                    }
-                    if(!isPositive){
-                        return new Equation("UNDEFINED");
-                    }
-                    return new Equation("0");
-                }
-                if(base.equals(new Equation("1"))){ //Duh. 1^anything = 1
-                    return base;
-                }
-                if(exponent.isType(SimplificationType.INTEGER)){
-                    return new Equation("SIMPLIFY_POWER_INT(" + eq + ")"); //Check for special rules for integer exponents
-                }
-                return eq; //Last resort;
-            }, new MathObject(MathOperator.SIMPLIFY_POWER)),
-            new EquationSub((DirectOperation & Serializable) eq -> {
-                Equation exponentInt = eq.getSubEquation(1);
-                Equation base = eq.getSubEquation(0);
-                if(exponentInt.isType(SimplificationType.INTEGER) || exponentInt.isType(MathOperator.FRACTION)){ //Just concrete, constant numbers.
-                    return new Equation("SIMPLIFY_RATIONAL_EXPRESSION(" + eq + ")");
-                }
-                if(exponentInt.equals(new Equation("0"))){ //Anything to the power of 0 is 1
-                    return new Equation("1");
-                }
-                if(exponentInt.equals(new Equation("1"))){ //Anything to the power of 1 is itself
-                    return base;
-                }
-                if(base.isType(MathOperator.POWER)){
-                    Equation sub = new Equation("SIMPLIFY_PRODUCT(TIMES(" + base.getSubEquation(0) + "," + base.getSubEquation(1) + "))");
-                    if(sub.isType(SimplificationType.INTEGER)){
-                        return new Equation("SIMPLIFY_POWER_INT(POWER(" + base.getSubEquation(0) + "," + sub + "))");
-                    }
-                    else {
-                        return new Equation("POWER(" + base.getSubEquation(0) + "," + sub + "))");
-                    }
-                }
-                if(base.isType(MathOperator.MULTIPLY)){
-                    Tree<MathObject> construct = new Tree<>();
-                    for(int i = 0; i<base.getOperands().size(); i++){ //If we have a lot of thing multiplied by each other and then to a power, just apply the power seperately.
-                        //AKA: (a * b * c)^2 => a^2 * b^2 * c^2
-                        Equation operand = base.getSubEquation(i);
-                        construct.addChild(new Equation("SIMPLIFY_POWER_INT(POWER(" + operand + "," + exponentInt + "))").tree);
-                    }
-                    return new Equation("SIMPLIFY_PRODUCT(" + new Equation(construct) + ")");
-                }
-                return eq; //Give up
-            }, new MathObject(MathOperator.SIMPLIFY_POWER_INT)),
-            new EquationSub((DirectOperation & Serializable) eq -> {
-                List<Equation> operands = eq.getOperands();
+                Equation product = eq.getSubEquation(0);
 
-                if(operands.contains(new Equation("UNDEFINED"))){
-                    return new Equation("UNDEFINED");
-                }
-                if(operands.contains(new Equation("0",0))){
-                    return new Equation("0");
-                }
-                if(operands.size() == 1){
-                    return operands.get(0);
-                }
-                else{
-                    List<String> operandStr = new ArrayList<>();
-                    for(Equation operand : operands){
-                        operandStr.add(operand.toString());
-                    }
-                    Equation sub = new Equation("SIMPLIFY_PRODUCT_RECURSIVE(LIST(" + String.join(",", operandStr) + "))",1);
-                }
-                return eq;
+                return product; //DEFAULT
             }, new MathObject(MathOperator.SIMPLIFY_PRODUCT)),
-            new EquationSub((DirectOperation & Serializable) eq -> {
-                List<Equation> operands;
-                if(eq.isType(MathOperator.LIST)){
-                    operands = eq.getOperands();
-                }
-                else{
-                    return eq;
-                }
-                if(operands.size() == 2 && !operands.get(0).isType(MathOperator.MULTIPLY) && !operands.get(1).isType(MathOperator.MULTIPLY)){
-                    Equation productSimp = new Equation("SIMPLIFY_RATIONAL_EXPRESSION(MULTIPLY(" + operands.get(0) + "," + operands.get(1) + "))");
-                    if(operands.get(0).isType(SimplificationType.CONSTANT) && operands.get(1).isType(SimplificationType.CONSTANT)){
-                        if(productSimp.equals("1")){
-                            return new Equation("LIST()");
-                        }
-                        return new Equation("LIST(" + productSimp + ")");
-                    }
-                    if(operands.get(0).equals(new Equation("1"))){
-                        return operands.get(1);
-                    }
-                    if(operands.get(1).equals(new Equation("1"))){
-                        return operands.get(0);
-                    }
-                    if(new Equation("BASE(" + operands.get(1) + ")").equals(new Equation("BASE(" + operands.get(0) + ")"))){
-                        Equation sum = new Equation("SIMPLIFY_SUM(ADD(" + new Equation("EXPONENT(" + operands.get(1)) + ", " + new Equation("EXPONENT(" + operands.get(0) + ")") + "))");
-                        Equation power = new Equation("SIMPLIFY_POWER(POWER(" + new Equation("BASE(" + operands.get(1) + ")") + "," + sum + "))");
-                        if(power.equals(new Equation("1"))){
-                            return new Equation("LIST()");
-                        }
-                        return new Equation("LIST(" + power + ")");
-                    }
-                    if(operands.get(1).compareTo(operands.get(0)) < 0){ //If the order is wrong, switch it
-                        return new Equation("SIMPLIFY_PRODUCT_RECURSIVE(" + operands.get(1) + "," + operands.get(0) + ")");
-                    }
-                }
-                if(operands.size() == 2 && (operands.get(0).isType(MathOperator.MULTIPLY) || operands.get(1).isType(MathOperator.MULTIPLY))) {
-                    if(operands.get(0).isType(MathOperator.MULTIPLY) && operands.get(1).isType(MathOperator.MULTIPLY)){
-                        return new Equation("MERGE_PRODUCTS(" + Equation.fromList(operands.get(0).getOperands()) + "," + Equation.fromList(operands.get(0).getOperands()) + ")");
-                    }
-                }
-                return eq;//DEFAULT
-            }, new MathObject(MathOperator.SIMPLIFY_PRODUCT_RECURSIVE)),
-            new EquationSub((DirectOperation & Serializable) eq -> {
-                List<Equation> pList = eq.getSubEquation(0).toList();
-                List<Equation> qList = eq.getSubEquation(1).toList();
-                if(pList.isEmpty()){
-                    return Equation.fromList(q);
-                }
-                if(qList.isEmpty()){
-                    return Equation.fromList(p);
-                }
-                List<Equation> firstProd = new Equation("SIMPLIFY_PRODUCT_RECURSIVE(LIST(" + pList.get(0) + "," + qList.get(0) + "))",1 ).toList();
-                if(firstProd.isEmpty()){
-                    return new Equation("MERGE_PRODUCTS(REST(" + eq.getSubEquation(0) + "), REST(" + eq.getSubEquation(1) + "))", 1);
-                }
-                if(firstProd.size() == 1){
-                    return new Equation("ADJOIN(" + firstProd.get(0) + ", MERGE_PRODUCTS(REST(" + eq.getSubEquation(0) + "), REST(" + eq.getSubEquation(1) + ")))",1);
-                }
-                if(firstProd.get(0).equals(pList.get(0))){
-                    return new Equation("ADJOIN(" + pList.get(0) + ", MERGE_PRODUCTS(REST(" + eq.getSubEquation(0) + ")," + eq.getSubEquation(1) + "))",1);
-                }
-                if(firstProd.get(0).equals(qList.get(0))) {
-                    return new Equation("ADJOIN(" + qList.get(0) + ", MERGE_PRODUCTS(" + eq.getSubEquation(0) + ", REST(" + eq.getSubEquation(1) + ")))",1);
-                }
-                return eq; //DEFAULT
-            }, new MathObject(MathOperator.MERGE_PRODUCTS)),
             new EquationSub((DirectOperation & Serializable) eq -> {
                 if(eq.isType(MathOperator.ADJOIN)){
                     Equation list = eq.getSubEquation(1);

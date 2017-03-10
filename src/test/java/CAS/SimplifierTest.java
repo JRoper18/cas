@@ -46,4 +46,11 @@ public class SimplifierTest {
         assertEquals(new Equation("4.5"), new Equation("DIVIDE(PLUS(8, 1), 2)", 2));
         assertEquals(new Equation("UNDEFINED"), new Equation("(DIVIDE(1, 0))", 2));
     }
+
+    @Test
+    public void testSortEquation() throws Exception {
+        assertEquals(new Equation("PLUS(_a, _b)", 0), Simplifier.orderEquation(new Equation("PLUS(_b, _a)", 0)));
+        assertEquals(new Equation("PLUS(TIMES(1, 2), _b)", 0), Simplifier.orderEquation(new Equation("PLUS(_b, TIMES(1, 2))", 0)));
+        assertEquals(new Equation("PLUS(_a, _b)", 0), Simplifier.orderEquation(new Equation("PLUS(_b, _a)", 0)));
+    }
 }
