@@ -14,7 +14,7 @@ public class Identifier {
             case INTEGER:
                 return (equation.getRoot() instanceof MathInteger);
             case CONSTANT:
-                return equation.tree.containsClass(GenericExpression.class);
+                return !equation.tree.containsClass(GenericExpression.class);
             case FRACTION_STANDARD_FORM: //Page 57
                 return equation.getRoot().getOperator() == MathOperator.FRACTION && new Equation("GCD(OPERAND(" + equation + ", 0),OPERAND(" + equation + ",1))", 1).equals(new Equation("1", 0));
             case EXPLICIT_ALGEBRAIC_NUMBER: //PDF page 76
