@@ -26,7 +26,7 @@ public class Equation implements Serializable, Comparable<Equation>{
         }
         return new Equation("LIST(" + list.toString() + ")", 0);
     }
-    public static Equation fromList(List<Equation> list){
+    public static Equation fromList(List<Equation> list, MathOperator newRoot){
         String build = "";
         for(Equation eq : list){
             build += eq.toString() + ",";
@@ -35,7 +35,12 @@ public class Equation implements Serializable, Comparable<Equation>{
             return new Equation("LIST()", 0);
         }
         build = build.substring(0, build.length() - 1); //Remove last paren
-        return new Equation("LIST(" + build + ")", 0);
+        Equation listEq = new Equation("LIST(" + build + ")", 0);
+        listEq.tree.data = new MathObject(newRoot);
+        return listEq;
+    }
+    public static Equation fromList(List<Equation> list){
+        return fromList(list, MathOperator.LIST);
     }
     public List<Equation> toList(){
         if(!this.isType(MathOperator.LIST)){
