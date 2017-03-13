@@ -29,7 +29,7 @@ public class EquationBuilder{
                 case 2: //Autosimplify this
                     processedEquation = Simplifier.simplifyWithMetaFunction(processedEquation, MathOperator.SIMPLIFY_RATIONAL_EXPRESSION);
                     processedEquation = Simplifier.orderEquation(processedEquation);
-                    return Simplifier.simplifyWithMetaFunction(processedEquation, MathOperator.AUTOSIMPLIFY);
+                    return Simplifier.orderEquation(Simplifier.simplifyWithMetaFunction(processedEquation, MathOperator.AUTOSIMPLIFY));
                 default:
                     return processedEquation;
             }

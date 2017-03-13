@@ -3,9 +3,10 @@ package CAS;
 /**
  * Created by jack on 1/13/2017.
  */
-public enum SimplificationType {
+public enum IdentificationType {
     INTEGER,
     CONSTANT,
+    NEGATIVE_CONSTANT,
     FRACTION_STANDARD_FORM,
     EXPLICIT_ALGEBRAIC_NUMBER,
     RATIONAL_NUMBER_EXPRESSION,

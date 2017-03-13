@@ -2,16 +2,11 @@ package Database;
 
 import CAS.*;
 import CAS.EquationObjects.*;
-import org.javatuples.Pair;
-import org.javatuples.Tuple;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 
-import static CAS.EquationBuilder.makeUnprocessedEquation;
 import static CAS.Simplifier.simplifyByOperator;
 
 
@@ -60,10 +55,10 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     }
                     Equation arg1 = eq.getSubEquation(0);
                     Equation arg2 = eq.getSubEquation(1);
-                    if(arg1.isType(SimplificationType.INTEGER)){
+                    if(arg1.isType(IdentificationType.INTEGER)){
                         arg1 = new Equation("FRACTION(" + arg1 + ", 1)", 0);
                     }
-                    if(arg2.isType(SimplificationType.INTEGER)){
+                    if(arg2.isType(IdentificationType.INTEGER)){
                         arg2 = new Equation("FRACTION(" + arg2 + ", 1)", 0);
                     }
                     if(arg1.isType(MathOperator.FRACTION) && arg2.isType(MathOperator.FRACTION)){
@@ -86,10 +81,10 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     }
                     Equation arg1 = eq.getSubEquation(0);
                     Equation arg2 = eq.getSubEquation(1);
-                    if(arg1.isType(SimplificationType.INTEGER)){
+                    if(arg1.isType(IdentificationType.INTEGER)){
                         arg1 = new Equation("FRACTION(" + arg1 + ", 1)", 1);
                     }
-                    if(arg2.isType(SimplificationType.INTEGER)){
+                    if(arg2.isType(IdentificationType.INTEGER)){
                         arg2 = new Equation("FRACTION(" + arg2 + ", 1)", 1);
                     }
                     if(arg1.isType(MathOperator.FRACTION) && arg2.isType(MathOperator.FRACTION)){
@@ -139,7 +134,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 if(eq.getRoot().equals(new MathObject(MathOperator.SIMPLIFY_RATIONAL_FRACTION))){
                     newEq = eq.getSubEquation(0).clone();
                 }
-                if(newEq.getRoot().getOperator() == MathOperator.FRACTION && new Equation(newEq.tree.getChild(0)).isType(SimplificationType.INTEGER) && new Equation(newEq.tree.getChild(1)).isType(SimplificationType.INTEGER)){
+                if(newEq.getRoot().getOperator() == MathOperator.FRACTION && new Equation(newEq.tree.getChild(0)).isType(IdentificationType.INTEGER) && new Equation(newEq.tree.getChild(1)).isType(IdentificationType.INTEGER)){
                     MathInteger numer = (MathInteger) newEq.getSubEquation(0).getRoot();
                     MathInteger denom = (MathInteger) newEq.getSubEquation(1).getRoot();
                     if(denom.num.signum() == -1){ //Either: they're both divisible by negative 1, so just get rid of that, or the denominator only is negative, so we make the numerator negative (for consistency)
@@ -163,7 +158,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
             new EquationSub((Serializable & DirectOperation) (eq -> {
                 if(eq.isType(MathOperator.POWER)){
                     for(Equation child: eq.getOperands()){
-                        if(!child.isType(SimplificationType.INTEGER)){
+                        if(!child.isType(IdentificationType.INTEGER)){
                             return eq; //DO this later
                         }
                     }
@@ -177,17 +172,17 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 return eq;
             }), new MathObject(MathOperator.POWER)),
             new EquationSub((Serializable & DirectOperation) (eq -> {
-                if (eq.isType(SimplificationType.RATIONAL_NUMBER_EXPRESSION)) {
+                if (eq.isType(IdentificationType.RATIONAL_NUMBER_EXPRESSION)) {
                     return eq;
                 }
                 Equation newEq = eq.clone();
                 if(eq.getRoot().equals(new MathObject(MathOperator.SIMPLIFY_RATIONAL_EXPRESSION))){
                     newEq = eq.getSubEquation(0).clone();
                 }
-                if(newEq.isType(SimplificationType.INTEGER)){
+                if(newEq.isType(IdentificationType.INTEGER)){
                     return newEq;
                 }
-                else if(newEq.isType(SimplificationType.FRACTION_STANDARD_FORM)){
+                else if(newEq.isType(IdentificationType.FRACTION_STANDARD_FORM)){
                     if(new Equation("OPERAND(" + newEq + ",1)", 1).equals("0")){
 
                         return new Equation("UNDEFINED");
@@ -258,13 +253,13 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 if(newEq.tree.containsData(new MathObject(MathOperator.UNDEFINED))){
                     return new Equation("UNDEFINED");
                 }
-                if(newEq.isType(SimplificationType.INTEGER) || newEq.isType(MathOperatorSubtype.SYMBOL)){
+                if(newEq.isType(IdentificationType.INTEGER) || newEq.isType(MathOperatorSubtype.SYMBOL)){
                     return newEq;
                 }
                 if(newEq.isType(MathOperator.FRACTION)){
                     return new Equation("SIMPLIFY_RATIONAL_FRACTION(" + newEq + ")", 1);
                 }
-                if(newEq.isType(SimplificationType.RATIONAL_NUMBER_EXPRESSION)){
+                if(newEq.isType(IdentificationType.RATIONAL_NUMBER_EXPRESSION)){
                     return new Equation("SIMPLIFY_RATIONAL_EXPRESSION(" + newEq + ")", 1);
                 }
                 else{
@@ -274,8 +269,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     Equation toReturn;
                     switch(newEq.getRoot().getOperator()){
                         case POWER:
-                            //toReturn = new Equation("SIMPLIFY_POWER(" + newEq + ")", 1); Get this later
-                            toReturn = newEq;
+                            toReturn = new Equation("SIMPLIFY_POWER(" + newEq + ")", 1);
                             break;
                         case ADD:
                             toReturn = new Equation("SIMPLIFY_SUM(" + newEq + ")", 1);
@@ -301,7 +295,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     Equation operand = operands.get(i);
                     Equation coeffEq = new Equation("1");
                     String term = "";
-                    if(operand.isType(SimplificationType.CONSTANT)){
+                    if(operand.isType(IdentificationType.CONSTANT)){
                         constantTerms.add(operand);
                         continue;
                     }
@@ -377,13 +371,17 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 if(!newEq.isType(MathOperator.MULTIPLY)){
                     return newEq;
                 }
+                //Quick check to see is we should distribute a constant. Only distribute simple stuff.
+                if(newEq.getOperands().size() == 2 && newEq.getSubEquation(0).isType(IdentificationType.INTEGER) && newEq.getSubEquation(1).isType(MathOperator.ADD)){
+                    return new Equation("EXPAND(" + newEq + ")", 1);
+                }
                 List<Equation> operands = newEq.getOperands();
                 List<Equation> constantList = new ArrayList<>();
                 constantList.add(new Equation("1",0));
                 HashMap<String, String> powers = new HashMap<>(); //Base, exponent
                 for(int i = 0; i<operands.size(); i++){
                     Equation operand = operands.get(i);
-                    if(operand.isType(SimplificationType.CONSTANT)){
+                    if(operand.isType(IdentificationType.CONSTANT)){
                         if(operand.equals(new Equation("0"))){
                             return new Equation("0");
                         }
@@ -423,7 +421,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                         if(newOperands.size() == 0){
                             newOperands.add(0, new Equation("1", 0));
                         }
-                        else if(!newOperands.get(0).isType(SimplificationType.CONSTANT)){
+                        else if(!newOperands.get(0).isType(IdentificationType.CONSTANT)){
                             newOperands.add(0, new Equation("1", 0));
                         }
                     }
@@ -442,11 +440,26 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
             }, new MathObject(MathOperator.SIMPLIFY_PRODUCT)),
             new EquationSub((DirectOperation & Serializable) eq -> {
                 Equation newEq = eq.getSubEquation(0);
+                Equation base = newEq.getSubEquation(0);
+                Equation exponent = newEq.getSubEquation(1);
+                if(exponent.equals(new Equation("0"))){
+                    return new Equation("1");
+                }
+                if(exponent.equals(new Equation("1"))){
+                    return base;
+                }
+                if(base.equals(new Equation("0")) && exponent.isType(IdentificationType.NEGATIVE_CONSTANT)){
+                    return new Equation("UNDEFINED");
+                }
+                return newEq;
+            }, new MathObject(MathOperator.SIMPLIFY_POWER)),
+            new EquationSub((DirectOperation & Serializable) eq -> {
+                Equation newEq = eq.getSubEquation(0);
                 if(newEq.isType(MathOperator.MULTIPLY)){
                     //Simplify the first constants you see.
                     List<Equation> totalList = new ArrayList<>();
                     for(Equation sub : newEq.getOperands()){
-                        if(sub.isType(SimplificationType.CONSTANT)){
+                        if(sub.isType(IdentificationType.CONSTANT)){
                             totalList.add(sub);
                         }
                     }
@@ -475,7 +488,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     //Now find the first non-number (variable)
                     int firstVarIndex = 0;
                     for (int i = 0; i < newEq.getOperands().size(); i++) {
-                        if (!newEq.getSubEquation(i).isType(SimplificationType.CONSTANT)) {
+                        if (!newEq.getSubEquation(i).isType(IdentificationType.CONSTANT)) {
                             firstVarIndex = i;
                             break;
                         }
@@ -514,7 +527,38 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     return Equation.fromList(list);
                 }
                 return eq;
-            }, new MathObject(MathOperator.REST))
+            }, new MathObject(MathOperator.REST)),
+            new EquationSub((DirectOperation & Serializable) eq -> {
+                Equation newEq = eq.getSubEquation(0);
+                if(newEq.isType(MathOperator.MULTIPLY)){
+                    //Distribute!
+                    List<Equation> distributedTerms = new ArrayList<>();
+                    List<Equation> firstOperands = newEq.getSubEquation(0).getOperands();
+                    List<Equation> secondOperands = newEq.getSubEquation(1).getOperands();
+                    if(firstOperands.size() == 0){
+                        firstOperands.add(newEq.getSubEquation(0));
+                    }
+                    if(secondOperands.size() == 0){
+                        secondOperands.add(newEq.getSubEquation(1));
+                    }
+                    for(Equation firstOper: firstOperands){
+                        for(Equation secondOper: secondOperands){
+                            distributedTerms.add(new Equation("TIMES(" + firstOper + "," + secondOper + ")"));
+                        }
+                    }
+                    Equation expanded = Equation.fromList(distributedTerms, MathOperator.ADD);
+                    return expanded;
+                }
+                else if(newEq.isType(MathOperator.POWER) && Simplifier.simplifyWithMetaFunction(newEq, MathOperator.EXPONENT).isType(IdentificationType.INTEGER)){
+                    int exponent = ((MathInteger) newEq.getSubEquation(1).getRoot()).num.intValueExact();
+                    Equation expanded = newEq.getSubEquation(0);
+                    for(int i = 1; i<exponent; i++){
+                        expanded = new Equation("EXPAND(TIMES(" + expanded + "," + newEq.getSubEquation(0) + "))");
+                    }
+                    return expanded;
+                }
+                return newEq; //DEFAULT
+            }, new MathObject(MathOperator.EXPAND))
     };
     public static final HashSet<EquationSub> subs = new HashSet<EquationSub>(Arrays.asList(subsArray));
 }

@@ -110,7 +110,7 @@ public class Equation implements Serializable, Comparable<Equation>{
     public boolean isType(MathOperatorSubtype type){
         return this.getRoot().getOperator().getSubType() == type;
     }
-    public boolean isType(SimplificationType type){
+    public boolean isType(IdentificationType type){
         return Identifier.isType(this, type);
     }
 
@@ -121,7 +121,7 @@ public class Equation implements Serializable, Comparable<Equation>{
         MathOperator eq1Op = eq1.getRoot().getOperator();
 
         MathOperator eq2Op = eq2.getRoot().getOperator();
-        if((eq1.isType(SimplificationType.INTEGER) || eq1.isType(SimplificationType.FRACTION_STANDARD_FORM)) && ((eq2.isType(SimplificationType.FRACTION_STANDARD_FORM)) || eq2.isType(SimplificationType.INTEGER))){
+        if((eq1.isType(IdentificationType.INTEGER) || eq1.isType(IdentificationType.FRACTION_STANDARD_FORM)) && ((eq2.isType(IdentificationType.FRACTION_STANDARD_FORM)) || eq2.isType(IdentificationType.INTEGER))){
             BigDecimal eq1Num = (eq1Op==MathOperator.FRACTION)? new BigDecimal(((MathInteger) eq1.getSubEquation(0).getRoot()).num).divide(new BigDecimal(((MathInteger) eq1.getSubEquation(1).getRoot()).num)) : new BigDecimal(((MathInteger) eq1.getRoot()).num);
             BigDecimal eq2Num = (eq2Op==MathOperator.FRACTION)? new BigDecimal(((MathInteger) eq2.getSubEquation(0).getRoot()).num).divide(new BigDecimal(((MathInteger) eq2.getSubEquation(1).getRoot()).num)) : new BigDecimal(((MathInteger) eq2.getRoot()).num);
             return eq1Num.compareTo(eq2Num);
@@ -153,7 +153,7 @@ public class Equation implements Serializable, Comparable<Equation>{
         else if(eq1Op == MathOperator.CUSTOM_FUNCTION && eq2Op == MathOperator.CUSTOM_FUNCTION){
             return ((CustomFunction) eq1.getRoot()).functionName.compareTo(((CustomFunction) eq2.getRoot()).functionName);
         }
-        else if((eq1.isType(SimplificationType.INTEGER) || eq1.isType(SimplificationType.FRACTION_STANDARD_FORM)) && !(eq2.isType(SimplificationType.INTEGER) || eq2.isType(SimplificationType.FRACTION_STANDARD_FORM))){
+        else if((eq1.isType(IdentificationType.INTEGER) || eq1.isType(IdentificationType.FRACTION_STANDARD_FORM)) && !(eq2.isType(IdentificationType.INTEGER) || eq2.isType(IdentificationType.FRACTION_STANDARD_FORM))){
             return -1;
         }
         else if(eq1Op == MathOperator.MULTIPLY && (eq2Op == MathOperator.POWER || eq2Op == MathOperator.ADD || eq2Op == MathOperator.FACTORIAL || eq2Op == MathOperator.CUSTOM_FUNCTION || eq2Op.getSubType()==MathOperatorSubtype.SYMBOL)){

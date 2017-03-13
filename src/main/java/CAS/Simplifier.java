@@ -95,7 +95,9 @@ public class Simplifier {
                 newChildren.add(orderEquation(child));
             }
         }
-        Collections.sort(newChildren);
+        if(!eqTree.data.isOrdered()){
+            Collections.sort(newChildren);
+        }
         List<Tree<MathObject>> newOperands = new ArrayList<>();
         for(Equation newChild : newChildren){
             newOperands.add(newChild.tree);

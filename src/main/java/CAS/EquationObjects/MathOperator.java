@@ -41,6 +41,7 @@ public enum MathOperator {
     AUTOSIMPLIFY(1, false, false, MathOperatorSubtype.META),
     SIMPLIFY_SUM(1, false, false, MathOperatorSubtype.META),
     SIMPLIFY_PRODUCT(1, false, false, MathOperatorSubtype.META),
+    SIMPLIFY_POWER(1, false, false, MathOperatorSubtype.META),
     BASE(1, false, false, MathOperatorSubtype.META),
     EXPONENT(1, false, false, MathOperatorSubtype.META),
     TERM(1, false, false, MathOperatorSubtype.META),

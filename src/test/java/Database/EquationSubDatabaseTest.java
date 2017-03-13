@@ -147,18 +147,33 @@ public class EquationSubDatabaseTest {
         assertEquals(new Equation("1", 0), new Equation("SIMPLIFY_PRODUCT(TIMES(TIMES(-1, -1, POWER(_x, -1)), _x))", 1));
         assertEquals(new Equation("4", 0), new Equation("SIMPLIFY_PRODUCT(TIMES(2, 2))", 1));
     }
+
     @Test
-
-    public void testAutoSimplify() throws Exception {
-        assertEquals(new Equation("2", 0), new Equation("PLUS(1, 1)", 2));
-        assertEquals(new Equation("13", 0), new Equation("PLUS(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)", 2));
-        assertEquals(new Equation("1", 0), new Equation("PLUS(0, 1)", 2));
-        assertEquals(new Equation("PLUS(1, _x)", 0), new Equation("PLUS(_x, 1)", 2));
-        assertEquals(new Equation("PLUS(1, _x)", 0), new Equation("PLUS(_x, 1)", 2));
-        assertEquals(new Equation("PLUS(2, TIMES(3,_x))", 0), new Equation("PLUS(TIMES(2, _x), PLUS(_x, PLUS(1, 1)))", 2));
-        assertEquals(new Equation("PLUS(2, _x, TIMES(2, POWER(_x, 2), POWER(_y, 2)))", 0), new Equation("PLUS(TIMES(2, _x, POWER(_y, 2), POWER(_x, ADD(3, -2))), PLUS(_x, PLUS(1, 1)))", 2));
-
-
+    public void testSimplifyPower() throws Exception {
+        assertEquals(new Equation("UNDEFINED"), new Equation("SIMPLIFY_POWER(POWER(0, -1))", 1));
+        assertEquals(new Equation("_x"), new Equation("SIMPLIFY_POWER(POWER(_x, 1))", 1));
+        assertEquals(new Equation("PLUS(2, _x)"), new Equation("SIMPLIFY_POWER(POWER(PLUS(2, _x), 1))", 1));
+        assertEquals(new Equation("1"), new Equation("SIMPLIFY_POWER(POWER(PLUS(2, _x), 0))", 1));
     }
 
+    @Test
+    public void testAutoSimplify() throws Exception {
+        assertEquals(new Equation("2", 2), new Equation("PLUS(1, 1)", 2));
+        assertEquals(new Equation("13", 2), new Equation("PLUS(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)", 2));
+        assertEquals(new Equation("1", 2), new Equation("PLUS(0, 1)", 2));
+        assertEquals(new Equation("PLUS(1, _x)", 2), new Equation("PLUS(_x, 1)", 2));
+        assertEquals(new Equation("PLUS(1, _x)", 2), new Equation("PLUS(_x, 1)", 2));
+        assertEquals(new Equation("PLUS(2, TIMES(3,_x))", 2), new Equation("PLUS(TIMES(2, _x), PLUS(_x, PLUS(1, 1)))", 2));
+        assertEquals(new Equation("PLUS(2, _x, TIMES(2, POWER(_x, 2), POWER(_y, 2)))", 2), new Equation("PLUS(TIMES(2, _x, POWER(_y, 2), POWER(_x, ADD(3, -2))), PLUS(_x, PLUS(1, 1)))", 2));
+        assertEquals(new Equation("POWER(_x, TIMES(3, _y))", 2), new Equation("TIMES(POWER(_x, _y), POWER(_x, TIMES(2, _y))))", 2));
+    }
+
+    @Test
+    public void testExpand() throws Exception {
+        assertEquals(new Equation("PLUS(TIMES(2,_x) , TIMES(2, _y)))"), new Equation("EXPAND(TIMES(2, PLUS(_x, _y)))"));
+        assertEquals(new Equation("PLUS(TIMES(2,_x) , TIMES(2, _y)))"), new Equation("EXPAND(TIMES(2, PLUS(_x, _y)))"));
+        assertEquals(new Equation("PLUS(TIMES(2,_x) , TIMES(2, _y)))"), new Equation("EXPAND(TIMES(2, PLUS(_x, _y)))"));
+        assertEquals(new Equation("PLUS(POWER(_x, 2), TIMES(2, _x, _y), POWER(_y, 2))"), new Equation("EXPAND(POWER(PLUS(_x, _y), 2))"));
+        assertEquals(new Equation("PLUS(POWER(_x, 3), TIMES(3, POWER(_x, 2)) , TIMES(3, _x), 1)"), new Equation("EXPAND(POWER(PLUS(_x, 1), 3))"));
+    }
 }

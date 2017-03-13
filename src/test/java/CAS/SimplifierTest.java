@@ -53,5 +53,6 @@ public class SimplifierTest {
         assertEquals(new Equation("PLUS(6, _a)", 0), Simplifier.orderEquation(new Equation("PLUS(_a, 6)", 0)));
         assertEquals(new Equation("PLUS(TIMES(1, 2), _b)", 0), Simplifier.orderEquation(new Equation("PLUS(_b, TIMES(1, 2))", 0)));
         assertEquals(new Equation("PLUS(_a, _b)", 0), Simplifier.orderEquation(new Equation("PLUS(_b, _a)", 0)));
+        assertEquals(new Equation("POWER(_y, 2)", 0), Simplifier.orderEquation(new Equation("POWER(_y, 2)", 0)));
     }
 }

@@ -2,19 +2,33 @@ package CAS;
 
 import CAS.EquationObjects.*;
 
-import static CAS.SimplificationType.*;
+import java.math.BigInteger;
+
+import static CAS.IdentificationType.*;
 
 /**
  * Created by jack on 1/13/2017.
  */
 public class Identifier {
-    public static boolean isType(Equation equation, SimplificationType type){
+    public static boolean isType(Equation equation, IdentificationType type){
         MathOperator op = equation.getRoot().getOperator();
         switch(type){
             case INTEGER:
                 return (equation.getRoot() instanceof MathInteger);
             case CONSTANT:
                 return !equation.tree.containsClass(GenericExpression.class);
+            case NEGATIVE_CONSTANT:
+                if(equation.isType(INTEGER)){
+                    BigInteger num = ((MathInteger) equation.getRoot()).num;
+                    return num.signum() == -1;
+                }
+                if(equation.isType(FRACTION_STANDARD_FORM)){
+                    BigInteger top = ((MathInteger) equation.getSubEquation(0).getRoot()).num;
+                    return top.signum() == -1;
+                }
+                else{
+                    return false; //Evaluate all rational expressions later.
+                }
             case FRACTION_STANDARD_FORM: //Page 57
                 return equation.getRoot().getOperator() == MathOperator.FRACTION && new Equation("GCD(OPERAND(" + equation + ", 0),OPERAND(" + equation + ",1))", 1).equals(new Equation("1", 0));
             case EXPLICIT_ALGEBRAIC_NUMBER: //PDF page 76
