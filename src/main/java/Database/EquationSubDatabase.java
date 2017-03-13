@@ -6,6 +6,8 @@ import org.javatuples.Pair;
 import org.javatuples.Tuple;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 
@@ -243,14 +245,13 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 return eq;
             }), new MathObject(MathOperator.EXPONENT)),
             new EquationSub((DirectOperation & Serializable) (eq -> {
-                Equation newEq = eq.getSubEquation(0); //Autosimplify is the root term
-                EquationBuilder.setLevel(1);
+                Equation newEq = eq.getSubEquation(0).clone(); //Autosimplify is the root term
                 EquationSub sub = new EquationSub((DirectOperation) (equation -> {
                     if(equation.isType(MathOperator.DIVIDE)){
-                        return new Equation("MULTIPLY(" + equation.getSubEquation(0) + "," + "POWER(" + equation.getSubEquation(1) + ", -1))");
+                        return new Equation("MULTIPLY(" + equation.getSubEquation(0) + "," + "POWER(" + equation.getSubEquation(1) + ", -1))", 0);
                     }
                     if(equation.isType(MathOperator.SUBTRACT)){
-                        return new Equation("PLUS(" + equation.getSubEquation(0) + "," + "MULTIPLY(" + equation.getSubEquation(1) + ", -1))");
+                        return new Equation("PLUS(" + equation.getSubEquation(0) + "," + "MULTIPLY(" + equation.getSubEquation(1) + ", -1))", 0);
                     }
                     return equation;
                 }));
@@ -261,10 +262,10 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 if(newEq.isType(SimplificationType.INTEGER) || newEq.isType(MathOperatorSubtype.SYMBOL)){
                     return newEq;
                 }
-                else if(newEq.isType(MathOperator.FRACTION)){
+                if(newEq.isType(MathOperator.FRACTION)){
                     return new Equation("SIMPLIFY_RATIONAL_FRACTION(" + newEq + ")");
                 }
-                else if(newEq.isType(SimplificationType.RATIONAL_NUMBER_EXPRESSION)){
+                if(newEq.isType(SimplificationType.RATIONAL_NUMBER_EXPRESSION)){
                     return new Equation("SIMPLIFY_RATIONAL_EXPRESSION(" + newEq + ")");
                 }
                 else{
@@ -294,41 +295,59 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
             new EquationSub((DirectOperation & Serializable) eq -> {
                 Equation sum = eq.getSubEquation(0).clone();
                 List<Equation> operands = sum.getOperands();
-                HashMap<String, Integer> terms = new HashMap<>(); //term equation in string form, coefficient
-                for(Equation operand : operands){
+                HashMap<String, String> terms = new HashMap<>(); //term equation in string form, coefficient equation (also string form)
+                List<Equation> constantTerms = new ArrayList<>();
+                for(int i = 0; i<operands.size(); i++){
+                    Equation operand = operands.get(i);
                     Equation coeffEq = new Equation("1");
                     String term = "";
+                    if(operand.isType(SimplificationType.CONSTANT)){
+                        constantTerms.add(operand);
+                        continue;
+                    }
                     if(operand.isType(MathOperator.MULTIPLY)){ //The constant is always the first term
                         coeffEq = new Equation("COEFFICIENT(" + operand + ")",1);
                         term = new Equation("TERM(" + operand + ")",1).toString();
                         //Now we know our coefficient, power, and varname. Add it into the hashmap.
                     }
-                    else if(operand.isType(MathOperator.POWER)){
+                    else if(operand.isType(MathOperator.ADD)){
+                        operands.addAll(i+1, operand.getOperands());
+                        continue;
+                    }
+                    else{
                         term = operand.toString();
                     }
-
-                    int coeff = ((MathInteger) coeffEq.getRoot()).num.intValue();
+                    String coeff = coeffEq.toString();
                     if(terms.containsKey(term)){
-                        terms.put(term, terms.get(term) + coeff);
+                        terms.put(term, "ADD(" + terms.get(term) + "," + coeff + ")");
                     }
                     else{
                         terms.put(term, coeff);
                     }
                 }
-                //Now turn the terms into an equation.
+                //Now turn the terms and constant terms into an equation.
+                Equation constantList = new Equation("0");
+                if(constantTerms.size() != 0){
+                    constantList = Equation.fromList(constantTerms);
+                    constantList.tree.data = new MathObject(MathOperator.ADD);
+                }
+                Equation constant = Simplifier.simplifyWithMetaFunction(constantList, MathOperator.SIMPLIFY_RATIONAL_EXPRESSION);
                 List<Equation> newTerms = new ArrayList<>();
+                if(!constant.equals(new Equation("0"))){
+                    newTerms.add(constant);
+                }
                 for(String key : terms.keySet()){
-                    Equation keyEq = new Equation(key, 0);
-                    int coefficient = terms.get(key);
-                    Equation power = new Equation("EXPONENT(" + key + ")");
-                    if(coefficient == 0){
+                    Equation termEq = new Equation(key, 0);
+                    Equation power = new Equation("EXPONENT(" + key + ")", 1);
+                    Equation coefficient = new Equation(terms.get(key), 2);
+                    if(coefficient.equals(new Equation("0", 0))){
                         //Do nothing
                     }
-                    else if(coefficient == 1 && power.equals(new Equation("1"))){
-                        newTerms.add(keyEq);
+                    else if(coefficient.equals(new Equation("0", 0)) && power.equals(new Equation("1", 0))){
+                        newTerms.add(termEq);
                     }
-                    else if(coefficient == 1){
-                        newTerms.add(keyEq);
+                    else if(coefficient.equals(new Equation("1", 0))){
+                        newTerms.add(termEq);
                     }
                     else if(power.equals(new Equation("1"))){
                         newTerms.add(new Equation("TIMES(" + coefficient + ", " + key + ")", 0));
@@ -342,31 +361,57 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     termEq.tree.data = new MathObject(MathOperator.ADD);
                 }
                 else if(newTerms.size() == 0){
-                    return new Equation("0");
+                    return new Equation("0", 0);
                 }
                 else{
                     return termEq.getSubEquation(0);
                 }
                 return termEq;
             }, new MathObject(MathOperator.SIMPLIFY_SUM)),
-            new EquationSub((DirectOperation & Serializable) eq_-> {
+            new EquationSub((DirectOperation & Serializable) eq -> {
+                Equation newEq = eq.getSubEquation(0);
+                //Now we're collecting like powers
+                if(!newEq.isType(MathOperator.MULTIPLY)){
+                    return newEq;
+                }
+                List<Equation> operands = newEq.getOperands();
+                HashMap<Equation, Equation> powers = new HashMap<>(); //Base, exponent
+                for(int i = 0; i<operands.size(); i++){
+                    Equation operand = operands.get(i);
+                    Equation base = new Equation("BASE(" + operand + ")",1);
+                    Equation exponent = new Equation("EXPONENT(" + operand + ")",1);
+                    if(powers.containsKey(base)){
 
+                    }
+                    else{
+                        powers.put(base, exponent);
+                    }
+                }
+                return newEq;
             }, new MathObject(MathOperator.SIMPLIFY_PRODUCT)),
             new EquationSub((DirectOperation & Serializable) eq -> {
                 Equation newEq = eq.getSubEquation(0);
                 if(newEq.isType(MathOperator.MULTIPLY)){
                     //Simplify the first constants you see.
-                    BigInteger total = new BigInteger("1");
+                    List<Equation> totalList = new ArrayList<>();
                     for(Equation sub : newEq.getOperands()){
-                        if(sub.isType(SimplificationType.INTEGER)){
-                            total = total.multiply(((MathInteger) sub.getRoot()).num);
-                        }
-                        else if(sub.isType(MathOperator.FRACTION)){
-                            BigInteger fract = ((MathInteger) sub.getSubEquation(0).getRoot()).num.divide(((MathInteger) sub.getSubEquation(1).getRoot()).num);
-                            total = total.multiply(fract);
+                        if(sub.isType(SimplificationType.CONSTANT)){
+                            totalList.add(sub);
                         }
                     }
-                    return new Equation(total.toString());
+                    if(totalList.size() == 1){
+                        return totalList.get(0);
+                    }
+                    if(totalList.size() == 0){
+                        return new Equation("1");
+                    }
+                    Equation total = Equation.fromList(totalList);
+                    total.tree.data = new MathObject(MathOperator.MULTIPLY);
+                    total = Simplifier.simplifyWithMetaFunction(total, MathOperator.AUTOSIMPLIFY);
+                    return total;
+                }
+                else if(newEq.isType(MathOperator.EXPRESSION)){
+                    return new Equation("1");
                 }
                 else{
                     return new Equation("UNDEFINED");
@@ -393,6 +438,9 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     return termList;
                 }
                 else if(newEq.isType(MathOperator.POWER)){
+                    return newEq;
+                }
+                else if(newEq.isType(MathOperator.EXPRESSION)){
                     return newEq;
                 }
                 else {

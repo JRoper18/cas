@@ -94,14 +94,26 @@ public class EquationSubDatabaseTest {
     @Test
     public void testSimplifySum() throws Exception {
         assertEquals(new Equation("TIMES(2, _x)", 0), new Equation("SIMPLIFY_SUM(PLUS(TIMES(1, _x), TIMES(1, _x)))",1));
+        assertEquals(new Equation("TIMES(2, _x)", 0), new Equation("SIMPLIFY_SUM(PLUS(TIMES(FRACTION(3, 2), _x), TIMES(FRACTION(1, 2), _x)))",1));
+        assertEquals(new Equation("4", 0), new Equation("SIMPLIFY_SUM(PLUS(2, 2))",1));
+        assertEquals(new Equation("5", 0), new Equation("SIMPLIFY_SUM(PLUS(2, 3, 0))",1));
+        assertEquals(new Equation("TIMES(2, _x)", 0), new Equation("SIMPLIFY_SUM(PLUS(TIMES(1, _x), _x))",1));
+        assertEquals(new Equation("ADD(4, _x)", 0), new Equation("SIMPLIFY_SUM(PLUS(PLUS(2, _x), 2))",1));
+        assertEquals(new Equation("ADD(6, _x)", 0), new Equation("SIMPLIFY_SUM(PLUS(2, PLUS(2, _x), 2))",1));
+        assertEquals(new Equation("TIMES(2, _x)", 0), new Equation("SIMPLIFY_SUM(PLUS(_x, _x))",1));
         assertEquals(new Equation("TIMES(3, _x)", 0), new Equation("SIMPLIFY_SUM(PLUS(TIMES(2, _x), TIMES(1, _x)))",1));
         assertEquals(new Equation("TIMES(6, _x)", 0), new Equation("SIMPLIFY_SUM(PLUS(TIMES(10, _x), TIMES(-4, _x)))",1));
+        assertEquals(new Equation("TIMES(2, _x)", 0), new Equation("SIMPLIFY_SUM(PLUS(TIMES(2, _x), 3, -3))",1));
         assertEquals(new Equation("0", 0), new Equation("SIMPLIFY_SUM(PLUS(TIMES(3, _x), TIMES(-2, _x), TIMES(-1, _x)))",1));
         assertEquals(new Equation("PLUS(TIMES(3, _x), TIMES(-3, _y))", 0), new Equation("SIMPLIFY_SUM(PLUS(TIMES(3, _x), TIMES(-2, _y), TIMES(-1, _y)))",1));
         assertEquals(new Equation("PLUS(TIMES(3, _x), TIMES(-3, _y))", 0), new Equation("SIMPLIFY_SUM(PLUS(TIMES(-2, _y), TIMES(3, _x), TIMES(-1, _y)))",1));
         assertEquals(new Equation("TIMES(3, POWER(_x, 2))", 0), new Equation("SIMPLIFY_SUM(PLUS(POWER(_x, 2), TIMES(2, POWER(_x, 2))))",1));
         assertEquals(new Equation("TIMES(2, TIMES(_y, POWER(_x, 2)))", 0), new Equation("SIMPLIFY_SUM(PLUS(TIMES(_y, POWER(_x, 2)), TIMES(_y, POWER(_x, 2))))",1));
+    }
 
+    @Test
+    public void testAutoSimplify() throws Exception {
+        assertEquals(new Equation("2"), new Equation("PLUS(1, 1)", 2));
     }
 
     @Test
@@ -109,5 +121,14 @@ public class EquationSubDatabaseTest {
         assertEquals(new Equation("_x"), new Equation("TERM(TIMES(2, _x))", 1));
         assertEquals(new Equation("POWER(_x, 1)"), new Equation("TERM(TIMES(2, POWER(_x, 1)))", 1));
         assertEquals(new Equation("TIMES(POWER(_x, 2), _y)"), new Equation("TERM(TIMES(2, TIMES(POWER(_x, 2), _y)))", 1));
+    }
+
+    @Test
+    public void testCoefficient() throws Exception {
+        assertEquals(new Equation("3", 0), new Equation("COEFFICIENT(TIMES(3, _x))", 1));
+        assertEquals(new Equation("1", 0), new Equation("COEFFICIENT(_x)", 1));
+        assertEquals(new Equation("4", 0), new Equation("COEFFICIENT(TIMES(2, 2, _x))", 1));
+        assertEquals(new Equation("4", 0), new Equation("COEFFICIENT(TIMES(2, 2, _x))", 1));
+        assertEquals(new Equation("FRACTION(1, 2)", 0), new Equation("COEFFICIENT(TIMES(FRACTION(1, 2), _x))", 1));
     }
 }

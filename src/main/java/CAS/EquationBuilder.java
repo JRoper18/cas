@@ -9,10 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EquationBuilder{
-    public static int level = 2;
-    public static void setLevel(int toSet){
-        level = toSet;
-    }
     public static Equation makeEquation(String str, int autoSimplifyLevel){
         return simplifyTree(makeEquationTree(str), autoSimplifyLevel);
     }
@@ -40,7 +36,7 @@ public class EquationBuilder{
         }
     }
     public static Equation makeEquation(String str){
-        return makeEquation(str, level);
+        return makeEquation(str, 2);
     }
     public static Equation makeUnprocessedEquation(String str){
         return new Equation(makeEquationTree(str));
