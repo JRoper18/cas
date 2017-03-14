@@ -153,6 +153,9 @@ public class Equation implements Serializable, Comparable<Equation>{
         else if(eq1Op == MathOperator.CUSTOM_FUNCTION && eq2Op == MathOperator.CUSTOM_FUNCTION){
             return ((CustomFunction) eq1.getRoot()).functionName.compareTo(((CustomFunction) eq2.getRoot()).functionName);
         }
+        else if(!(eq1Op == MathOperator.MULTIPLY || eq1Op == MathOperator.POWER || eq1Op == MathOperator.ADD || eq1Op == MathOperator.FACTORIAL || eq1Op == MathOperator.CUSTOM_FUNCTION || eq1Op.getSubType()==MathOperatorSubtype.SYMBOL)){
+            return eq1Op.toString().compareTo(eq2Op.toString());
+        }
         else if((eq1.isType(IdentificationType.INTEGER) || eq1.isType(IdentificationType.FRACTION_STANDARD_FORM)) && !(eq2.isType(IdentificationType.INTEGER) || eq2.isType(IdentificationType.FRACTION_STANDARD_FORM))){
             return -1;
         }
@@ -172,7 +175,6 @@ public class Equation implements Serializable, Comparable<Equation>{
             return this.compareTo(new Equation("FACTORIAL(" + eq2 + ")",0));
         }
         else if(eq1Op == MathOperator.CUSTOM_FUNCTION && eq2Op.getSubType() == MathOperatorSubtype.SYMBOL){
-
             if(eq1Op.toString().equals(eq2Op.toString())){
                 return -1;
             }
@@ -180,6 +182,27 @@ public class Equation implements Serializable, Comparable<Equation>{
         }
         else if(eq1.isType(MathOperatorSubtype.SYMBOL) && eq2.isType(MathOperatorSubtype.SYMBOL)){
             return eq1.getRoot().toString().compareTo(eq2.getRoot().toString());
+        }
+        else if(eq1.isType(MathOperator.LIST)){
+            //Count children
+            List<Equation> oper1 = eq1.getOperands();
+            List<Equation> oper2 = eq2.getOperands();
+            if(oper1.size() > oper2.size()){
+                return 1;
+            }
+            if(oper1.size() > oper2.size()){
+                return -1;
+            }
+
+            //Compare children
+            for(int i = 0; i<oper1.size(); i++){
+                int num = oper1.get(i).compareTo(oper2.get(i));
+                if(num != 0){
+                    return num;
+                }
+            }
+            //Children are the same. They are the same.
+            return 0;
         }
         return -1 * equation.compareTo(this);
     }

@@ -16,6 +16,7 @@ public enum MathOperator {
     COSINE(1, true, false, MathOperatorSubtype.MATH),
     TANGENT(1, true, false, MathOperatorSubtype.MATH),
     FACTORIAL(1, true, false, MathOperatorSubtype.MATH),
+    DERIVATIVE(2, true, false, MathOperatorSubtype.MATH),
     CUSTOM_FUNCTION(0, false, false, MathOperatorSubtype.MATH), //Placeholder values - check customfunction class
     LIST(1, true, true, MathOperatorSubtype.MATH),
     //Pattern matching

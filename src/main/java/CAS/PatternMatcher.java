@@ -3,6 +3,7 @@ package CAS;
 import CAS.EquationObjects.GenericExpression;
 import CAS.EquationObjects.MathObject;
 import CAS.EquationObjects.MathOperator;
+import sun.net.www.content.text.Generic;
 
 import java.util.HashMap;
 
@@ -41,11 +42,18 @@ public class PatternMatcher {
             case EXPRESSION:
                 //We have an expression. Check if it's any specific type of expression
                 GenericExpression genEx = (GenericExpression) compare;
+                if(genEx.named){
+                    if(eq.data instanceof GenericExpression){
+                        return ((GenericExpression) eq.data).tag.equals(genEx.tag);
+                    }
+                    return false;
+                }
                 if (genEx.hasTag()) {
-
                     String tag = genEx.tag;
+
                     //First, check if we have a tag already
                     if (values.containsKey(tag)) {
+
                         return values.get(tag).equals(eq);
                     } else {
                         //Add the tag to the values map

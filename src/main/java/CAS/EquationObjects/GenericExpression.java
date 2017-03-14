@@ -10,12 +10,18 @@ public class GenericExpression extends MathObject {
         super(MathOperator.EXPRESSION);
         this.tag = null;
     }
+    public GenericExpression(String tag, boolean named){
+        super(MathOperator.EXPRESSION);
+        this.tag = tag;
+        this.named = named;
+    }
     public GenericExpression(String tag){
         super(MathOperator.EXPRESSION);
         this.tag = tag;
+        this.named = false;
     }
 
-    public boolean hasTag(){
+        public boolean hasTag(){
         return this.tag != null;
     }
 

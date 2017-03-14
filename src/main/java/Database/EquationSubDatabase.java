@@ -260,6 +260,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     return new Equation("SIMPLIFY_RATIONAL_FRACTION(" + newEq + ")", 1);
                 }
                 if(newEq.isType(IdentificationType.RATIONAL_NUMBER_EXPRESSION)){
+                    System.out.println(newEq);
                     return new Equation("SIMPLIFY_RATIONAL_EXPRESSION(" + newEq + ")", 1);
                 }
                 else{
@@ -281,7 +282,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                             toReturn = new Equation("SIMPLIFY_FACTORIAL(" + newEq + ")", 1);
                             break;
                         default:
-                            toReturn = newEq;
+                            toReturn = Simplifier.simplifyByOperator(newEq);
                     }
                     return toReturn;
                 }
@@ -558,7 +559,8 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     return expanded;
                 }
                 return newEq; //DEFAULT
-            }, new MathObject(MathOperator.EXPAND))
+            }, new MathObject(MathOperator.EXPAND)),
+            new StructuralSub(new Equation("DERIVATIVE(POWER(_x, _n))"), new Equation("TIMES(_n, POWER(_x, MINUS(_n, 1)))"))
     };
     public static final HashSet<EquationSub> subs = new HashSet<EquationSub>(Arrays.asList(subsArray));
 }

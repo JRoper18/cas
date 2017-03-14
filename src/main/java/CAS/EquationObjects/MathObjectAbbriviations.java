@@ -21,5 +21,7 @@ public class MathObjectAbbriviations {
         abbriviations.put("==", new AbbriviationData(new MathObject(MathOperator.EQUALS), true));
         abbriviations.put("!", new AbbriviationData(new MathObject(MathOperator.NOT), false));
         abbriviations.put("GCD", new AbbriviationData(new MathObject(MathOperator.GREATEST_COMMON_DENOMINATOR), false));
+        abbriviations.put("DERIV", new AbbriviationData(new MathObject(MathOperator.DERIVATIVE), false));
+
     }
 }

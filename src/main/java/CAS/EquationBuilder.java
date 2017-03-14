@@ -200,6 +200,7 @@ public class EquationBuilder{
             GenericExpression genEx = new GenericExpression(name);
             if(str.charAt(1) == '_'){
                 //Double underscore means it's named
+                genEx.tag = genEx.tag.substring(1, genEx.tag.length()); //Remove the first character, it's an _
                 genEx.named = true;
             }
             return genEx;
