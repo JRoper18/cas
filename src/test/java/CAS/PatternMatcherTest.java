@@ -19,6 +19,10 @@ public class PatternMatcherTest {
         assertEquals(true, matcher.patternMatch(new Equation("POWER(_x, 2)", 0), new Equation("POWER(_y, _n)",0)));
         assertEquals(false, matcher.patternMatch(new Equation("POWER(_x, 2)", 0), new Equation("POWER(__y, _n)", 0)));
         assertEquals(true, matcher.patternMatch(new Equation("POWER(TIMES(1, 2), 2), ",0), new Equation("POWER(_dave, _n)",0)));
-
+        assertEquals(true, matcher.patternMatch(new Equation("1",0), new Equation("_x_INTEGER",0)));
+        assertEquals(false, matcher.patternMatch(new Equation("_x",0), new Equation("_x_INTEGER",0)));
+        assertEquals(false, matcher.patternMatch(new Equation("_y",0), new Equation("_x_INTEGER",0)));
+        assertEquals(true, matcher.patternMatch(new Equation("ADD(1, 2)",2), new Equation("_x_INTEGER",0)));
+        
     }
 }

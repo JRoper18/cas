@@ -8,20 +8,17 @@ import java.util.HashMap;
 public class MathObjectAbbriviations {
     public static final HashMap<String, AbbriviationData> abbriviations = new HashMap<>();
     static {
-        abbriviations.put("+", new AbbriviationData(new MathObject(MathOperator.ADD), true));
-        abbriviations.put("PLUS", new AbbriviationData(new MathObject(MathOperator.ADD), false));
-        abbriviations.put("*", new AbbriviationData(new MathObject(MathOperator.MULTIPLY), true));
-        abbriviations.put("TIMES", new AbbriviationData(new MathObject(MathOperator.MULTIPLY), false));
-        abbriviations.put("-", new AbbriviationData(new MathObject(MathOperator.SUBTRACT), true));
-        abbriviations.put("MINUS", new AbbriviationData(new MathObject(MathOperator.SUBTRACT), false));
-        abbriviations.put("/", new AbbriviationData(new MathObject(MathOperator.DIVIDE), true));
-        abbriviations.put("SIN", new AbbriviationData(new MathObject(MathOperator.SINE), false));
-        abbriviations.put("||", new AbbriviationData(new MathObject(MathOperator.OR), true));
-        abbriviations.put("<=", new AbbriviationData(new MathObject(MathOperator.LESS_EQUAL), true));
-        abbriviations.put("==", new AbbriviationData(new MathObject(MathOperator.EQUALS), true));
-        abbriviations.put("!", new AbbriviationData(new MathObject(MathOperator.NOT), false));
-        abbriviations.put("GCD", new AbbriviationData(new MathObject(MathOperator.GREATEST_COMMON_DENOMINATOR), false));
-        abbriviations.put("DERIV", new AbbriviationData(new MathObject(MathOperator.DERIVATIVE), false));
+        abbriviations.put("+", new AbbriviationData(new MathObject(MathOperator.ADD), AbbriviationType.INFIX));
+        abbriviations.put("PLUS", new AbbriviationData(new MathObject(MathOperator.ADD), AbbriviationType.PREFIX));
+        abbriviations.put("*", new AbbriviationData(new MathObject(MathOperator.MULTIPLY), AbbriviationType.INFIX));
+        abbriviations.put("TIMES", new AbbriviationData(new MathObject(MathOperator.MULTIPLY), AbbriviationType.PREFIX));
+        abbriviations.put("-", new AbbriviationData(new MathObject(MathOperator.SUBTRACT), AbbriviationType.INFIX));
+        abbriviations.put("MINUS", new AbbriviationData(new MathObject(MathOperator.SUBTRACT), AbbriviationType.PREFIX));
+        abbriviations.put("/", new AbbriviationData(new MathObject(MathOperator.DIVIDE), AbbriviationType.INFIX));
+        abbriviations.put("SIN", new AbbriviationData(new MathObject(MathOperator.SINE), AbbriviationType.PREFIX));
+        abbriviations.put("!", new AbbriviationData(new MathObject(MathOperator.NOT), AbbriviationType.POSTFIX));
+        abbriviations.put("GCD", new AbbriviationData(new MathObject(MathOperator.GREATEST_COMMON_DENOMINATOR), AbbriviationType.PREFIX));
+        abbriviations.put("DERIV", new AbbriviationData(new MathObject(MathOperator.DERIVATIVE), AbbriviationType.PREFIX));
 
     }
 }

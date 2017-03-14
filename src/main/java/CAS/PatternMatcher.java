@@ -16,6 +16,7 @@ public class PatternMatcher {
 
     }
     public boolean patternMatch(Equation eq, Equation pattern){
+        values.clear();
         Tree<MathObject> eqTree = eq.tree;
         Tree<MathObject> patternTree = pattern.tree;
         return compareSubTrees(eqTree, patternTree);
@@ -43,17 +44,24 @@ public class PatternMatcher {
                 //We have an expression. Check if it's any specific type of expression
                 GenericExpression genEx = (GenericExpression) compare;
                 if(genEx.named){
-                    if(eq.data instanceof GenericExpression){
-                        return ((GenericExpression) eq.data).tag.equals(genEx.tag);
+                    if(!(eq.data instanceof GenericExpression)) {
+                        return false;
                     }
-                    return false;
+                    if(!((GenericExpression) eq.data).tag.equals(genEx.tag)){
+                        return false;
+                    }
+
+                }
+                if(genEx.type != null){
+                    if(!new Equation(eq, 0).isType(genEx.type)){
+                        return false;
+                    }
                 }
                 if (genEx.hasTag()) {
                     String tag = genEx.tag;
-
                     //First, check if we have a tag already
                     if (values.containsKey(tag)) {
-
+                        System.out.println(values);
                         return values.get(tag).equals(eq);
                     } else {
                         //Add the tag to the values map
@@ -61,6 +69,7 @@ public class PatternMatcher {
                         return true;
                     }
                 }
+
                 //No tag. Just return true.
                 return true;
             default:

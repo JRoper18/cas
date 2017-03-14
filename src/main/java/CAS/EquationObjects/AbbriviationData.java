@@ -5,9 +5,9 @@ package CAS.EquationObjects;
  */
 public class AbbriviationData {
     public MathObject op;
-    public boolean isInfix;
-    public AbbriviationData(MathObject op, boolean isInfix){
+    public AbbriviationType type;
+    public AbbriviationData(MathObject op, AbbriviationType type){
         this.op = op;
-        this.isInfix = isInfix;
+        this.type = type;
     }
 }

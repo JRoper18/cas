@@ -1,14 +1,23 @@
 package CAS.EquationObjects;
 
+import CAS.IdentificationType;
+
 /**
  * Created by Ulysses Howard Smith on 10/26/2016.
  */
 public class GenericExpression extends MathObject {
     public String tag;
     public boolean named;
+    public IdentificationType type;
     public GenericExpression(){
         super(MathOperator.EXPRESSION);
         this.tag = null;
+    }
+    public GenericExpression(String tag, boolean named, IdentificationType type){
+        super(MathOperator.EXPRESSION);
+        this.tag = tag;
+        this.named = named;
+        this.type = type;
     }
     public GenericExpression(String tag, boolean named){
         super(MathOperator.EXPRESSION);

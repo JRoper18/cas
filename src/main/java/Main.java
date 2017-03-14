@@ -1,5 +1,8 @@
 import CAS.Equation;
+import CAS.EquationObjects.MathObject;
+import CAS.EquationObjects.MathOperator;
 import CAS.PatternMatcher;
+import CAS.Simplifier;
 import CAS.StructuralSub;
 import Database.DatabaseConnection;
 
@@ -9,9 +12,7 @@ import Database.DatabaseConnection;
 public class Main {
     public static void main(String[] args){
         DatabaseConnection.makeConnection();
-        StructuralSub sub = new StructuralSub(new Equation("DERIVATIVE(POWER(_x, _n))"), new Equation("TIMES(_n, POWER(_x, MINUS(_n, 1)))"));
-        Equation test = new Equation("POWER(_x, 2)");
-        System.out.println(sub.apply(test));
+        System.out.println(Simplifier.simplifyByOperator(new Equation("DERIV(POWER(_x, 2))"),new MathObject(MathOperator.DERIVATIVE)));
 
     }
 }

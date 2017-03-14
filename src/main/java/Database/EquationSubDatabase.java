@@ -15,7 +15,6 @@ import static CAS.Simplifier.simplifyByOperator;
  */
 public class EquationSubDatabase { //NOTE: I know, I know, this should be in the actual SQLite database. I WILL do that, but I want to keep these here in case something goes wrong or I want to reference them directly. Once every sub is in the database I can remove this, but UNTIL THEN, it's a good idea to keep these here, in memory just in case.
     private static final EquationSub[] subsArray = {
-
             new EquationSub((Serializable & DirectOperation) (eq -> {
                 BigInteger gcd = ((MathInteger) Simplifier.simplifyMetaFunctions(eq.getSubEquation(0)).getRoot()).num.gcd(((MathInteger) Simplifier.simplifyMetaFunctions(eq.getSubEquation(1)).getRoot()).num);
                 if(eq.getOperands().size() > 1){
@@ -260,7 +259,6 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     return new Equation("SIMPLIFY_RATIONAL_FRACTION(" + newEq + ")", 1);
                 }
                 if(newEq.isType(IdentificationType.RATIONAL_NUMBER_EXPRESSION)){
-                    System.out.println(newEq);
                     return new Equation("SIMPLIFY_RATIONAL_EXPRESSION(" + newEq + ")", 1);
                 }
                 else{

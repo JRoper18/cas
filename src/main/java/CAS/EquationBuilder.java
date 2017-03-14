@@ -115,7 +115,7 @@ public class EquationBuilder{
             Object current = equationObjectList.get(i);
             if(current instanceof AbbriviationData){
                 AbbriviationData data = (AbbriviationData) current;
-                if(data.isInfix){
+                if(data.type == AbbriviationType.INFIX){
                     //Find the function right before this one.
                     int checkBack = i;
                     Object backwardsCurrent = equationObjectList.get(checkBack);
@@ -193,17 +193,44 @@ public class EquationBuilder{
         //Maybe it's a generic. If it's an expression it'll look like _<genericName>
         if(str.charAt(0) == '_'){ //There's a _ so it's a generic.
             // NOTE: In the future you might make a function with a _ in it's name. Sorry, but I don't care enough to account for that.
-            if(str.length() == 1){ //It's just a _, which means any expression of any type with any name.
+            //A generic looks like this:
+            //_ (_ if named) name (_type)
+            //The first underscore indicates a generic. The second says it's named. Then the name. Then, another udnerscore and the type (if it has one).
+            int underScoreIndex = 1;
+            StringBuilder nameBuild = new StringBuilder();
+            boolean named = false;
+            StringBuilder typeBuild = new StringBuilder();
+            for(int i = 1; i<str.length(); i++){
+                char current = str.charAt(i);
+                if(current == '_'){
+                    underScoreIndex++;
+                    if(underScoreIndex == 2){
+                        named = true;
+                    }
+                    continue;
+                }
+                switch(underScoreIndex){
+                    case 1:
+                        nameBuild.append(current);
+                        underScoreIndex = 2;
+                        break;
+                    case 2:
+                        nameBuild.append(current);
+                        break;
+                    case 3:
+                        typeBuild.append(current);
+                        break;
+                    default:
+                        //The fuck? Should only have 3 maximum underscores.
+                }
+            }
+            if(nameBuild.length() == 0){
                 return new GenericExpression();
             }
-            String name = str.substring(1, str.length());
-            GenericExpression genEx = new GenericExpression(name);
-            if(str.charAt(1) == '_'){
-                //Double underscore means it's named
-                genEx.tag = genEx.tag.substring(1, genEx.tag.length()); //Remove the first character, it's an _
-                genEx.named = true;
+            if(typeBuild.length() == 0){
+                return new GenericExpression(nameBuild.toString(), named);
             }
-            return genEx;
+            return new GenericExpression(nameBuild.toString(), named, IdentificationType.valueOf(typeBuild.toString()));
         }
         //It's not a generic, so we don't need to base case sensitive at this point
         str = str.toUpperCase();
