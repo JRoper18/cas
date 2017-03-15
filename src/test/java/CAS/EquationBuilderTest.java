@@ -35,4 +35,13 @@ public class EquationBuilderTest {
         assertEquals(new Equation("FRACTION(-1, 2)", 0), new Equation("-0.5"));
         assertEquals(new Equation("TIMES(1, FRACTION(1, 2))", 0), new Equation("TIMES(1, .5)",0));
     }
+
+    @Test
+    public void testInfixToPrefix() throws Exception {
+        assertEquals(new Equation("PLUS(1, 2)", 0), new Equation("(1 + 2)", 0));
+        assertEquals(new Equation("PLUS(1, 2)", 0), new Equation("1 + 2", 0));
+        assertEquals(new Equation("TIMES(1, 2)", 0), new Equation("1 * 2", 0));
+        assertEquals(new Equation("TIMES(1, 2)", 0), new Equation("(1 + 2) + 3", 0));
+
+    }
 }

@@ -101,7 +101,7 @@ public class EquationBuilder{
         return tree;
     }
     private static List<Object> preProcess(String equationStr){
-        String newStr = equationStr.replace(")", " )");
+        String newStr = "(" + equationStr.replace(")", " )") + " )";
         String[] tokens = newStr.trim().split("[ (,]");
         List<Object> equationObjectList = new ArrayList<>();
         for(int i = 0; i<tokens.length; i++){
@@ -110,56 +110,73 @@ public class EquationBuilder{
                 equationObjectList.add(next);
             }
         }
-        //Reorder for infix to prefix
-        for(int i = 0; i<equationObjectList.size(); i++){
-            Object current = equationObjectList.get(i);
-            if(current instanceof AbbriviationData){
-                AbbriviationData data = (AbbriviationData) current;
-                if(data.type == AbbriviationType.INFIX){
-                    //Find the function right before this one.
-                    int checkBack = i;
-                    Object backwardsCurrent = equationObjectList.get(checkBack);
-                    int parenLevel = 0;
-                    do {
-                        checkBack--;
-                        backwardsCurrent = equationObjectList.get(checkBack);
-                        if(backwardsCurrent instanceof MathObject){
-                            if(((MathObject) backwardsCurrent).getOperator().getSubType() != MathOperatorSubtype.SYMBOL){ //Found a function
-                                parenLevel--;
-                            }
-                        }
-                        else if(backwardsCurrent instanceof SyntaxTerminator){
-                            parenLevel++;
-                        }
-                    } while(parenLevel != 0);
-                    //If parenleve is 0, backwardsCurrent is our function we need to switch.
-                    //Find the next complete function
-                    parenLevel = 0;
-                    int check = i;
-                    do {
-                        check++;
-                        backwardsCurrent = equationObjectList.get(check);
-                        if(backwardsCurrent instanceof MathObject){
-                            if(((MathObject) backwardsCurrent).getOperator().getSubType() != MathOperatorSubtype.SYMBOL){ //Found a function
-                                parenLevel++;
-                            }
-                        }
-                        else if(backwardsCurrent instanceof SyntaxTerminator){
-                            parenLevel--;
-                        }
-                    } while(parenLevel != 0);
-                    //Add the ending parenthesis:
-                    equationObjectList.add(check + 1, new EquationBuilder().new SyntaxTerminator());
-                    //Swap the infix operator with the first statement and remove the infix operator
-                    equationObjectList.remove(i);
-                    equationObjectList.add(checkBack, data.op);
-                }
-                else{
-                    equationObjectList.set(i, ((AbbriviationData) current).op); //Replace the abbriviationdata with it's operator
+        //Reorder for infix and postfix to prefix
+        List<Object> last;
+        List<Object> currentEqList = new ArrayList<>(equationObjectList);
+        do {
+            last = new ArrayList<>(currentEqList);
+            List<Object> newList = new ArrayList<>(currentEqList); //Clone it
+            boolean didWeChangeAlready = false;
+            for(int i = 0; i<currentEqList.size(); i++){
+                Object current = currentEqList.get(i);
+                if(current instanceof AbbriviationData){
+                    AbbriviationData data = (AbbriviationData) current;
+                    if(data.type == AbbriviationType.INFIX && !didWeChangeAlready){//We don't want to do multiple structural changes in one iteration.
+                        //Find the function right before this one.
+                        int beginLastEquationIndex = getLastEquationStartIndex(equationObjectList, i);
+                        List<Object> previousEquation = equationObjectList.subList(beginLastEquationIndex, i);
+                        //Now swap places with the previous equation and the operator.
+                        List<Object> beforeSwap = new ArrayList<>(equationObjectList.subList(0, beginLastEquationIndex)); //Before the swap. Also, cloned.
+                        beforeSwap.add(data.op); //Then add the operator, but set it to prefix
+                        beforeSwap.addAll(previousEquation); //Then the swapped term
+                        beforeSwap.addAll(equationObjectList.subList(i+1, equationObjectList.size())); //Then add the second term. Done.
+                        newList = beforeSwap;
+                        didWeChangeAlready = true;
+                    }
+                    else if(data.type == AbbriviationType.PREFIX){
+                        newList.set(i, ((AbbriviationData) current).op); //Replace the abbriviationdata with it's operator
+                    }
                 }
             }
+            currentEqList = newList;
+        } while(!last.equals(currentEqList));
+
+        return currentEqList;
+    }
+    private static int getLastEquationStartIndex(List<Object> eqList, int lastIndex) { //Takes a list and finds the parenthesis matching the last parenthesis, and then returns the equation between them.
+        return getLastEquationStartIndex(eqList.subList(0, lastIndex));
+    }
+    private static int getLastEquationStartIndex(List<Object> eqList){ //Takes a list and finds the parenthesis matching the last parenthesis, and then returns the equation between them.
+        int level = 0;
+        for(int i = eqList.size() - 1; i >= 0; i--){
+            Object current = eqList.get(i);
+            if(current instanceof SyntaxTerminator){
+                level++;
+            }
+            else if(current instanceof MathObject){
+                if(((MathObject) current).getArgs() > 0){
+                    level--;
+                }
+            }
+            else if(current instanceof AbbriviationData){
+                AbbriviationData data = (AbbriviationData) current;
+                if(data.type == AbbriviationType.PREFIX){
+                    if(data.op.getArgs() > 0) {
+                        level--;
+                    }
+                }
+                if(data.type == AbbriviationType.INFIX){ //This will come up in multiple infix operators, like (1+2) + 3 when evaluating the + before the 3.
+                    //Find where the previous infix would have it's start index.
+                    int lastIndex = getLastEquationStartIndex(eqList, i);
+                    i = lastIndex;
+                }
+            }
+            if(level == 0){
+                return i;
+            }
         }
-        return equationObjectList;
+        System.out.println(eqList);
+        return -1; //DNE
     }
     public static Object parseString(String str){
         if(str.length() == 0){
@@ -266,5 +283,10 @@ public class EquationBuilder{
             return false;
         }
     }
-    private class SyntaxTerminator{}
+    private class SyntaxTerminator{
+        @Override
+        public boolean equals(Object n){
+            return n instanceof SyntaxTerminator;
+        }
+    }
 }
