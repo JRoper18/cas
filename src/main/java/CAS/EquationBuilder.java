@@ -3,6 +3,7 @@ package CAS;
 import CAS.EquationObjects.*;
 import Database.EquationSubDatabase;
 
+import javax.management.AttributeList;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
@@ -101,8 +102,8 @@ public class EquationBuilder{
         return tree;
     }
     private static List<Object> preProcess(String equationStr){
-        String newStr = "(" + equationStr.replace(")", " )") + " )";
-        String[] tokens = newStr.trim().split("[ (,]");
+        String newStr = "( " + equationStr.replace(")", " )").trim() + " )";
+        String[] tokens = newStr.trim().split("[ ,(]");
         List<Object> equationObjectList = new ArrayList<>();
         for(int i = 0; i<tokens.length; i++){
             Object next = parseString(tokens[i]);
@@ -121,27 +122,36 @@ public class EquationBuilder{
                 Object current = currentEqList.get(i);
                 if(current instanceof AbbriviationData){
                     AbbriviationData data = (AbbriviationData) current;
-                    if(data.type == AbbriviationType.INFIX && !didWeChangeAlready){//We don't want to do multiple structural changes in one iteration.
+                    if(data.type == AbbriviationType.INFIX){
                         //Find the function right before this one.
-                        int beginLastEquationIndex = getLastEquationStartIndex(equationObjectList, i);
-                        List<Object> previousEquation = equationObjectList.subList(beginLastEquationIndex, i);
+                        int beginLastEquationIndex = getLastEquationStartIndex(currentEqList, i);
+                        List<Object> previousEquation = currentEqList.subList(beginLastEquationIndex, i);
                         //Now swap places with the previous equation and the operator.
-                        List<Object> beforeSwap = new ArrayList<>(equationObjectList.subList(0, beginLastEquationIndex)); //Before the swap. Also, cloned.
-                        beforeSwap.add(data.op); //Then add the operator, but set it to prefix
+                        List<Object> beforeSwap = new ArrayList<>(currentEqList.subList(0, beginLastEquationIndex)); //Before the swap. Also, cloned.
+                        beforeSwap.add(data.op); //Then add the operator and prefix it
                         beforeSwap.addAll(previousEquation); //Then the swapped term
-                        beforeSwap.addAll(equationObjectList.subList(i+1, equationObjectList.size())); //Then add the second term. Done.
+                        beforeSwap.addAll(currentEqList.subList(i+1, currentEqList.size())); //Then add the second term and a syntax terminator.
+                        beforeSwap.add(new SyntaxTerminator());
                         newList = beforeSwap;
                         didWeChangeAlready = true;
-                    }
-                    else if(data.type == AbbriviationType.PREFIX){
-                        newList.set(i, ((AbbriviationData) current).op); //Replace the abbriviationdata with it's operator
+                        break;
                     }
                 }
             }
             currentEqList = newList;
         } while(!last.equals(currentEqList));
-
-        return currentEqList;
+        //Now set add abbrivations to operators
+        List<Object> newList = new ArrayList<>();
+        for(int i = 0; i<currentEqList.size()-1; i++){ //The minus one is because our above process adds extra syntax terminators
+            Object current = currentEqList.get(i);
+            if(current instanceof AbbriviationData){
+                newList.add(((AbbriviationData) current).op);
+            }
+            else{
+                newList.add(current);
+            }
+        }
+        return newList;
     }
     private static int getLastEquationStartIndex(List<Object> eqList, int lastIndex) { //Takes a list and finds the parenthesis matching the last parenthesis, and then returns the equation between them.
         return getLastEquationStartIndex(eqList.subList(0, lastIndex));
@@ -165,17 +175,19 @@ public class EquationBuilder{
                         level--;
                     }
                 }
-                if(data.type == AbbriviationType.INFIX){ //This will come up in multiple infix operators, like (1+2) + 3 when evaluating the + before the 3.
+                else if(data.type == AbbriviationType.INFIX){ //This will come up in multiple infix operators, like (1+2) + 3 when evaluating the + before the 3.
                     //Find where the previous infix would have it's start index.
                     int lastIndex = getLastEquationStartIndex(eqList, i);
                     i = lastIndex;
+                    level--;
                 }
+
             }
-            if(level == 0){
+
+            if(level <= 0){
                 return i;
             }
         }
-        System.out.println(eqList);
         return -1; //DNE
     }
     public static Object parseString(String str){
@@ -184,7 +196,7 @@ public class EquationBuilder{
         }
         //Check it it's a terminator
         if(str.equals(")")){
-            return new EquationBuilder().new SyntaxTerminator();
+            return new SyntaxTerminator();
         }
         //Next, check for numbers
         try{
@@ -283,7 +295,7 @@ public class EquationBuilder{
             return false;
         }
     }
-    private class SyntaxTerminator{
+    private static class SyntaxTerminator{
         @Override
         public boolean equals(Object n){
             return n instanceof SyntaxTerminator;

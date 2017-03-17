@@ -26,6 +26,8 @@ public class EquationBuilderTest {
         expectedTree1.addChildWithData(new MathInteger(4));
         expectedTree1.addChildWithData(new MathInteger(5));
         assertEquals(new Equation(expectedTree1), test1);
+
+        Equation test2 = new Equation("ADD(1, TIMES(3, 4))", 0);
     }
 
     @Test
@@ -38,10 +40,20 @@ public class EquationBuilderTest {
 
     @Test
     public void testInfixToPrefix() throws Exception {
-        assertEquals(new Equation("PLUS(1, 2)", 0), new Equation("(1 + 2)", 0));
+        assertEquals(new Equation("PLUS(1, 2)", 0), new Equation("1 + 2", 0));
         assertEquals(new Equation("PLUS(1, 2)", 0), new Equation("1 + 2", 0));
         assertEquals(new Equation("TIMES(1, 2)", 0), new Equation("1 * 2", 0));
-        assertEquals(new Equation("TIMES(1, 2)", 0), new Equation("(1 + 2) + 3", 0));
+        assertEquals(new Equation("PLUS(PLUS(1, 2), 3)", 0), new Equation("PLUS(1, 2) + 3", 0));
+        assertEquals(new Equation("PLUS(PLUS(1, 2), 3)", 0), new Equation("(1 + 2) + 3", 0));
+        assertEquals(new Equation("PLUS(TIMES(1, 2), 3)", 0), new Equation("(1 * 2) + 3", 0));
+        assertEquals(new Equation("TIMES(1, PLUS(2, 3))", 0), new Equation("1 * (2 + 3)", 0));
+        assertEquals(new Equation("PLUS(1, PLUS(2, 3))", 0), new Equation("1 + 2 + 3", 0));
+        assertEquals(new Equation("PLUS(1, PLUS(2, PLUS(3, 4)))", 0), new Equation("1 + 2 + 3 + 4", 0));
+        assertEquals(new Equation("PLUS(1, PLUS(2, PLUS(3, 4)))", 0), new Equation("1 + 2 + PLUS(3, 4)", 0));
+        assertEquals(new Equation("PLUS(1, TIMES(2, PLUS(3, 4)))", 0), new Equation("1 + 2 * 3 + 4", 0));
+        assertEquals(new Equation("POWER(_x, 2)", 0), new Equation("_x ^ 2", 0));
+        assertEquals(new Equation("POWER(_x, SIN(2))", 0), new Equation("_x ^ SIN(2)", 0));
+
 
     }
 }

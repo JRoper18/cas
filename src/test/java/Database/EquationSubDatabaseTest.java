@@ -177,9 +177,5 @@ public class EquationSubDatabaseTest {
         assertEquals(new Equation("PLUS(POWER(_x, 3), TIMES(3, POWER(_x, 2)) , TIMES(3, _x), 1)"), new Equation("EXPAND(POWER(PLUS(_x, 1), 3))"));
     }
 
-    @Test
-    public void testDerivative() throws Exception {
-        assertEquals(new Equation("TIMES(2, _x)"), Simplifier.simplifyByOperator(new Equation("DERIV(POWER(_x, 2))")));
-    }
 
 }
