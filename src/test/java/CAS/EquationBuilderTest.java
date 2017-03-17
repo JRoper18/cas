@@ -53,7 +53,5 @@ public class EquationBuilderTest {
         assertEquals(new Equation("PLUS(1, TIMES(2, PLUS(3, 4)))", 0), new Equation("1 + 2 * 3 + 4", 0));
         assertEquals(new Equation("POWER(_x, 2)", 0), new Equation("_x ^ 2", 0));
         assertEquals(new Equation("POWER(_x, SIN(2))", 0), new Equation("_x ^ SIN(2)", 0));
-
-
     }
 }

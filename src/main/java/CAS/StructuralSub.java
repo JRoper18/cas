@@ -3,6 +3,7 @@ package CAS;
 
 import CAS.EquationObjects.GenericExpression;
 import CAS.EquationObjects.MathObject;
+import CAS.EquationObjects.MathOperator;
 import com.rits.cloning.Cloner;
 
 import java.io.Serializable;
@@ -15,6 +16,9 @@ public class StructuralSub extends EquationSub implements Serializable {
     public Equation before;
     public Equation after;
     public Equation condition;
+    public StructuralSub(String before, String after){
+        this(new Equation(before), new Equation(after));
+    }
     public StructuralSub(Equation before, Equation after, Equation condition){
         super((DirectOperation & Serializable) ( equation -> {
             PatternMatcher matcher = new PatternMatcher();
@@ -62,11 +66,10 @@ public class StructuralSub extends EquationSub implements Serializable {
                     GenericExpression genExToLookFor = new GenericExpression(var);
                     newEquation.tree.replaceAll(new Tree(genExToLookFor), substitution);
                 }
-                return newEquation;
+                return Simplifier.simplifyWithMetaFunction(newEquation, MathOperator.AUTOSIMPLIFY);
             }
             else {
                 //Can we change the equation to Fix the before algorithm?
-
             }
             return equation;
         }), getProbableAssignedOperator(before));
