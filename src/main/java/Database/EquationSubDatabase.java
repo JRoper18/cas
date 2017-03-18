@@ -7,9 +7,6 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.*;
 
-import static CAS.Simplifier.simplifyByOperator;
-
-
 /**
  * Created by jack on 1/8/2017.
  */
@@ -197,7 +194,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     if(newBase.isUndefined()){
                         return new Equation("UNDEFINED");
                     }
-                    Equation toReturn = simplifyByOperator(new Equation("POWER(" + newBase + ", " + power + ")", 0));
+                    Equation toReturn = Simplifier.simplifyByOperator(new Equation("POWER(" + newBase + ", " + power + ")", 0));
                     return toReturn;
                 }
                 else if(newEq.tree.getNumberOfChildren() >= 2){
@@ -280,7 +277,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                             toReturn = new Equation("SIMPLIFY_FACTORIAL(" + newEq + ")", 1);
                             break;
                         default:
-                            toReturn = Simplifier.simplifyByOperator(newEq);
+                            toReturn = newEq;
                     }
                     return toReturn;
                 }
@@ -557,8 +554,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     return expanded;
                 }
                 return newEq; //DEFAULT
-            }, new MathObject(MathOperator.EXPAND)),
-            new StructuralSub(new Equation("DERIVATIVE(POWER(_x, _n))"), new Equation("TIMES(_n, POWER(_x, MINUS(_n, 1)))"))
+            }, new MathObject(MathOperator.EXPAND))
     };
     public static final HashSet<EquationSub> subs = new HashSet<EquationSub>(Arrays.asList(subsArray));
 }

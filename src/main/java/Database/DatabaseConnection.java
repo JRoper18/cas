@@ -2,6 +2,7 @@ package Database;
 
 import CAS.EquationObjects.MathObject;
 import CAS.EquationSub;
+import CAS.StructuralSub;
 
 import java.sql.*;
 
@@ -28,6 +29,24 @@ public class DatabaseConnection {
             statement.executeUpdate("create table subs (id int primary key not null, algorithm blob not null, operator string, subtype string)");
             int idCount = 0;
             for(EquationSub sub : EquationSubDatabase.subs){
+                if(sub instanceof StructuralSub){
+                    System.out.println(((StructuralSub) sub).before);
+                }
+                String toPrepare = "insert into subs values(?, ?, ?, ?)";
+                PreparedStatement prepared = connection.prepareStatement(toPrepare);
+                prepared.setInt(1, idCount);
+                prepared.setBytes(2, SubSerializer.serialize(sub));
+                MathObject op = sub.rootOperator;
+                if(op != null){
+                    prepared.setString(3, op.toString());
+                    prepared.setString(4, op.getOperator().getSubType().toString());
+                }
+                prepared.executeUpdate();
+                idCount++;
+            }
+            for(String ruleStr : SubstitutionRuleDatabase.rules){
+                int equalsIndex = ruleStr.indexOf('=');
+                StructuralSub sub = new StructuralSub(ruleStr.substring(0, equalsIndex), ruleStr.substring(equalsIndex + 1, ruleStr.length()));
                 String toPrepare = "insert into subs values(?, ?, ?, ?)";
                 PreparedStatement prepared = connection.prepareStatement(toPrepare);
                 prepared.setInt(1, idCount);

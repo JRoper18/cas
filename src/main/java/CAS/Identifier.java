@@ -14,6 +14,9 @@ public class Identifier {
         MathOperator op = equation.getRoot().getOperator();
         switch(type){
             case INTEGER:
+                if(equation.isType(MathOperator.EXPRESSION)){
+                    return (((GenericExpression) equation.getRoot()).type == INTEGER);
+                }
                 return (equation.getRoot() instanceof MathInteger);
             case CONSTANT:
                 return !equation.tree.containsClass(GenericExpression.class);

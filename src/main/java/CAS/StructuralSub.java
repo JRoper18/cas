@@ -17,7 +17,7 @@ public class StructuralSub extends EquationSub implements Serializable {
     public Equation after;
     public Equation condition;
     public StructuralSub(String before, String after){
-        this(new Equation(before), new Equation(after));
+        this(Simplifier.simplifyWithMetaFunction(new Equation(before), MathOperator.AUTOSIMPLIFY), Simplifier.simplifyWithMetaFunction(new Equation(after), MathOperator.AUTOSIMPLIFY));
     }
     public StructuralSub(Equation before, Equation after, Equation condition){
         super((DirectOperation & Serializable) ( equation -> {

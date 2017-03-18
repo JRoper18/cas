@@ -21,5 +21,13 @@ public class StructuralSubTest {
         assertEquals(new Equation("1 + _x"), sub2.apply(new Equation("_x + TIMES(2, _z)")));
         assertEquals(new Equation("4"), sub2.apply(new Equation("3 + _x")));
         assertEquals(new Equation("9"), sub2.apply(new Equation("3 + TIMES(2, 3)"))); //Just a test to see if it will only look at simplified form (it should)
+
+        StructuralSub sub3 = new StructuralSub("_x_INTEGER", "TRUE");
+        assertEquals(new Equation("TRUE"), sub3.apply(new Equation("1")));
+        assertEquals(new Equation("1.5"), sub3.apply(new Equation("1.5")));
+        assertEquals(new Equation("TRUE"), sub3.apply(new Equation("_y_INTEGER")));
+        assertEquals(new Equation("TRUE"), sub3.apply(new Equation("__y_INTEGER")));
+
+        StructuralSub subDer = new StructuralSub(new Equation("DERIVATIVE(POWER(_x, _n))"), new Equation("TIMES(_n, POWER(_x, MINUS(_n, 1)))"));
     }
 }

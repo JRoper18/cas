@@ -1,5 +1,6 @@
 package CAS;
 
+import CAS.EquationObjects.GenericExpression;
 import CAS.EquationObjects.MathInteger;
 import CAS.EquationObjects.MathObject;
 import CAS.EquationObjects.MathOperator;
@@ -17,6 +18,7 @@ public class EquationBuilderTest {
     @Test
     public void testStringTokenizer() throws Exception {
         assertEquals(new MathInteger(300), builder.parseString("300"));
+        assertEquals(new GenericExpression("y", false, IdentificationType.INTEGER), builder.parseString("_y_INTEGER"));
     }
 
     @Test
