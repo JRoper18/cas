@@ -257,7 +257,7 @@ public class EquationBuilder{
                 return new GenericExpression();
             }
             if(typeBuild.length() == 0){
-                return new GenericExpression(nameBuild.toString(), named);
+                return new GenericExpression(nameBuild.toString(), named, IdentificationType.VARIABLE);
             }
             return new GenericExpression(nameBuild.toString(), named, IdentificationType.valueOf(typeBuild.toString()));
         }

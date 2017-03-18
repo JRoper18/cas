@@ -13,6 +13,10 @@ public class Identifier {
     public static boolean isType(Equation equation, IdentificationType type){
         MathOperator op = equation.getRoot().getOperator();
         switch(type){
+            case EXPRESSION:
+                return true;
+            case VARIABLE:
+                return equation.isType(MathOperator.EXPRESSION);
             case INTEGER:
                 if(equation.isType(MathOperator.EXPRESSION)){
                     return (((GenericExpression) equation.getRoot()).type == INTEGER);
@@ -49,6 +53,9 @@ public class Identifier {
                 }
                 break;
             case RATIONAL_NUMBER_EXPRESSION:
+                if(!equation.isType(CONSTANT)){
+                    return false;
+                }
                 if(equation.isType(INTEGER) || op == MathOperator.FRACTION){
                     return true;
                 }

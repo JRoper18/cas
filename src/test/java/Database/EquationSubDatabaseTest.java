@@ -4,6 +4,7 @@ import CAS.Equation;
 import CAS.EquationBuilder;
 import CAS.EquationObjects.MathObject;
 import CAS.EquationObjects.MathOperator;
+import CAS.PatternMatcher;
 import CAS.Simplifier;
 import org.junit.Test;
 
@@ -179,6 +180,6 @@ public class EquationSubDatabaseTest {
 
     @Test
     public void testDerivative() throws Exception {
-        assertEquals(new Equation("2 * _x"), Simplifier.simplifyByOperator(new Equation("DERIVATIVE(POWER(_x, 2))")));
+        System.out.println(Simplifier.simplifyByOperator(new Equation("DERIV(POWER(_x, 2), _y)")));;
     }
 }

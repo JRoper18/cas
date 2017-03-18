@@ -16,6 +16,12 @@ public class IdentifierTest {
     }
 
     @Test
+    public void testRationalExpressionRecognition() throws Exception {
+        assertEquals(false, new Equation("PLUS(_x, 1)", 0).isType(IdentificationType.RATIONAL_NUMBER_EXPRESSION));
+        assertEquals(true, new Equation("PLUS(2, 1)", 0).isType(IdentificationType.RATIONAL_NUMBER_EXPRESSION));
+    }
+
+    @Test
     public void testAutoSimplifiedRecognition() throws Exception {
         assertEquals(false, new Equation("PLUS(2, 3)",0).isType(IdentificationType.AUTOSIMPLIFIED_EXPRESSION)); //Could be simplified to 5
         assertEquals(true, new Equation("5",0).isType(IdentificationType.AUTOSIMPLIFIED_EXPRESSION));

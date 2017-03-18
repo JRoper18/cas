@@ -19,6 +19,10 @@ public class EquationBuilderTest {
     public void testStringTokenizer() throws Exception {
         assertEquals(new MathInteger(300), builder.parseString("300"));
         assertEquals(new GenericExpression("y", false, IdentificationType.INTEGER), builder.parseString("_y_INTEGER"));
+        assertEquals(new GenericExpression("y", false, IdentificationType.EXPRESSION), builder.parseString("_y_EXPRESSION"));
+        assertEquals(new GenericExpression("y", false, IdentificationType.CONSTANT), builder.parseString("_y_CONSTANT"));
+        assertEquals(new GenericExpression("y", false, IdentificationType.VARIABLE), builder.parseString("_y"));
+        assertEquals(new GenericExpression("y", true, IdentificationType.VARIABLE), builder.parseString("__y"));
     }
 
     @Test

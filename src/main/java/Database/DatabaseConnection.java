@@ -29,9 +29,6 @@ public class DatabaseConnection {
             statement.executeUpdate("create table subs (id int primary key not null, algorithm blob not null, operator string, subtype string)");
             int idCount = 0;
             for(EquationSub sub : EquationSubDatabase.subs){
-                if(sub instanceof StructuralSub){
-                    System.out.println(((StructuralSub) sub).before);
-                }
                 String toPrepare = "insert into subs values(?, ?, ?, ?)";
                 PreparedStatement prepared = connection.prepareStatement(toPrepare);
                 prepared.setInt(1, idCount);

@@ -19,52 +19,24 @@ public class StructuralSub extends EquationSub implements Serializable {
     public StructuralSub(String before, String after){
         this(Simplifier.simplifyWithMetaFunction(new Equation(before), MathOperator.AUTOSIMPLIFY), Simplifier.simplifyWithMetaFunction(new Equation(after), MathOperator.AUTOSIMPLIFY));
     }
-    public StructuralSub(Equation before, Equation after, Equation condition){
-        super((DirectOperation & Serializable) ( equation -> {
-            PatternMatcher matcher = new PatternMatcher();
-            if(matcher.patternMatch(equation, before)) {
-                Equation newEquation = new Equation(after); //Quick clone
-                HashMap<String, Tree<MathObject>> values = matcher.getLastMatchExpressions();
-                //Go through conditions
-                Cloner cloner = new Cloner();
-                Equation temp = cloner.deepClone(condition);
-                //Replace generics
-                for(String var : values.keySet()){
-                    Tree<MathObject> substitution = values.get(var);
-                    GenericExpression genExToLookFor = new GenericExpression(var);
-                    temp.tree.replaceAll(new Tree(genExToLookFor), substitution);
-                }
-                Equation simplified = Simplifier.simplify(temp);
-                if(simplified.equals(new Equation("FALSE"))){
-                    return equation; //Again, do nothing to the equation.
-                }
-                for (String var : values.keySet()) {
-                    Tree<MathObject> substitution = values.get(var);
-                    GenericExpression genExToLookFor = new GenericExpression(var);
-                    newEquation.tree.replaceAll(new Tree(genExToLookFor), substitution);
-                }
-                return newEquation;
-            }
-            else {
-                //Can we change the equation to Fix the before algorithm?
-            }
-            return equation;
-        }), getProbableAssignedOperator(before));
-        this.before = before;
-        this.after = after;
-        this.condition = condition;
-    }
     public StructuralSub(Equation before, Equation after){
         super((DirectOperation & Serializable) ( equation -> {
             PatternMatcher matcher = new PatternMatcher();
             if(matcher.patternMatch(equation, before)) {
                 Equation newEquation = new Equation(after); //Quick clone
                 HashMap<String, Tree<MathObject>> values = matcher.getLastMatchExpressions();
+                HashMap<String, String> vars = matcher.getLastMatchVariables();
                 //Go through conditions
                 for (String var : values.keySet()) {
                     Tree<MathObject> substitution = values.get(var);
                     GenericExpression genExToLookFor = new GenericExpression(var);
                     newEquation.tree.replaceAll(new Tree(genExToLookFor), substitution);
+                }
+                for(String var : vars.keySet()){
+                    Tree<MathObject> substitution = new Tree<>(new GenericExpression(vars.get(var)));
+                    GenericExpression lookFor = new GenericExpression(var);
+                    newEquation.tree.replaceAll(new Tree(lookFor), substitution);
+
                 }
                 return Simplifier.simplifyWithMetaFunction(newEquation, MathOperator.AUTOSIMPLIFY);
             }

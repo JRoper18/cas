@@ -12,6 +12,7 @@ public class GenericExpression extends MathObject {
     public GenericExpression(){
         super(MathOperator.EXPRESSION);
         this.tag = null;
+        this.type = IdentificationType.EXPRESSION;
     }
     public GenericExpression(String tag, boolean named, IdentificationType type){
         super(MathOperator.EXPRESSION);
@@ -23,11 +24,13 @@ public class GenericExpression extends MathObject {
         super(MathOperator.EXPRESSION);
         this.tag = tag;
         this.named = named;
+        this.type = IdentificationType.VARIABLE;
     }
     public GenericExpression(String tag){
         super(MathOperator.EXPRESSION);
         this.tag = tag;
         this.named = false;
+        this.type = IdentificationType.VARIABLE;
     }
 
         public boolean hasTag(){
@@ -47,6 +50,6 @@ public class GenericExpression extends MathObject {
 
     @Override
     public String toString(){
-        return "_" + tag;
+        return "_" + ((this.named)? "_" : "") + tag + ((this.type == IdentificationType.VARIABLE) ? "" : "_" + this.type.toString());
     }
 }

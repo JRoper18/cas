@@ -12,11 +12,13 @@ import java.util.HashMap;
  */
 public class PatternMatcher {
     private HashMap<String, Tree<MathObject>> values = new HashMap<>();
+    private HashMap<String, String> varTags = new HashMap<>(); //This is for named variables.
     public PatternMatcher(){
 
     }
     public boolean patternMatch(Equation eq, Equation pattern){
         values.clear();
+        varTags.clear();
         Tree<MathObject> eqTree = eq.tree;
         Tree<MathObject> patternTree = pattern.tree;
         return compareSubTrees(eqTree, patternTree);
@@ -52,16 +54,28 @@ public class PatternMatcher {
                     }
 
                 }
-                if(genEx.type != null){
+                if(genEx.type != IdentificationType.EXPRESSION){
                     if(!new Equation(eq, 0).isType(genEx.type)){
                         return false;
                     }
                 }
                 if (genEx.hasTag()) {
                     String tag = genEx.tag;
+                    if(tag.charAt(0) == '#'){ //We have an unspecific but named.
+                        if(!(eq.data instanceof GenericExpression)){
+                            return false;
+                        }
+                        if(!varTags.containsKey(tag)){
+                            varTags.put(tag, ((GenericExpression) eq.data).tag);
+                            return true;
+                        }
+                        if(((GenericExpression) eq.data).type == IdentificationType.VARIABLE){
+                            return ((GenericExpression) eq.data).tag.equals(varTags.get(tag));
+                        }
+                        return false;
+                    }
                     //First, check if we have a tag already
                     if (values.containsKey(tag)) {
-                        System.out.println(values);
                         return values.get(tag).equals(eq);
                     } else {
                         //Add the tag to the values map
@@ -91,6 +105,9 @@ public class PatternMatcher {
         }
         //Checked everything possible
         return true;
+    }
+    public HashMap<String, String> getLastMatchVariables() {
+        return this.varTags;
     }
     public HashMap<String, Tree<MathObject>> getLastMatchExpressions(){
         return this.values;

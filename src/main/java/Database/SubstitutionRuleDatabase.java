@@ -8,6 +8,6 @@ import CAS.StructuralSub;
  */
 public class SubstitutionRuleDatabase {
     public static final String[] rules = {
-            "DERIV(_x ^ _n) = _n * (_x ^ (_n - 1))"
+            "DERIV(POWER(_#1, _n_EXPRESSION), _#1) = _n * (_#1 ^ (_n - 1))",
     };
 }
