@@ -66,6 +66,10 @@ public class PatternMatcher {
                             return false;
                         }
                         if(!varTags.containsKey(tag)){
+                            //A # means that it's unique. PLUS(_x, _x) will not match PLUS(_#1, _#2).
+                            if(varTags.containsValue(((GenericExpression) eq.data).tag)){
+                                return false;
+                            }
                             varTags.put(tag, ((GenericExpression) eq.data).tag);
                             return true;
                         }

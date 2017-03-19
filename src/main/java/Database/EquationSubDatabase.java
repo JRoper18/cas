@@ -168,12 +168,12 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 return eq;
             }), new MathObject(MathOperator.POWER)),
             new EquationSub((Serializable & DirectOperation) (eq -> {
+                if (eq.isType(IdentificationType.RATIONAL_NUMBER_EXPRESSION)) {
+                    return eq;
+                }
                 Equation newEq = eq.clone();
                 if(eq.getRoot().equals(new MathObject(MathOperator.SIMPLIFY_RATIONAL_EXPRESSION))){
                     newEq = eq.getSubEquation(0).clone();
-                }
-                if(!newEq.isType(IdentificationType.RATIONAL_NUMBER_EXPRESSION)){
-                    return newEq;
                 }
                 if(newEq.isType(IdentificationType.INTEGER)){
                     return newEq;
@@ -194,7 +194,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     if(newBase.isUndefined()){
                         return new Equation("UNDEFINED");
                     }
-                    Equation toReturn = Simplifier.simplifyByOperator(new Equation("POWER(" + newBase + ", " + power + ")", 0), new MathObject(MathOperator.POWER));
+                    Equation toReturn = Simplifier.simplifyByOperator(new Equation("POWER(" + newBase + ", " + power + ")", 0));
                     return toReturn;
                 }
                 else if(newEq.tree.getNumberOfChildren() >= 2){

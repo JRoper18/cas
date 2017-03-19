@@ -180,6 +180,11 @@ public class EquationSubDatabaseTest {
 
     @Test
     public void testDerivative() throws Exception {
-        System.out.println(Simplifier.simplifyByOperator(new Equation("DERIV(POWER(_x, 2), _y)")));;
+        assertEquals(new Equation("1"), Simplifier.simplifyByOperator(new Equation("DERIV(_y, _y)")));
+        assertEquals(new Equation("0"), Simplifier.simplifyByOperator(new Equation("DERIV(_y, _x)")));
+        assertEquals(new Equation("2 * _x"), Simplifier.simplifyByOperator(new Equation("DERIV(POWER(_x, 2), _x)")));
+        assertEquals(new Equation("5"), Simplifier.simplifyByOperator(new Equation("DERIV((2 * _x) + (3 * _x)), _x)")));
+        assertEquals(new Equation("4"), Simplifier.simplifyByOperator(new Equation("DERIV(2 * (_x ^ 2)), _x)")));
+
     }
 }

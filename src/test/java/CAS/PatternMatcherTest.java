@@ -25,10 +25,12 @@ public class PatternMatcherTest {
         assertEquals(true, matcher.patternMatch(new Equation("ADD(1, 2)",2), new Equation("_x_INTEGER",0)));
         assertEquals(true, matcher.patternMatch(new Equation("_x_INTEGER",0), new Equation("_x_INTEGER",0)));
         assertEquals(true, matcher.patternMatch(new Equation("_y_INTEGER",0), new Equation("_x_INTEGER",0)));
-        assertEquals(true, matcher.patternMatch(new Equation("PLUS(_x_VARIABLE, _x_VARIABLE)"), new Equation("PLUS(_#2, _#2)")));
-        assertEquals(false, matcher.patternMatch(new Equation("PLUS(_x_VARIABLE, _y_VARIABLE)"), new Equation("PLUS(_#2, _#2)")));
-        assertEquals(true, matcher.patternMatch(new Equation("PLUS(_y_VARIABLE, _y_VARIABLE)"), new Equation("PLUS(_#2, _#2)")));
-        assertEquals(false, matcher.patternMatch(new Equation("PLUS(_y_VARIABLE, _y_VARIABLE)"), new Equation("PLUS(_#2, _#1)")));
-        assertEquals(true, matcher.patternMatch(new Equation("PLUS(_y_VARIABLE, _x_VARIABLE)"), new Equation("PLUS(_#2, _#1)")));
+        assertEquals(true, matcher.patternMatch(new Equation("PLUS(_x_VARIABLE, _x_VARIABLE)", 0), new Equation("PLUS(_#2, _#2)",0)));
+        assertEquals(false, matcher.patternMatch(new Equation("PLUS(_x_VARIABLE, _y_VARIABLE)",0), new Equation("PLUS(_#2, _#2)",0)));
+        assertEquals(true, matcher.patternMatch(new Equation("PLUS(_y_VARIABLE, _y_VARIABLE)",0), new Equation("PLUS(_#2, _#2)",0)));
+        assertEquals(true, matcher.patternMatch(new Equation("PLUS(_x, _y)"), new Equation("PLUS(_#1, _#2)")));
+        assertEquals(false, matcher.patternMatch(new Equation("DERIV(_x, _x)", 0), new Equation("DERIV(_#1, _#2)", 0)));
+        assertEquals(false, matcher.patternMatch(new Equation("PLUS(_y_VARIABLE, _y_VARIABLE)",0), new Equation("PLUS(_#2, _#1)",0)));
+        assertEquals(true, matcher.patternMatch(new Equation("PLUS(_y_VARIABLE, _x_VARIABLE)",0), new Equation("PLUS(_#2, _#1)",0)));
     }
 }
