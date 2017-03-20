@@ -1,11 +1,8 @@
 package Database;
 
-import CAS.Equation;
-import CAS.EquationBuilder;
+import CAS.*;
 import CAS.EquationObjects.MathObject;
 import CAS.EquationObjects.MathOperator;
-import CAS.PatternMatcher;
-import CAS.Simplifier;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -180,11 +177,13 @@ public class EquationSubDatabaseTest {
 
     @Test
     public void testDerivative() throws Exception {
-        assertEquals(new Equation("1"), Simplifier.simplifyByOperator(new Equation("DERIV(_y, _y)")));
-        assertEquals(new Equation("0"), Simplifier.simplifyByOperator(new Equation("DERIV(_y, _x)")));
-        assertEquals(new Equation("2 * _x"), Simplifier.simplifyByOperator(new Equation("DERIV(POWER(_x, 2), _x)")));
-        assertEquals(new Equation("5"), Simplifier.simplifyByOperator(new Equation("DERIV((2 * _x) + (3 * _x)), _x)")));
-        assertEquals(new Equation("4"), Simplifier.simplifyByOperator(new Equation("DERIV(2 * (_x ^ 2)), _x)")));
+        StructuralSub sub = new StructuralSub(new Equation("DERIV((_n_CONSTANT * _f_EXPRESSION), _#1)"), new Equation("TIMES(_n, DERIV(_f, _#1))"));
+        System.out.println(sub.apply(new Equation("DERIV(TIMES(2, POWER(_x, 2)), _x)")));
+        assertEquals(new Equation("1"), Simplifier.simplifyByOperator(new Equation("DERIV(_y, _y)"), true));
+        assertEquals(new Equation("0"), Simplifier.simplifyByOperator(new Equation("DERIV(_y, _x)"), true));
+        assertEquals(new Equation("2 * _x"), Simplifier.simplifyByOperator(new Equation("DERIV(POWER(_x, 2), _x)"), true));
+        assertEquals(new Equation("5"), Simplifier.simplifyByOperator(new Equation("DERIV((2 * _x) + (3 * _x)), _x)"), true));
+        assertEquals(new Equation("4"), Simplifier.simplifyByOperator(new Equation("DERIV(TIMES(2, POWER(_x, 2)), _x)"), true));
 
     }
 }

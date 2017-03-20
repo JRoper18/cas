@@ -18,18 +18,25 @@ import java.util.List;
  * Created by jack on 1/5/2017.
  */
 public class Simplifier {
-    public static Equation simplifyByOperator(Equation eq, MathObject operation){
+    public static Equation simplifyByOperator(Equation eq, MathObject operation, boolean full){
         Equation newEq = eq.clone();
-        try{
-            ResultSet results = DatabaseConnection.runQuery("select algorithm from subs where (operator == '" + operation + "')");
-            while(results.next()){
-                EquationSub tempSub = SubSerializer.deserialize(results.getBytes("algorithm"));
-                newEq = tempSub.apply(newEq);
+        Equation last;
+        do{
+            last = newEq;
+            try{
+                ResultSet results = DatabaseConnection.runQuery("select algorithm from subs where (operator == '" + operation + "')");
+                while(results.next()){
+                    EquationSub tempSub = SubSerializer.deserialize(results.getBytes("algorithm"));
+                    newEq = (full)? tempSub.applyEverywhere(newEq) : tempSub.apply(newEq);
+                }
+            } catch (Exception ex){
+                ex.printStackTrace();
             }
-        } catch (Exception ex){
-            ex.printStackTrace();
-        }
-        return newEq;
+        } while (full==true && !newEq.equals(last));
+        return (full)? Simplifier.simplifyWithMetaFunction(newEq, MathOperator.AUTOSIMPLIFY) : newEq;
+    }
+    public static Equation simplifyByOperator(Equation eq, boolean full){
+        return simplifyByOperator(eq, eq.getRoot(), full);
     }
     public static Equation simplifyWithMetaFunction(Equation eq, MathOperator metaFunction){
         if(metaFunction.getSubType() != MathOperatorSubtype.META){
@@ -40,7 +47,7 @@ public class Simplifier {
         return simplifyMetaFunctions(new Equation(newTree));
     }
     public static Equation simplifyByOperator(Equation eq){
-        return simplifyByOperator(eq, eq.getRoot());
+        return simplifyByOperator(eq, eq.getRoot(), false);
     }
     public static Equation simplify(Equation eq){
         Cloner cloner = new Cloner();
@@ -69,7 +76,7 @@ public class Simplifier {
             } catch (Exception ex){
                 ex.printStackTrace();
             }
-        } while (!lastIteration.equals(newEq) && newEq.complexity() < minComplexity);
+        } while (!lastIteration.equals(newEq));
         return newEq;
     }
     public static Equation simplifyMetaFunctions(Equation equation){

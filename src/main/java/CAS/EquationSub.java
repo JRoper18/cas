@@ -36,7 +36,7 @@ public class EquationSub implements Serializable {
                     //EXAMPLE: 1 + 2 + 3 + 4 -> (((1+2)+3)+4) -> (3 + 3) + 4 -> 6 + 4 -> 10
                     //EXAMPLE 2: OR(F, F, T, F) -> OR ( OR (F, F) , T , F) -> OR (F, T, F ) -> OR(OR(F,T), F) -> OR(T, F) -> TRUE
                     Equation subEquation = new Equation(subEquationTree);
-                    Equation temp = Simplifier.simplify(subEquation);
+                    Equation temp = Simplifier.simplifyByOperator(subEquation);
                     //Now replace
                     newEq.tree.setChild(0, temp.tree);
                     newEq.tree.removeChild(1);
@@ -50,10 +50,11 @@ public class EquationSub implements Serializable {
             return this.apply(equation);
         }
         else{
+            Tree<MathObject> newEqTree = new Tree<>(equation.getRoot());
             for(Tree<MathObject> childTree : equation.tree.getChildren()){
-                childTree.replaceWith(this.applyEverywhere(new Equation(childTree)).tree);
+                newEqTree.addChild(this.applyEverywhere(new Equation(childTree)).tree);
             }
-            return this.apply(equation);
+            return this.apply(new Equation(newEqTree, 0));
         }
     }
 }

@@ -21,5 +21,7 @@ public class EquationTest {
         assertEquals(true, new Equation("POWER(PLUS(1, _x),2)",0).compareTo(new Equation("POWER(PLUS(1, _x),3)",0)) < 0);
         assertEquals(true, new Equation("POWER(PLUS(1, _x),3)",0).compareTo(new Equation("POWER(PLUS(1, _y),2)",0)) < 0);
         assertEquals(true, new Equation("FACTORIAL(2)", 0).compareTo(new Equation("FACTORIAL(3)",0)) < 0);
+        assertEquals(true, new Equation("_a_CONSTANT", 0).compareTo(new Equation("_b",0)) < 0);
+        assertEquals(true, new Equation("_b_CONSTANT", 0).compareTo(new Equation("_a",0)) < 0);
     }
 }

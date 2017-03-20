@@ -54,5 +54,9 @@ public class SimplifierTest {
         assertEquals(new Equation("PLUS(TIMES(1, 2), _b)", 0), Simplifier.orderEquation(new Equation("PLUS(_b, TIMES(1, 2))", 0)));
         assertEquals(new Equation("PLUS(_a, _b)", 0), Simplifier.orderEquation(new Equation("PLUS(_b, _a)", 0)));
         assertEquals(new Equation("POWER(_y, 2)", 0), Simplifier.orderEquation(new Equation("POWER(_y, 2)", 0)));
+        assertEquals(new Equation("POWER(PLUS(1, _x), 2)", 0), Simplifier.orderEquation(new Equation("POWER(PLUS(_x, 1), 2)", 0)));
+        assertEquals(new Equation("DERIV(PLUS(1, _x), _x)", 0), Simplifier.orderEquation(new Equation("DERIV(PLUS(_x, 1), _x)", 0)));
+        assertEquals(new Equation("DERIV(PLUS(_n_CONSTANT, _f), _x)", 0), Simplifier.orderEquation(new Equation("DERIV(PLUS(_f, _n_CONSTANT), _x)", 0)));
+
     }
 }

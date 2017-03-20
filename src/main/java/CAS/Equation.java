@@ -128,6 +128,12 @@ public class Equation implements Serializable, Comparable<Equation>{
 
         }
         else if(eq1Op == MathOperator.EXPRESSION && eq2Op == MathOperator.EXPRESSION){
+            if(eq1.isType(IdentificationType.CONSTANT) && !eq2.isType(IdentificationType.CONSTANT)){
+                return -1;
+            }
+            if(eq2.isType(IdentificationType.CONSTANT) && !eq1.isType(IdentificationType.CONSTANT)){
+                return 1;
+            }
             return ((GenericExpression) eq1.getRoot()).tag.compareTo(((GenericExpression) eq2.getRoot()).tag);
         }
         else if((eq1Op == MathOperator.ADD && eq2Op == MathOperator.ADD) || (eq1Op == MathOperator.MULTIPLY && eq2Op == MathOperator.MULTIPLY)){

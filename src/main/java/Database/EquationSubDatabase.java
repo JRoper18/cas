@@ -168,12 +168,12 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 return eq;
             }), new MathObject(MathOperator.POWER)),
             new EquationSub((Serializable & DirectOperation) (eq -> {
-                if (eq.isType(IdentificationType.RATIONAL_NUMBER_EXPRESSION)) {
-                    return eq;
-                }
                 Equation newEq = eq.clone();
                 if(eq.getRoot().equals(new MathObject(MathOperator.SIMPLIFY_RATIONAL_EXPRESSION))){
                     newEq = eq.getSubEquation(0).clone();
+                }
+                if (!newEq.isType(IdentificationType.RATIONAL_NUMBER_EXPRESSION)) {
+                    return newEq;
                 }
                 if(newEq.isType(IdentificationType.INTEGER)){
                     return newEq;
@@ -204,6 +204,9 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     for(Tree<MathObject> child : newEq.tree.getChildren()){
                         Equation replace = new Equation("SIMPLIFY_RATIONAL_EXPRESSION(" + new Equation(child) + ")", 1);
                         child.replaceWith(replace.tree);
+                    }
+                    if(newEq.isType(MathOperator.DERIVATIVE)){
+                        System.out.println(newEq);
                     }
                     Equation operatorSimplified =  Simplifier.simplifyByOperator(newEq);
                     return Simplifier.simplifyWithMetaFunction(operatorSimplified, MathOperator.SIMPLIFY_RATIONAL_FRACTION);
@@ -236,6 +239,9 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
             }), new MathObject(MathOperator.EXPONENT)),
             new EquationSub((DirectOperation & Serializable) (eq -> {
                 Equation newEq = eq.getSubEquation(0).clone(); //Autosimplify is the root term
+                if(newEq.equals(new Equation("ADD ( MULTIPLY ( POWER ( _x , 2 )  , DERIVATIVE ( 2 , _x )  )  , MULTIPLY ( 2 , MULTIPLY ( MULTIPLY ( 2 , _x , 1 )  , 2 )  )  ) ", 0))){
+                    System.out.println("BEGIN");
+                }
                 EquationSub sub = new EquationSub((DirectOperation) (equation -> {
                     if(equation.isType(MathOperator.DIVIDE)){
                         return new Equation("MULTIPLY(" + equation.getSubEquation(0) + "," + "POWER(" + equation.getSubEquation(1) + ", -1))", 0);
@@ -250,18 +256,24 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     return new Equation("UNDEFINED");
                 }
                 if(newEq.isType(IdentificationType.INTEGER) || newEq.isType(MathOperatorSubtype.SYMBOL)){
+
                     return newEq;
                 }
                 if(newEq.isType(MathOperator.FRACTION)){
+
                     return new Equation("SIMPLIFY_RATIONAL_FRACTION(" + newEq + ")", 1);
                 }
                 if(newEq.isType(IdentificationType.RATIONAL_NUMBER_EXPRESSION)){
+
                     return new Equation("SIMPLIFY_RATIONAL_EXPRESSION(" + newEq + ")", 1);
                 }
                 else{
-                    for(Tree<MathObject> child : newEq.tree.getChildren()){ //Recursivly get autosimplified expression.
-                        child.replaceWith(Simplifier.simplifyWithMetaFunction(new Equation(child, 0), MathOperator.AUTOSIMPLIFY).tree);
+                    Tree<MathObject> newTree = new Tree<>(newEq.getRoot());
+                    for(Equation childEq: newEq.getOperands()){ //Recursivly get autosimplified expression.
+                        Equation toReplace = Simplifier.simplifyWithMetaFunction(childEq, MathOperator.AUTOSIMPLIFY);
+                        newTree.addChild(toReplace.tree);
                     }
+                    newEq = new Equation(newTree,0);
                     Equation toReturn;
                     switch(newEq.getRoot().getOperator()){
                         case POWER:

@@ -23,6 +23,9 @@ public class Identifier {
                 }
                 return (equation.getRoot() instanceof MathInteger);
             case CONSTANT:
+                if(equation.getRoot() instanceof GenericExpression){
+                    return ((GenericExpression) equation.getRoot()).type == CONSTANT;
+                }
                 return !equation.tree.containsClass(GenericExpression.class);
             case NEGATIVE_CONSTANT:
                 if(equation.isType(INTEGER)){
@@ -59,7 +62,7 @@ public class Identifier {
                 if(equation.isType(INTEGER) || op == MathOperator.FRACTION){
                     return true;
                 }
-                if((op == MathOperator.ADD || op == MathOperator.SUBTRACT || op == MathOperator.MULTIPLY) && new Equation("NUMBER_OF_OPERANDS (" + equation + ")", 1).equals(new Equation("2"))){
+                if((op == MathOperator.ADD || op == MathOperator.SUBTRACT || op == MathOperator.MULTIPLY)){
                     return equation.getSubEquation(0).isType(RATIONAL_NUMBER_EXPRESSION) && equation.getSubEquation(1).isType(RATIONAL_NUMBER_EXPRESSION);
                 }
                 if(op == MathOperator.POWER){
