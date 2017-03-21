@@ -22,10 +22,12 @@ public class Identifier {
                     return (((GenericExpression) equation.getRoot()).type == INTEGER);
                 }
                 return (equation.getRoot() instanceof MathInteger);
-            case CONSTANT:
+            case VARCONSTANT:
                 if(equation.getRoot() instanceof GenericExpression){
-                    return ((GenericExpression) equation.getRoot()).type == CONSTANT;
+                    return ((GenericExpression) equation.getRoot()).type == VARCONSTANT;
                 }
+                return !equation.tree.containsClass(GenericExpression.class);
+            case CONSTANT:
                 return !equation.tree.containsClass(GenericExpression.class);
             case NEGATIVE_CONSTANT:
                 if(equation.isType(INTEGER)){

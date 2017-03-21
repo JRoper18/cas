@@ -128,10 +128,12 @@ public class Equation implements Serializable, Comparable<Equation>{
 
         }
         else if(eq1Op == MathOperator.EXPRESSION && eq2Op == MathOperator.EXPRESSION){
-            if(eq1.isType(IdentificationType.CONSTANT) && !eq2.isType(IdentificationType.CONSTANT)){
+            if(eq1.isType(IdentificationType.VARCONSTANT) && !eq2.isType(IdentificationType.VARCONSTANT)){
+                System.out.println(eq1);
+                System.out.println(eq2);
                 return -1;
             }
-            if(eq2.isType(IdentificationType.CONSTANT) && !eq1.isType(IdentificationType.CONSTANT)){
+            if(eq2.isType(IdentificationType.VARCONSTANT) && !eq1.isType(IdentificationType.VARCONSTANT)){
                 return 1;
             }
             return ((GenericExpression) eq1.getRoot()).tag.compareTo(((GenericExpression) eq2.getRoot()).tag);
@@ -162,7 +164,7 @@ public class Equation implements Serializable, Comparable<Equation>{
         else if(!(eq1Op == MathOperator.MULTIPLY || eq1Op == MathOperator.POWER || eq1Op == MathOperator.ADD || eq1Op == MathOperator.FACTORIAL || eq1Op == MathOperator.CUSTOM_FUNCTION || eq1Op.getSubType()==MathOperatorSubtype.SYMBOL)){
             return eq1Op.toString().compareTo(eq2Op.toString());
         }
-        else if((eq1.isType(IdentificationType.INTEGER) || eq1.isType(IdentificationType.FRACTION_STANDARD_FORM)) && !(eq2.isType(IdentificationType.INTEGER) || eq2.isType(IdentificationType.FRACTION_STANDARD_FORM))){
+            else if((eq1.isType(IdentificationType.INTEGER) || eq1.isType(IdentificationType.FRACTION_STANDARD_FORM)) && !(eq2.isType(IdentificationType.INTEGER) || eq2.isType(IdentificationType.FRACTION_STANDARD_FORM))){
             return -1;
         }
         else if(eq1Op == MathOperator.MULTIPLY && (eq2Op == MathOperator.POWER || eq2Op == MathOperator.ADD || eq2Op == MathOperator.FACTORIAL || eq2Op == MathOperator.CUSTOM_FUNCTION || eq2Op.getSubType()==MathOperatorSubtype.SYMBOL)){

@@ -6,6 +6,7 @@ package CAS;
 public enum IdentificationType {
     INTEGER,
     CONSTANT,
+    VARCONSTANT,
     NEGATIVE_CONSTANT,
     VARIABLE,
     EXPRESSION,

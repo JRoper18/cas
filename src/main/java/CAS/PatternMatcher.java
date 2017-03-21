@@ -59,6 +59,11 @@ public class PatternMatcher {
                         return false;
                     }
                 }
+                else{
+                    //If we have an associative operator (lets call it OP) then we can skip the rest of our children. and just assume that there are an expression with root OP.
+                    //OP(2, _EXPRESSION) matches OP(2, 1), OP(2, 3, 4, 5), or anything that is OP(2, .....)
+                    //However, we have to think of if we have only one expression in our equation, and 2 expressions in our pattern. Then we can use the iden
+                }
                 if (genEx.hasTag()) {
                     String tag = genEx.tag;
                     if(tag.charAt(0) == '#'){ //We have an unspecific but named.
