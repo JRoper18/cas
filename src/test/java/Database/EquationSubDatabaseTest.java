@@ -1,6 +1,7 @@
 package Database;
 
 import CAS.*;
+import CAS.EquationObjects.MathInteger;
 import CAS.EquationObjects.MathObject;
 import CAS.EquationObjects.MathOperator;
 import org.junit.Test;

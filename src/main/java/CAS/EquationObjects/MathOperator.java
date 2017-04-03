@@ -1,5 +1,7 @@
 package CAS.EquationObjects;
 
+import CAS.Equation;
+
 /**
  * Created by jack on 12/30/2016.
  */
@@ -11,17 +13,15 @@ public enum MathOperator {
     EXPRESSION(0, false, false, MathOperatorSubtype.SYMBOL, null),
     UNDEFINED(0, false, false, MathOperatorSubtype.SYMBOL, null),
     E(0, false, false, MathOperatorSubtype.SYMBOL, null),
-    ONE(0, false, false, MathOperatorSubtype.SYMBOL, null),
-    ZERO(0, false, false, MathOperatorSubtype.SYMBOL, null),
     PI(0, false, false, MathOperatorSubtype.SYMBOL, null),
 
-    ADD(2, false, true, MathOperatorSubtype.MATH, ZERO),
-    MULTIPLY(2, false, true, MathOperatorSubtype.MATH, ONE),
-    SUBTRACT(2, true, false, MathOperatorSubtype.MATH, ZERO),
-    DIVIDE(2, true, false, MathOperatorSubtype.MATH, ONE),
+    ADD(2, false, true, MathOperatorSubtype.MATH, "0"),
+    MULTIPLY(2, false, true, MathOperatorSubtype.MATH, "1"),
+    SUBTRACT(2, true, false, MathOperatorSubtype.MATH, "0"),
+    DIVIDE(2, true, false, MathOperatorSubtype.MATH, "1"),
     FRACTION(2, true, false, MathOperatorSubtype.MATH, null),
-    REMAINDER(2, true, false, MathOperatorSubtype.MATH, ONE),
-    GREATEST_COMMON_DENOMINATOR(2, false, true, MathOperatorSubtype.META, ONE),
+    REMAINDER(2, true, false, MathOperatorSubtype.MATH, "1"),
+    GREATEST_COMMON_DENOMINATOR(2, false, true, MathOperatorSubtype.META, "1"),
     POWER(2, true, false, MathOperatorSubtype.MATH, null),
     SINE(1, true, false, MathOperatorSubtype.MATH, null),
     COSINE(1, true, false, MathOperatorSubtype.MATH, null),
@@ -31,11 +31,11 @@ public enum MathOperator {
     CUSTOM_FUNCTION(0, false, false, MathOperatorSubtype.MATH, null), //Placeholder values - check customfunction class
     LIST(1, true, true, MathOperatorSubtype.MATH, null),
     //Pattern matching
-    PATTERN_OR(2, false, true, MathOperatorSubtype.PATTERN, FALSE),
-    PATTERN_AND(2, false, true, MathOperatorSubtype.PATTERN, TRUE),
+    PATTERN_OR(2, false, true, MathOperatorSubtype.PATTERN, "FALSE"),
+    PATTERN_AND(2, false, true, MathOperatorSubtype.PATTERN, "TRUE"),
     //Booleans and conditionals
-    OR(2, false, true, MathOperatorSubtype.BOOLEAN, FALSE),
-    AND(2, false, true, MathOperatorSubtype.BOOLEAN, TRUE),
+    OR(2, false, true, MathOperatorSubtype.BOOLEAN, "FALSE"),
+    AND(2, false, true, MathOperatorSubtype.BOOLEAN, "TRUE"),
     NOT(1, false, false, MathOperatorSubtype.BOOLEAN, null),
     EQUALS(2, false, true, MathOperatorSubtype.BOOLEAN, null),
     LESS_EQUAL(2, true, false, MathOperatorSubtype.BOOLEAN, null),
@@ -63,20 +63,19 @@ public enum MathOperator {
     private final boolean ordered;
     private final boolean associative;
     private final MathOperatorSubtype subType;
-    private final MathOperator identity;
+    private final String identity;
     private MathOperator(int arguments){
         this(arguments, false, false, MathOperatorSubtype.MATH, null);
     }
     private MathOperator(int arguments, boolean ordered, boolean associative){
         this(arguments, ordered, associative, MathOperatorSubtype.MATH, null);
     }
-    private MathOperator(int arguments, boolean ordered, boolean associative, MathOperatorSubtype subType, MathOperator identity){
+    private MathOperator(int arguments, boolean ordered, boolean associative, MathOperatorSubtype subType, String identity){
         this.arguments = arguments;
         this.ordered = ordered;
         this.associative = associative;
         this.subType = subType;
         this.identity = identity;
-
     }
     public MathOperatorSubtype getSubType(){
         return this.subType;
@@ -93,7 +92,13 @@ public enum MathOperator {
     public boolean isAssociative(){
         return this.associative;
     }
-    public MathOperator identity(){
-        return this.identity;
+    public Equation identity(){
+        if(this.identity != null){
+            return new Equation(this.identity, 0);
+        }
+        return null;
+    }
+    public boolean hasIdentity(){
+        return this.identity != null;
     }
 }
