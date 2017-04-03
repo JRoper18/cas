@@ -10,15 +10,18 @@ import com.rits.cloning.Cloner;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by jack on 1/5/2017.
  */
 public class Simplifier {
-    public static Equation simplifyByOperator(Equation eq, MathObject operation, boolean full){
+    public static SimplifierResult simplifyWithData(Equation eq, boolean full){
+        return simplifyWithData(eq, eq.getRoot(), full);
+    }
+    public static SimplifierResult simplifyWithData(Equation eq, MathObject operation, boolean full){
+        List<EquationSub> steps = new ArrayList<>();
+        List<Equation> changes = new ArrayList<>();
         Equation newEq = eq.clone();
         Equation last;
         do{
@@ -26,14 +29,24 @@ public class Simplifier {
             try{
                 ResultSet results = DatabaseConnection.runQuery("select algorithm from subs where (operator == '" + operation + "')");
                 while(results.next()){
+                    Equation temp = newEq.clone();
                     EquationSub tempSub = SubSerializer.deserialize(results.getBytes("algorithm"));
                     newEq = (full)? tempSub.applyEverywhere(newEq) : tempSub.apply(newEq);
+                    if(!temp.equals(newEq)){
+                        steps.add(tempSub);
+                        changes.add(newEq);
+                    }
                 }
             } catch (Exception ex){
                 ex.printStackTrace();
             }
         } while (full==true && !newEq.equals(last));
-        return (full)? Simplifier.simplifyWithMetaFunction(newEq, MathOperator.AUTOSIMPLIFY) : newEq;
+        Equation finalEq = (full)? Simplifier.simplifyWithMetaFunction(newEq, MathOperator.AUTOSIMPLIFY) : newEq;
+        return new SimplifierResult(eq, finalEq, steps, changes);
+
+    }
+    public static Equation simplifyByOperator(Equation eq, MathObject operation, boolean full){
+        return simplifyWithData(eq, operation, full).result;
     }
     public static Equation simplifyByOperator(Equation eq, boolean full){
         return simplifyByOperator(eq, eq.getRoot(), full);

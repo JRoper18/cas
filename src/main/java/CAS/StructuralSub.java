@@ -71,4 +71,7 @@ public class StructuralSub extends EquationSub implements Serializable {
             return equation.tree.data;
         }
     }
+    public String toString(){
+        return this.before.toString() + " -> " + this.after.toString();
+    }
 }

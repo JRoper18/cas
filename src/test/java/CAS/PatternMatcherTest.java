@@ -33,5 +33,16 @@ public class PatternMatcherTest {
         assertEquals(false, matcher.patternMatch(new Equation("DERIV(_x, _x)", 0), new Equation("DERIV(_#1, _#2)", 0)));
         assertEquals(false, matcher.patternMatch(new Equation("PLUS(_y_VARIABLE, _y_VARIABLE)",0), new Equation("PLUS(_#2, _#1)",0)));
         assertEquals(true, matcher.patternMatch(new Equation("PLUS(_y_VARIABLE, _x_VARIABLE)",0), new Equation("PLUS(_#2, _#1)",0)));
+
+    }
+
+    @Test
+    public void testTooManyOperands() throws Exception {
+        assertEquals(true, matcher.patternMatch(new Equation("PLUS(1, 2, 3, 4, 5)",0), new Equation("PLUS(1, _x_EXPRESSION)",0)));
+        assertEquals(new Equation("PLUS(2, 3, 4, 5)", 0).tree , matcher.getLastMatchExpressions().get("x"));
+        assertEquals(true, matcher.patternMatch(new Equation("PLUS(1, 2)",0), new Equation("PLUS(1, 2, _x_EXPRESSION)",0)));
+        assertEquals(new Equation("0", 0).tree , matcher.getLastMatchExpressions().get("x"));
+        assertEquals(false, matcher.patternMatch(new Equation("POWER(1, 2, 3, 4, 5)",0), new Equation("POWER(1, _x_EXPRESSION)",0)));
+        assertEquals(true, matcher.patternMatch(new Equation("POWER(1, 2)",0), new Equation("POWER(1, _x_EXPRESSION)",0)));
     }
 }

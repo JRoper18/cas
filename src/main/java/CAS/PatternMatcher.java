@@ -26,7 +26,6 @@ public class PatternMatcher {
     private boolean compareSubTrees(Tree<MathObject> eq, Tree<MathObject> pattern){
         MathObject current = eq.data;
         MathObject compare = pattern.data;
-        MathOperator mathSymbol = compare.getOperator();
         switch(compare.getOperator()) { //Depending on the operator, check the subtrees
             case PATTERN_OR:
                 for (Tree<MathObject> child : pattern.getChildren()) {
@@ -95,49 +94,60 @@ public class PatternMatcher {
                 return true;
             default:
         }
-
         //Compare raw data.
         if(!eq.data.equals(pattern.data)){
             return false;
         }
         //Compare the number of children (unless pattern's children are generics or logical operators
-        if(mathSymbol != MathOperator.OR && mathSymbol != MathOperator.AND && mathSymbol != MathOperator.EXPRESSION && eq.getNumberOfChildren() != pattern.getNumberOfChildren()){
+        if(compare.getOperator() != MathOperator.OR && compare.getOperator() != MathOperator.AND && compare.getOperator() != MathOperator.EXPRESSION && (!compare.getOperator().isAssociative() && eq.getNumberOfChildren() != pattern.getNumberOfChildren())){
             return false;
+
         }
         //Compare the actual children.
-        for(int i = 0; i<eq.getNumberOfChildren(); i++){
-            Tree<MathObject> child = eq.getChild(i);
-            if(child.data instanceof GenericExpression){
-                if(((GenericExpression) child.data).type == IdentificationType.EXPRESSION && mathSymbol.isAssociative()){
+        for(int i = 0; i<pattern.getNumberOfChildren(); i++){
+            Tree<MathObject> childPattern = pattern.getChild(i);
+            if(i >= eq.getNumberOfChildren()){
+                if(childPattern.data instanceof GenericExpression) {
+                    if (((GenericExpression) childPattern.data).type == IdentificationType.EXPRESSION && compare.getOperator().isAssociative()) {
+                        if(!eq.data.getOperator().hasIdentity()){
+                            return false;
+                        }
+                        Equation idenEq = eq.data.getOperator().identity();
+                        //Just check to see if we've checked this expression before.
+                        if (values.containsKey(((GenericExpression) childPattern.data).tag)) {
+                            return values.get(((GenericExpression) childPattern.data).tag).equals(idenEq.tree);
+                        } else {
+                            //Add the tag to the values map
+                            values.put(((GenericExpression) childPattern.data).tag, idenEq.tree);
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                return false;
+            }
+            Tree<MathObject> childEq = eq.getChild(i);
+            if(childPattern.data instanceof GenericExpression){
+                if(((GenericExpression) childPattern.data).type == IdentificationType.EXPRESSION && compare.getOperator().isAssociative()){
                     //If we have an associative operator (lets call it OP) then we can skip the rest of our children. and just assume that there are an expression with root OP.
                     //OP(2, _EXPRESSION) matches OP(2, 1), OP(2, 3, 4, 5), or anything that is OP(2, .....)
                     //However, we have to think of if we have only one expression in our equation, and 2 expressions in our pattern. Then we can use the identity (if op has one)
+                    //AN example of too many args is OP(2, _EXPRESSION) matching OP(2) and setting expression as identity.
                     Tree<MathObject> toCheckFor = new Tree<>(eq.data);
                     toCheckFor.setChildren(eq.getChildren().subList(i, eq.getNumberOfChildren()));
-                    if(toCheckFor.getNumberOfChildren() >= mathSymbol.getArguments()){
+                    int numChildren = toCheckFor.getNumberOfChildren();
+                    if(numChildren > compare.getOperator().getArguments()){
                         //Just check to see if we've checked this expression before.
-                        if (values.containsKey(((GenericExpression) child.data).tag)) {
-                            return values.get(((GenericExpression) child.data).tag).equals(toCheckFor);
+                        if (values.containsKey(((GenericExpression) childPattern.data).tag)) {
+                            return values.get(((GenericExpression) childPattern.data).tag).equals(toCheckFor);
                         } else {
                             //Add the tag to the values map
-                            values.put(((GenericExpression) child.data).tag, toCheckFor);
+                            values.put(((GenericExpression) childPattern.data).tag, toCheckFor);
                             return true;
                         }
                     }
                     else{
-                        //We don't have enough children left. DO we have an identity we can use?
-                        if(!eq.data.getOperator().hasIdentity()){
-                            return false;
-                        }
-                        Equation idenEq = new Equation(eq.data.toString() + "(" + eq.data.getOperator().identity().toString() + "," + new Equation(toCheckFor, 0).toString() + ")");
-                        //Just check to see if we've checked this expression before.
-                        if (values.containsKey(((GenericExpression) child.data).tag)) {
-                            return values.get(((GenericExpression) child.data).tag).equals(idenEq.tree);
-                        } else {
-                            //Add the tag to the values map
-                            values.put(((GenericExpression) child.data).tag, idenEq.tree);
-                            return true;
-                        }
+                        return true; //Same number of children
                     }
                 }
             }

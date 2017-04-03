@@ -13,5 +13,7 @@ import java.sql.ResultSet;
 public class Main {
     public static void main(String[] args) {
         DatabaseConnection.makeConnection();
+        SimplifierResult data = Simplifier.simplifyWithData(new Equation("DERIV(TIMES(5, _x), _x)"), true);
+        System.out.println(data.steps());
     }
 }
