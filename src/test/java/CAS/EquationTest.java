@@ -3,6 +3,7 @@ package CAS;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * Created by jack on 1/15/2017.
@@ -23,5 +24,14 @@ public class EquationTest {
         assertEquals(true, new Equation("FACTORIAL(2)", 0).compareTo(new Equation("FACTORIAL(3)",0)) < 0);
         assertEquals(true, new Equation("_a_VARCONSTANT", 0).compareTo(new Equation("_b",0)) < 0);
         assertEquals(true, new Equation("_b_VARCONSTANT", 0).compareTo(new Equation("_a",0)) < 0);
+    }
+
+    @Test
+    public void testClone() throws Exception {
+        Equation orig = new Equation("1", 0);
+        Equation clone = orig.clone();
+        clone.tree.replaceAll(new Equation("1", 0).tree, new Equation("0",0).tree);
+        assertNotEquals(clone, orig);
+
     }
 }

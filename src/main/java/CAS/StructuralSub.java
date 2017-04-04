@@ -13,9 +13,11 @@ import java.util.HashMap;
  * Created by jack on 1/9/2017.
  */
 public class StructuralSub extends EquationSub implements Serializable {
-    public Equation before;
-    public Equation after;
-    public Equation condition;
+    public final Equation before;
+    public final Equation after;
+    public StructuralSub(String total){
+        this(total.split("->")[0], total.split("->")[1]);
+    }
     public StructuralSub(String before, String after){
         this(Simplifier.simplifyWithMetaFunction(new Equation(before), MathOperator.AUTOSIMPLIFY), Simplifier.simplifyWithMetaFunction(new Equation(after), MathOperator.AUTOSIMPLIFY));
     }
@@ -23,7 +25,7 @@ public class StructuralSub extends EquationSub implements Serializable {
         super((DirectOperation & Serializable) ( equation -> {
             PatternMatcher matcher = new PatternMatcher();
             if(matcher.patternMatch(equation, before)) {
-                Equation newEquation = new Equation(after); //Quick clone
+                Equation newEquation = after.clone(); //Quick clone
                 HashMap<String, Tree<MathObject>> values = matcher.getLastMatchExpressions();
                 HashMap<String, String> vars = matcher.getLastMatchVariables();
                 //Go through conditions
@@ -45,9 +47,8 @@ public class StructuralSub extends EquationSub implements Serializable {
             }
             return equation;
         }), getProbableAssignedOperator(before));
-        this.before = before;
-        this.after = after;
-        this.condition = null;
+        this.before = before.clone();
+        this.after = after.clone();
     }
     private static MathObject getProbableAssignedOperator(Equation equation){
         MathObject probableOperator = null;
@@ -72,6 +73,12 @@ public class StructuralSub extends EquationSub implements Serializable {
         }
     }
     public String toString(){
-        return this.before.toString() + " -> " + this.after.toString();
+        return (this.before.toString() + " -> " + this.after.toString());
+    }
+    public boolean equals(Object n){
+        if(n instanceof StructuralSub){
+            return n.toString().equals(this.toString());
+        }
+        return false;
     }
 }

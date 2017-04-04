@@ -27,4 +27,9 @@ public class StructuralSubTest {
         assertEquals(new Equation("2"), sub4.apply(new Equation("DERIV(TIMES(2, POWER(_x, 2)), _sd)")));
 
     }
+
+    @Test
+    public void testConstructors() throws Exception {
+        assertEquals(new StructuralSub("1", "0"), new StructuralSub("1 -> 0"));
+    }
 }

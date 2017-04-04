@@ -20,8 +20,7 @@ public class EquationSub implements Serializable {
         this.rootOperator = operator;
     }
     public Equation apply(Equation equation){
-        Cloner cloner = new Cloner();
-        Equation newEq = cloner.deepClone(equation);
+        Equation newEq = equation.clone();
         if(this.rootOperator != null){
             //It's specified. If it's associative, apply the operator for each section.
             if(this.rootOperator.isAssociative()){

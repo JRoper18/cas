@@ -42,8 +42,7 @@ public class DatabaseConnection {
                 idCount++;
             }
             for(String ruleStr : SubstitutionRuleDatabase.rules){
-                int equalsIndex = ruleStr.indexOf('=');
-                StructuralSub sub = new StructuralSub(ruleStr.substring(0, equalsIndex), ruleStr.substring(equalsIndex + 1, ruleStr.length()));
+                StructuralSub sub = new StructuralSub(ruleStr);
                 String toPrepare = "insert into subs values(?, ?, ?, ?)";
                 PreparedStatement prepared = connection.prepareStatement(toPrepare);
                 prepared.setInt(1, idCount);

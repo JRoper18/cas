@@ -15,10 +15,10 @@ import java.util.List;
 public class Equation implements Serializable, Comparable<Equation>{
     public Tree<MathObject> tree;
     public Equation(Tree<MathObject> tree){
-        this.tree = tree;
+        this.tree = tree.clone();
     }
     public Equation(Tree<MathObject> tree, int autoSimplifyLevel){
-        this.tree = EquationBuilder.simplifyTree(tree, autoSimplifyLevel).tree;
+        this.tree = EquationBuilder.simplifyTree(tree.clone(), autoSimplifyLevel).tree;
     }
     public static Equation fromList(Equation list){
         if(list.isType(MathOperator.LIST)){
@@ -55,7 +55,7 @@ public class Equation implements Serializable, Comparable<Equation>{
         this.tree = EquationBuilder.makeEquation(str, autoSimplifyLevel).tree;
     }
     public Equation(Equation prev){
-        this.tree = prev.tree;
+        this.tree = prev.tree.clone();
     }
     @Override
     public boolean equals(Object obj){
