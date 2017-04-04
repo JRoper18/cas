@@ -147,7 +147,9 @@ public class Tree<T> implements Serializable{
     }
     public Tree<T> clone(){
         Tree<T> newTree = new Tree(this.data);
-        newTree.setChildren(this.children);
+        for(Tree<T> child: this.children){
+            newTree.addChild(child.clone());
+        }
         return newTree;
     }
     public void print(){
