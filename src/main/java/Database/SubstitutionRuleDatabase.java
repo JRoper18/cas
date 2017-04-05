@@ -13,6 +13,6 @@ public class SubstitutionRuleDatabase {
             "DERIV(_#1, _#1) -> 1",
             "DERIV((_n_VARCONSTANT * _f_EXPRESSION), _#1) -> TIMES(_n, DERIV(_f, _#1))",
             "DERIV((_n_VARCONSTANT * _#1), _#1) -> _n",
-            "DERIV((_f_EXPRESSION * _g_EXPRESSION), _d) -> PLUS(TIMES(DERIV(_f, _d), _g), TIMES(DERIV(_g, _d), _f))"
+            "DERIV(TIMES(_f_EXPRESSION, _g_EXPRESSION), _d) -> PLUS(TIMES(DERIV(_f, _d), _g), TIMES(DERIV(_g, _d), _f))"
     };
 }

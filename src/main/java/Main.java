@@ -13,6 +13,9 @@ import java.sql.ResultSet;
 public class Main {
     public static void main(String[] args) {
         DatabaseConnection.makeConnection();
-        SimplifierResult data = Simplifier.simplifyWithData(new Equation("DERIV(TIMES(5, _x), _x)"), true);
+        StructuralSub sub = new StructuralSub("DERIV((_f_EXPRESSION * _g_EXPRESSION), _d) -> PLUS(TIMES(DERIV(_f, _d), _g), TIMES(DERIV(_g, _d), _f))");
+        PatternMatcher matcher = new PatternMatcher();
+        matcher.patternMatch(new Equation("DERIV(TIMES(_x, _y), _x)"), new Equation("DERIV((_f_EXPRESSION * _g_EXPRESSION), _d)"));
+        System.out.println(matcher.getLastMatchExpressions());
     }
 }

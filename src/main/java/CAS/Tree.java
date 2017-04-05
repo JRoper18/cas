@@ -155,6 +155,26 @@ public class Tree<T> implements Serializable{
     public void print(){
         this.print(1);
     }
+    public String toString(){
+        String str = new String();
+        if(this.data == null){
+            str += ("null");
+        }
+        else{
+            str += (this.data);
+        }
+        if(this.hasChildren()){
+            str += "(";
+        }
+        for (Tree child : this.children) {
+            str += child.toString() + ",";
+        }
+        if(this.hasChildren()){
+            str = str.substring(0, str.length()-1);
+            str += ")";
+        }
+        return str;
+    }
     private void print(int level) {
         for (int i = 1; i < level; i++) {
             System.out.print("\t"); //Newline

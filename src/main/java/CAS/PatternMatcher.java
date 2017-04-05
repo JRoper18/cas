@@ -134,20 +134,28 @@ public class PatternMatcher {
                     //However, we have to think of if we have only one expression in our equation, and 2 expressions in our pattern. Then we can use the identity (if op has one)
                     //AN example of too many args is OP(2, _EXPRESSION) matching OP(2) and setting expression as identity.
                     Tree<MathObject> toCheckFor = new Tree<>(eq.data);
-                    toCheckFor.setChildren(eq.getChildren().subList(i, eq.getNumberOfChildren()));
+                    int mark = eq.getNumberOfChildren();
+                    for(int j = i + 1; j<eq.getNumberOfChildren(); j++){
+                        //What if we have OP(_EXPRESSION, _EXPRESSION)?
+                        if(eq.getChild(j).data instanceof GenericExpression){
+                            mark = j-1; //ToCheckFor only needs all the terms UNTIL the next generic expression
+                            break;
+                        }
+                    }
+
+                    toCheckFor.setChildren(eq.getChildren().subList(i, mark));
                     int numChildren = toCheckFor.getNumberOfChildren();
-                    if(numChildren > compare.getOperator().getArguments()){
+                    if(numChildren >= compare.getOperator().getArguments()){
                         //Just check to see if we've checked this expression before.
                         if (values.containsKey(((GenericExpression) childPattern.data).tag)) {
                             return values.get(((GenericExpression) childPattern.data).tag).equals(toCheckFor);
                         } else {
                             //Add the tag to the values map
                             values.put(((GenericExpression) childPattern.data).tag, toCheckFor);
-                            return true;
+                            if(mark == eq.getNumberOfChildren()){ //This was the last generic expression, no need to keep looking.
+                                return true;
+                            }
                         }
-                    }
-                    else{
-                        return true; //Same number of children
                     }
                 }
             }

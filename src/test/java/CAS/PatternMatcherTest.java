@@ -6,6 +6,7 @@ import CAS.PatternMatcher;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by jack on 12/30/2016.
@@ -44,5 +45,13 @@ public class PatternMatcherTest {
         assertEquals(new Equation("0", 0).tree , matcher.getLastMatchExpressions().get("x"));
         assertEquals(false, matcher.patternMatch(new Equation("POWER(1, 2, 3, 4, 5)",0), new Equation("POWER(1, _x_EXPRESSION)",0)));
         assertEquals(true, matcher.patternMatch(new Equation("POWER(1, 2)",0), new Equation("POWER(1, _x_EXPRESSION)",0)));
+    }
+
+    @Test
+    public void testVariableSaving() throws Exception {
+        assertTrue(matcher.patternMatch(new Equation("TIMES(2, PLUS(1, _x))", 0), new Equation("TIMES(2, _x_EXPRESSION)",0)));
+        assertEquals(new Equation("PLUS(1, _x)", 0).tree, matcher.getLastMatchExpressions().get("x"));
+        assertTrue(matcher.patternMatch(new Equation("DERIV(TIMES(5, _x), _x)", 0), new Equation("DERIV(TIMES(_n_VARCONSTANT, _f_EXPRESSION), _#1)",0)));
+        assertEquals(new Equation("_x", 0).tree, matcher.getLastMatchExpressions().get("f"));
     }
 }
