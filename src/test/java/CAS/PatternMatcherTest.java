@@ -1,9 +1,9 @@
 package CAS;
 
-import CAS.Equation;
-import CAS.EquationObjects.MathOperator;
-import CAS.PatternMatcher;
+import CAS.EquationObjects.MathInteger;
 import org.junit.Test;
+
+import java.util.LinkedList;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -16,42 +16,57 @@ public class PatternMatcherTest {
 
     @Test
     public void testPatternMatching() throws Exception {
-        assertEquals(true, matcher.patternMatch(new Equation("POWER(_x, 2)", 0), new Equation("POWER(_x_EXPRESSION, _n_CONSTANT)",0)));
-        assertEquals(true, matcher.patternMatch(new Equation("POWER(_x, 2)", 0), new Equation("POWER(__x, _n_EXPRESSION)",0)));
-        assertEquals(true, matcher.patternMatch(new Equation("POWER(_x, 2)", 0), new Equation("POWER(_y_EXPRESSION, _n_EXPRESSION)",0)));
-        assertEquals(false, matcher.patternMatch(new Equation("POWER(_x, 2)", 0), new Equation("POWER(__y, _n)", 0)));
-        assertEquals(true, matcher.patternMatch(new Equation("POWER(TIMES(1, 2), 2), ",0), new Equation("POWER(_dave_EXPRESSION, _n_CONSTANT)",0)));
-        assertEquals(true, matcher.patternMatch(new Equation("1",0), new Equation("_x_INTEGER",0)));
-        assertEquals(false, matcher.patternMatch(new Equation("_x",0), new Equation("_x_INTEGER",0)));
-        assertEquals(false, matcher.patternMatch(new Equation("_y",0), new Equation("_x_INTEGER",0)));
-        assertEquals(true, matcher.patternMatch(new Equation("ADD(1, 2)",2), new Equation("_x_INTEGER",0)));
-        assertEquals(true, matcher.patternMatch(new Equation("_x_INTEGER",0), new Equation("_x_INTEGER",0)));
-        assertEquals(true, matcher.patternMatch(new Equation("_y_INTEGER",0), new Equation("_x_INTEGER",0)));
-        assertEquals(true, matcher.patternMatch(new Equation("PLUS(_x_VARIABLE, _x_VARIABLE)", 0), new Equation("PLUS(_#2, _#2)",0)));
-        assertEquals(false, matcher.patternMatch(new Equation("PLUS(_x_VARIABLE, _y_VARIABLE)",0), new Equation("PLUS(_#2, _#2)",0)));
-        assertEquals(true, matcher.patternMatch(new Equation("PLUS(_y_VARIABLE, _y_VARIABLE)",0), new Equation("PLUS(_#2, _#2)",0)));
-        assertEquals(true, matcher.patternMatch(new Equation("PLUS(_x, _y)"), new Equation("PLUS(_#1, _#2)")));
-        assertEquals(false, matcher.patternMatch(new Equation("DERIV(_x, _x)", 0), new Equation("DERIV(_#1, _#2)", 0)));
-        assertEquals(false, matcher.patternMatch(new Equation("PLUS(_y_VARIABLE, _y_VARIABLE)",0), new Equation("PLUS(_#2, _#1)",0)));
-        assertEquals(true, matcher.patternMatch(new Equation("PLUS(_y_VARIABLE, _x_VARIABLE)",0), new Equation("PLUS(_#2, _#1)",0)));
+        assertEquals(true, matcher.doesMatchPattern(new Equation("POWER(_x, 2)", 0), new Equation("POWER(_x_EXPRESSION, _n_CONSTANT)",0)));
+        assertEquals(true, matcher.doesMatchPattern(new Equation("POWER(_x, 2)", 0), new Equation("POWER(__x, _n_EXPRESSION)",0)));
+        assertEquals(true, matcher.doesMatchPattern(new Equation("POWER(_x, 2)", 0), new Equation("POWER(_y_EXPRESSION, _n_EXPRESSION)",0)));
+        assertEquals(false, matcher.doesMatchPattern(new Equation("POWER(_x, 2)", 0), new Equation("POWER(__y, _n)", 0)));
+        assertEquals(true, matcher.doesMatchPattern(new Equation("POWER(TIMES(1, 2), 2), ",0), new Equation("POWER(_dave_EXPRESSION, _n_CONSTANT)",0)));
+        assertEquals(true, matcher.doesMatchPattern(new Equation("1",0), new Equation("_x_INTEGER",0)));
+        assertEquals(false, matcher.doesMatchPattern(new Equation("_x",0), new Equation("_x_INTEGER",0)));
+        assertEquals(false, matcher.doesMatchPattern(new Equation("_y",0), new Equation("_x_INTEGER",0)));
+        assertEquals(true, matcher.doesMatchPattern(new Equation("ADD(1, 2)",2), new Equation("_x_INTEGER",0)));
+        assertEquals(true, matcher.doesMatchPattern(new Equation("_x_INTEGER",0), new Equation("_x_INTEGER",0)));
+        assertEquals(true, matcher.doesMatchPattern(new Equation("_y_INTEGER",0), new Equation("_x_INTEGER",0)));
+        assertEquals(true, matcher.doesMatchPattern(new Equation("PLUS(_x_VARIABLE, _x_VARIABLE)", 0), new Equation("PLUS(_#2, _#2)",0)));
+        assertEquals(false, matcher.doesMatchPattern(new Equation("PLUS(_x_VARIABLE, _y_VARIABLE)",0), new Equation("PLUS(_#2, _#2)",0)));
+        assertEquals(true, matcher.doesMatchPattern(new Equation("PLUS(_y_VARIABLE, _y_VARIABLE)",0), new Equation("PLUS(_#2, _#2)",0)));
+        assertEquals(true, matcher.doesMatchPattern(new Equation("PLUS(_x, _y)"), new Equation("PLUS(_#1, _#2)")));
+        assertEquals(false, matcher.doesMatchPattern(new Equation("DERIV(_x, _x)", 0), new Equation("DERIV(_#1, _#2)", 0)));
+        assertEquals(false, matcher.doesMatchPattern(new Equation("PLUS(_y_VARIABLE, _y_VARIABLE)",0), new Equation("PLUS(_#2, _#1)",0)));
+        assertEquals(true, matcher.doesMatchPattern(new Equation("PLUS(_y_VARIABLE, _x_VARIABLE)",0), new Equation("PLUS(_#2, _#1)",0)));
 
     }
 
+
     @Test
     public void testTooManyOperands() throws Exception {
-        assertEquals(true, matcher.patternMatch(new Equation("PLUS(1, 2, 3, 4, 5)",0), new Equation("PLUS(1, _x_EXPRESSION)",0)));
-        assertEquals(new Equation("PLUS(2, 3, 4, 5)", 0).tree , matcher.getLastMatchExpressions().get("x"));
-        assertEquals(true, matcher.patternMatch(new Equation("PLUS(1, 2)",0), new Equation("PLUS(1, 2, _x_EXPRESSION)",0)));
-        assertEquals(new Equation("0", 0).tree , matcher.getLastMatchExpressions().get("x"));
-        assertEquals(false, matcher.patternMatch(new Equation("POWER(1, 2, 3, 4, 5)",0), new Equation("POWER(1, _x_EXPRESSION)",0)));
-        assertEquals(true, matcher.patternMatch(new Equation("POWER(1, 2)",0), new Equation("POWER(1, _x_EXPRESSION)",0)));
+        PatternMatchResult data = matcher.patternMatch(new Equation("PLUS(1, 2, 3, 4, 5)",0), new Equation("PLUS(1, _x_EXPRESSION)",0));
+        assertTrue(data.match);
+        assertEquals(new Equation("PLUS(2, 3, 4, 5)", 0) , data.variableValues.get("x"));
+        data = matcher.patternMatch(new Equation("PLUS(1, 2)",0), new Equation("PLUS(1, 2, _x_EXPRESSION)",0));
+        assertTrue(data.match);
+        assertEquals(new Equation("0", 0) , data.variableValues.get("x"));
+        assertEquals(false, matcher.doesMatchPattern(new Equation("POWER(1, 2, 3, 4, 5)",0), new Equation("POWER(1, _x_EXPRESSION)",0)));
+        assertEquals(true, matcher.doesMatchPattern(new Equation("POWER(1, 2)",0), new Equation("POWER(1, _x_EXPRESSION)",0)));
     }
 
     @Test
     public void testVariableSaving() throws Exception {
-        assertTrue(matcher.patternMatch(new Equation("TIMES(2, PLUS(1, _x))", 0), new Equation("TIMES(2, _x_EXPRESSION)",0)));
-        assertEquals(new Equation("PLUS(1, _x)", 0).tree, matcher.getLastMatchExpressions().get("x"));
-        assertTrue(matcher.patternMatch(new Equation("DERIV(TIMES(5, _x), _x)", 0), new Equation("DERIV(TIMES(_n_VARCONSTANT, _f_EXPRESSION), _#1)",0)));
-        assertEquals(new Equation("_x", 0).tree, matcher.getLastMatchExpressions().get("f"));
+        PatternMatchResult data = matcher.patternMatch(new Equation("TIMES(2, PLUS(1, _x))", 0), new Equation("TIMES(2, _x_EXPRESSION)",0));
+        assertTrue(data.match);
+        assertEquals(new Equation("PLUS(1, _x)", 0), data.variableValues.get("x"));
+        data = matcher.patternMatch(new Equation("DERIV(TIMES(5, _x), _x)", 0), new Equation("DERIV(TIMES(_n_VARCONSTANT, _f_EXPRESSION), _#1)",0));
+        assertTrue(data.match);
+        assertEquals(new Equation("_x", 0), data.variableValues.get("f"));
+    }
+
+    @Test
+    public void testErrorPath() throws Exception {
+        PatternMatchResult data = matcher.patternMatch(new Equation("PLUS(1, 2)", 0), new Equation("PLUS(1, 3)", 0));
+        assertEquals(new Equation("3"), data.expected());
+        assertEquals(new Equation("2"), data.actual());
+        data = matcher.patternMatch(new Equation("PLUS(_x_VARIABLE, _y_VARIABLE)",0), new Equation("PLUS(_#2, _#2)",0));
+        assertEquals(new Equation("_x"), data.expected());
+        assertEquals(new Equation("_y"), data.actual());
     }
 }

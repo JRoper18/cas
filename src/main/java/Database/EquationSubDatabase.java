@@ -32,13 +32,14 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
             }), new MathObject(MathOperator.OPERAND)),
             new EquationSub((Serializable & DirectOperation) (eq -> {
                 PatternMatcher matcher = new PatternMatcher();
-                if (matcher.patternMatch(eq, EquationBuilder.makeUnprocessedEquation("TYPEOF ( _v1 )"))) {
-                    HashMap<String, Tree<MathObject>> vars = matcher.getLastMatchExpressions();
-                    Tree<MathObject> objectTree = vars.get("v1");
-                    if (objectTree.hasChildren()) {
+                PatternMatchResult data = matcher.patternMatch(eq, EquationBuilder.makeUnprocessedEquation("TYPEOF ( _v1 )"));
+                if (data.match) {
+                    HashMap<String, Equation> vars = data.variableValues;
+                    Equation objectTree = vars.get("v1");
+                    if (objectTree.tree.hasChildren()) {
                         return new Equation("EXPRESSION");
                     } else {
-                        return new Equation(objectTree.data.getOperator().toString());
+                        return new Equation(objectTree.getRoot().getOperator().toString());
                     }
                 } else {
                     return eq; //No change
@@ -112,9 +113,10 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
             }), (new MathObject(MathOperator.DIVIDE))),
             new EquationSub((Serializable & DirectOperation) (eq -> {
                 PatternMatcher matcher = new PatternMatcher();
-                if(matcher.patternMatch(eq, new Equation("FRACTION ( _numer , _denom )", 1))) {
-                    MathInteger numer = (MathInteger) matcher.getLastMatchExpressions().get("numer").data;
-                    MathInteger denom = (MathInteger) matcher.getLastMatchExpressions().get("denom").data;
+                PatternMatchResult data = matcher.patternMatch(eq, new Equation("FRACTION ( _numer , _denom )", 1));
+                if(data.match) {
+                    MathInteger numer = (MathInteger) data.variableValues.get("numer").getRoot();
+                    MathInteger denom = (MathInteger) data.variableValues.get("denom").getRoot();
                     if(denom.equals(new MathInteger(0))){
                         throw new ArithmeticException();
                     }

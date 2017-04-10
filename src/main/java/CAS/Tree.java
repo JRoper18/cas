@@ -100,6 +100,24 @@ public class Tree<T> implements Serializable{
         }
         return this.getChild(path.get(index)).continuePath(path, index + 1);
     }
+    public int getParentChildIndex(){
+        for(int i = 0; i<this.getParent().getNumberOfChildren(); i++){
+            if(this.getParent().getChild(i).equals(this)){
+                return i;
+            }
+        }
+        return -1;
+    }
+    private LinkedList<Integer> pathFromRoot(){
+        if(this.isRoot()){
+            return new LinkedList<>();
+        }
+        else{
+            LinkedList list = this.parent.pathFromRoot();
+            list.addLast(this.getParentChildIndex());
+            return list;
+        }
+    }
     public void replaceWith(Tree<T> newTree){
         if(this.parent != null){
             newTree.parent = this.parent;

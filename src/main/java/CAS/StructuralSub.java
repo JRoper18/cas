@@ -4,7 +4,6 @@ package CAS;
 import CAS.EquationObjects.GenericExpression;
 import CAS.EquationObjects.MathObject;
 import CAS.EquationObjects.MathOperator;
-import com.rits.cloning.Cloner;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -24,21 +23,15 @@ public class StructuralSub extends EquationSub implements Serializable {
     public StructuralSub(Equation before, Equation after){
         super((DirectOperation & Serializable) ( equation -> {
             PatternMatcher matcher = new PatternMatcher();
-            if(matcher.patternMatch(equation, before)) {
+            PatternMatchResult data = matcher.patternMatch(equation, before);
+            if(data.match) {
                 Equation newEquation = after.clone(); //Quick clone
-                HashMap<String, Tree<MathObject>> values = matcher.getLastMatchExpressions();
-                HashMap<String, String> vars = matcher.getLastMatchVariables();
+                HashMap<String, Equation> subs = data.variableValues;
                 //Go through conditions
-                for (String var : values.keySet()) {
-                    Tree<MathObject> substitution = values.get(var);
-                    GenericExpression genExToLookFor = new GenericExpression(var);
+                for (String sub : subs.keySet()) {
+                    Tree<MathObject> substitution = subs.get(sub).tree;
+                    GenericExpression genExToLookFor = new GenericExpression(sub);
                     newEquation.tree.replaceAll(new Tree(genExToLookFor), substitution);
-                }
-                for(String var : vars.keySet()){
-                    Tree<MathObject> substitution = new Tree<>(new GenericExpression(vars.get(var)));
-                    GenericExpression lookFor = new GenericExpression(var);
-                    newEquation.tree.replaceAll(new Tree(lookFor), substitution);
-
                 }
                 return Simplifier.simplifyWithMetaFunction(newEquation, MathOperator.AUTOSIMPLIFY);
             }
