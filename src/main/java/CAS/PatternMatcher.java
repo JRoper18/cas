@@ -77,9 +77,10 @@ public class PatternMatcher {
                         if(!(eq.data instanceof GenericExpression)){
                             return new PatternMatcher().new MatchData(false, values, varTags, path);
                         }
+
                         if(!varTags.containsKey(tag)){
                             //A # means that it's unique. PLUS(_x, _x) will not doesMatchPattern PLUS(_#1, _#2).
-                            if(values.containsValue(((GenericExpression) eq.data).tag)){
+                            if(varTags.containsValue(((GenericExpression) eq.data).tag)){
                                 return new PatternMatcher().new MatchData(false, values, varTags, path);
                             }
                             varTags.put(tag, ((GenericExpression) eq.data).tag);
@@ -150,14 +151,15 @@ public class PatternMatcher {
                     //AN example of too many args is OP(2, _EXPRESSION) matching OP(2) and setting expression as identity.
                     Tree<MathObject> toCheckFor = new Tree<>(eq.data);
                     int mark = eq.getNumberOfChildren();
-                    for(int j = i + 1; j<eq.getNumberOfChildren(); j++){
+                    for(int j = i + 1; j<childPattern.getNumberOfChildren(); j++){
                         //What if we have OP(_EXPRESSION, _EXPRESSION)?
-                        if(eq.getChild(j).data instanceof GenericExpression){
-                            mark = j-1; //ToCheckFor only needs all the terms UNTIL the next generic expression
-                            break;
+                        if(childPattern.getChild(j).data instanceof GenericExpression){
+                            if(((GenericExpression) childPattern.data).type == IdentificationType.EXPRESSION){
+                                mark = j; //ToCheckFor only needs all the terms UNTIL the next generic expression
+                                break;
+                            }
                         }
                     }
-
                     toCheckFor.setChildren(eq.getChildren().subList(i, mark));
                     int numChildren = toCheckFor.getNumberOfChildren();
                     if(numChildren >= compare.getOperator().getArguments()){

@@ -16,7 +16,7 @@ public class PatternMatchResult {
         this.equation = eq;
         this.pattern = pattern;
         this.match = match;
-        variableValues = patternValues;
+        this.variableValues = patternValues;
         this.errorPath = path;
     }
     public void printError(){

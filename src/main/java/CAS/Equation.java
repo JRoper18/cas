@@ -129,8 +129,6 @@ public class Equation implements Serializable, Comparable<Equation>{
         }
         else if(eq1Op == MathOperator.EXPRESSION && eq2Op == MathOperator.EXPRESSION){
             if(eq1.isType(IdentificationType.VARCONSTANT) && !eq2.isType(IdentificationType.VARCONSTANT)){
-                System.out.println(eq1);
-                System.out.println(eq2);
                 return -1;
             }
             if(eq2.isType(IdentificationType.VARCONSTANT) && !eq1.isType(IdentificationType.VARCONSTANT)){

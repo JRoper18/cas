@@ -207,9 +207,6 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                         Equation replace = new Equation("SIMPLIFY_RATIONAL_EXPRESSION(" + new Equation(child) + ")", 1);
                         child.replaceWith(replace.tree);
                     }
-                    if(newEq.isType(MathOperator.DERIVATIVE)){
-                        System.out.println(newEq);
-                    }
                     Equation operatorSimplified =  Simplifier.simplifyByOperator(newEq);
                     return Simplifier.simplifyWithMetaFunction(operatorSimplified, MathOperator.SIMPLIFY_RATIONAL_FRACTION);
                 }
@@ -241,9 +238,6 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
             }), new MathObject(MathOperator.EXPONENT)),
             new EquationSub((DirectOperation & Serializable) (eq -> {
                 Equation newEq = eq.getSubEquation(0).clone(); //Autosimplify is the root term
-                if(newEq.equals(new Equation("ADD ( MULTIPLY ( POWER ( _x , 2 )  , DERIVATIVE ( 2 , _x )  )  , MULTIPLY ( 2 , MULTIPLY ( MULTIPLY ( 2 , _x , 1 )  , 2 )  )  ) ", 0))){
-                    System.out.println("BEGIN");
-                }
                 EquationSub sub = new EquationSub((DirectOperation) (equation -> {
                     if(equation.isType(MathOperator.DIVIDE)){
                         return new Equation("MULTIPLY(" + equation.getSubEquation(0) + "," + "POWER(" + equation.getSubEquation(1) + ", -1))", 0);

@@ -31,7 +31,7 @@ public class Simplifier {
                 while(results.next()){
                     Equation temp = newEq.clone();
                     EquationSub tempSub = SubSerializer.deserialize(results.getBytes("algorithm"));
-                    newEq = (full)? tempSub.applyEverywhere(newEq) : tempSub.apply(newEq);
+                    newEq = (full)? Simplifier.simplifyWithMetaFunction(tempSub.applyEverywhere(newEq), MathOperator.AUTOSIMPLIFY) : tempSub.apply(newEq);
                     if(!temp.equals(newEq)){
                         steps.add(tempSub);
                         changes.add(newEq);
@@ -46,7 +46,7 @@ public class Simplifier {
 
     }
     public static Equation simplifyByOperator(Equation eq, MathObject operation, boolean full){
-        return simplifyWithData(eq, operation, full).result;
+        return simplifyWithData(eq, operation, full).result     ;
     }
     public static Equation simplifyByOperator(Equation eq, boolean full){
         return simplifyByOperator(eq, eq.getRoot(), full);
