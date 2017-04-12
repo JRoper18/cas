@@ -30,6 +30,7 @@ public class StructuralSub extends EquationSub implements Serializable {
                 //Go through conditions
                 for (String sub : subs.keySet()) {
                     Tree<MathObject> substitution = subs.get(sub).tree;
+
                     GenericExpression genExToLookFor = new GenericExpression(sub);
                     newEquation.tree.replaceAll(new Tree(genExToLookFor), substitution);
                 }

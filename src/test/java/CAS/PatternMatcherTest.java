@@ -45,7 +45,7 @@ public class PatternMatcherTest {
         assertEquals(new Equation("PLUS(2, 3, 4, 5)", 0) , data.variableValues.get("x"));
         data = matcher.patternMatch(new Equation("PLUS(1, 2)",0), new Equation("PLUS(1, 2, _x_EXPRESSION)",0));
         assertTrue(data.match);
-        assertEquals(new Equation("0", 0) , data.variableValues.get("x"));
+        assertEquals(new Equation("0", 0), data.variableValues.get("x"));
         assertEquals(false, matcher.doesMatchPattern(new Equation("POWER(1, 2, 3, 4, 5)",0), new Equation("POWER(1, _x_EXPRESSION)",0)));
         assertEquals(true, matcher.doesMatchPattern(new Equation("POWER(1, 2)",0), new Equation("POWER(1, _x_EXPRESSION)",0)));
     }
@@ -58,6 +58,10 @@ public class PatternMatcherTest {
         data = matcher.patternMatch(new Equation("DERIV(TIMES(5, _x), _x)", 0), new Equation("DERIV(TIMES(_n_VARCONSTANT, _f_EXPRESSION), _#1)",0));
         assertTrue(data.match);
         assertEquals(new Equation("_x", 0), data.variableValues.get("f"));
+        data = matcher.patternMatch(new Equation("DERIV(TIMES(2, _x, _y), _x)"), new Equation("DERIV(TIMES(_f_EXPRESSION, _g_EXPRESSION), _d)"));
+        assertEquals(new Equation("2", 0), data.variableValues.get("f"));
+        assertEquals(new Equation("TIMES(_x, _y)", 0), data.variableValues.get("g"));
+
     }
 
     @Test

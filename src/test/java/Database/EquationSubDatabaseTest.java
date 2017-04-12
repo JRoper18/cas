@@ -184,6 +184,6 @@ public class EquationSubDatabaseTest {
         assertEquals(new Equation("5"), Simplifier.simplifyByOperator(new Equation("DERIV(TIMES(5, _x), _x)"), true));
         assertEquals(new Equation("TIMES(4, _x)"), Simplifier.simplifyByOperator(new Equation("DERIV(TIMES(2, POWER(_x, 2)), _x)"), true));
         assertEquals(new Equation("_y"), Simplifier.simplifyByOperator(new Equation("DERIV(TIMES(_x, _y), _x)"), true));
-        assertEquals(new Equation("_y"), Simplifier.simplifyByOperator(new Equation("DERIV(TIMES(_x, _y, 2), _x)"), true));
+        assertEquals(new Equation("TIMES(2, _y)"), Simplifier.simplifyByOperator(new Equation("DERIV(TIMES(_x, _y, 2), _x)"), true));
     }
 }

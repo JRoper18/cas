@@ -122,6 +122,7 @@ public class PatternMatcher {
             if(i >= eq.getNumberOfChildren()){
                 if(childPattern.data instanceof GenericExpression) {
                     if (((GenericExpression) childPattern.data).type == IdentificationType.EXPRESSION && compare.getOperator().isAssociative()) {
+
                         if(!eq.data.getOperator().hasIdentity()){
                             path.addFirst(i);
                             return new PatternMatcher().new MatchData(false, values, varTags, path);
@@ -151,10 +152,10 @@ public class PatternMatcher {
                     //AN example of too many args is OP(2, _EXPRESSION) matching OP(2) and setting expression as identity.
                     Tree<MathObject> toCheckFor = new Tree<>(eq.data);
                     int mark = eq.getNumberOfChildren();
-                    for(int j = i + 1; j<childPattern.getNumberOfChildren(); j++){
+                    for(int j = i + 1; j<pattern.getNumberOfChildren(); j++){
                         //What if we have OP(_EXPRESSION, _EXPRESSION)?
-                        if(childPattern.getChild(j).data instanceof GenericExpression){
-                            if(((GenericExpression) childPattern.data).type == IdentificationType.EXPRESSION){
+                        if(pattern.getChild(j).data instanceof GenericExpression){
+                            if(((GenericExpression) pattern.getChild(j).data).type == IdentificationType.EXPRESSION){
                                 mark = j; //ToCheckFor only needs all the terms UNTIL the next generic expression
                                 break;
                             }

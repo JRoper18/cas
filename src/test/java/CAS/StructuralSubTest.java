@@ -28,8 +28,6 @@ public class StructuralSubTest {
 
         StructuralSub sub5 = new StructuralSub("PLUS(1, _f_EXPRESSION) -> TIMES(2, _f_EXPRESSION)");
         assertEquals(new Equation("TIMES(2, _x)"), sub5.apply(new Equation("PLUS(1, _x)")));
-
-
     }
 
     @Test
