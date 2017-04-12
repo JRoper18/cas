@@ -60,4 +60,9 @@ public class EquationBuilderTest {
         assertEquals(new Equation("POWER(_x, 2)", 0), new Equation("_x ^ 2", 0));
         assertEquals(new Equation("POWER(_x, SIN(2))", 0), new Equation("_x ^ SIN(2)", 0));
     }
+
+    @Test
+    public void testExpressionsAndVariables() throws Exception {
+        System.out.println(new Equation("CUSTOM_FUNCTION{f,_x, _y}", 0).tree);
+    }
 }

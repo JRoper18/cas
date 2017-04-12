@@ -7,6 +7,7 @@ import javax.management.AttributeList;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class EquationBuilder{
@@ -76,7 +77,7 @@ public class EquationBuilder{
             } else {
                 MathObject current = (MathObject) equationObject;
                 selected.data = current;
-                if (current.getArgs() > 0){
+                if (current.getArgs() > 0 || current.getOperator() == MathOperator.CUSTOM_FUNCTION){
                     if (!selected.isRoot()) {
                         selected.getParent().addEmptyChild();
                         selected.addEmptyChild();
@@ -277,7 +278,7 @@ public class EquationBuilder{
         if(abbrData != null){ //A HashMap's .get() method returns null if there's no key.
             return abbrData;
         }
-        throw new UncheckedIOException(new IOException("Operator: " + str + " is not recognized by CAS.EquationBuilder. "));
+        return new CustomFunction(str);
     }
     private class RationalTempInfoHolder{
         public MathInteger numer;

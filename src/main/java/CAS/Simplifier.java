@@ -32,7 +32,8 @@ public class Simplifier {
                     Equation temp = newEq.clone();
                     EquationSub tempSub = SubSerializer.deserialize(results.getBytes("algorithm"));
                     newEq = (full)? Simplifier.simplifyWithMetaFunction(tempSub.applyEverywhere(newEq), MathOperator.AUTOSIMPLIFY) : tempSub.apply(newEq);
-                    if(!temp.equals(newEq)){
+                    if(!temp.equals(newEq)) {
+                        System.out.println(newEq);
                         steps.add(tempSub);
                         changes.add(newEq);
                     }
