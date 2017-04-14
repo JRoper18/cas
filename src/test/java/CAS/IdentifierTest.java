@@ -3,11 +3,22 @@ package CAS;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by jack on 1/15/2017.
  */
 public class IdentifierTest {
+
+    @Test
+    public void testConstantIdentification() throws Exception {
+        assertTrue(new Equation("_n_VARCONSTANT", 0).isType(IdentificationType.VARCONSTANT));
+        assertFalse(new Equation("_n_VARCONSTANT", 0).isType(IdentificationType.CONSTANT));
+        assertTrue(new Equation("E", 0).isType(IdentificationType.CONSTANT));
+        assertTrue(new Equation("E", 0).isType(IdentificationType.CONSTANT));
+
+    }
 
     @Test
     public void testStandardFractionIdentification() throws Exception {

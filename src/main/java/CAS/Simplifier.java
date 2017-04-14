@@ -3,6 +3,7 @@ package CAS;
 import CAS.EquationObjects.MathObject;
 import CAS.EquationObjects.MathOperator;
 import CAS.EquationObjects.MathOperatorSubtype;
+import Database.ConfigData;
 import Database.DatabaseConnection;
 import Database.SubSerializer;
 import com.rits.cloning.Cloner;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.sql.ResultSet;
 import java.util.*;
+
 
 /**
  * Created by jack on 1/5/2017.
@@ -24,6 +26,7 @@ public class Simplifier {
         List<Equation> changes = new ArrayList<>();
         Equation newEq = eq.clone();
         Equation last;
+        boolean overflow = false;
         do{
             last = newEq;
             try{
@@ -33,15 +36,18 @@ public class Simplifier {
                     EquationSub tempSub = SubSerializer.deserialize(results.getBytes("algorithm"));
                     newEq = (full)? Simplifier.simplifyWithMetaFunction(tempSub.applyEverywhere(newEq), MathOperator.AUTOSIMPLIFY) : tempSub.apply(newEq);
                     if(!temp.equals(newEq)) {
-                        System.out.println(newEq);
                         steps.add(tempSub);
                         changes.add(newEq);
+                    }
+                    if(steps.size() > 10){
+                        overflow = true;
+                        break;
                     }
                 }
             } catch (Exception ex){
                 ex.printStackTrace();
             }
-        } while (full==true && !newEq.equals(last));
+        } while (full==true && !newEq.equals(last) && !overflow);
         Equation finalEq = (full)? Simplifier.simplifyWithMetaFunction(newEq, MathOperator.AUTOSIMPLIFY) : newEq;
         return new SimplifierResult(eq, finalEq, steps, changes);
 

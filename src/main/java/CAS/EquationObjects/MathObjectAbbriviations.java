@@ -19,6 +19,8 @@ public class MathObjectAbbriviations {
         abbriviations.put("^", new AbbriviationData(new MathObject(MathOperator.POWER), AbbriviationType.INFIX));
         abbriviations.put("GCD", new AbbriviationData(new MathObject(MathOperator.GREATEST_COMMON_DENOMINATOR), AbbriviationType.PREFIX));
         abbriviations.put("DERIV", new AbbriviationData(new MathObject(MathOperator.DERIVATIVE), AbbriviationType.PREFIX));
+        abbriviations.put("DERIV", new AbbriviationData(new MathObject(MathOperator.DERIVATIVE), AbbriviationType.PREFIX));
+        abbriviations.put("LN", new AbbriviationData(new MathObject(MathOperator.NATURAL_LOG), AbbriviationType.PREFIX));
 
     }
 }

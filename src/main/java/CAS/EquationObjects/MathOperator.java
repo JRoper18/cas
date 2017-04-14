@@ -28,7 +28,8 @@ public enum MathOperator {
     TANGENT(1, true, false, MathOperatorSubtype.MATH, null),
     FACTORIAL(1, true, false, MathOperatorSubtype.MATH, null),
     DERIVATIVE(2, true, false, MathOperatorSubtype.MATH, null),
-    CUSTOM_FUNCTION(0, false, false, MathOperatorSubtype.MATH, null), //Placeholder values - check customfunction class
+    CUSTOM_FUNCTION(0, false, false, MathOperatorSubtype.MATH, null), //Placeholder values - check customfunction class,
+    NATURAL_LOG(1, true, false, MathOperatorSubtype.MATH, null),
     LIST(1, true, true, MathOperatorSubtype.MATH, null),
     //Pattern matching
     PATTERN_OR(2, false, true, MathOperatorSubtype.PATTERN, "FALSE"),

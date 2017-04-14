@@ -20,8 +20,12 @@ public class SimplifierResult {
         StringBuilder build = new StringBuilder();
         build.append(initial.toString());
         build.append("\n");
-        for(Equation step : this.changes){
+        for(int i = 0; i<this.changes.size(); i++){
+            Equation step = this.changes.get(i);
+            EquationSub sub = this.subsUsed.get(i);
+
             build.append(step.toString());
+            build.append(" using sub: " + sub.toString());
             build.append("\n");
         }
         build.append(result.toString());

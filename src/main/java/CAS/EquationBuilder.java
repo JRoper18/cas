@@ -278,7 +278,7 @@ public class EquationBuilder{
         if(abbrData != null){ //A HashMap's .get() method returns null if there's no key.
             return abbrData;
         }
-        return new CustomFunction(str);
+        throw new UncheckedIOException(new IOException("Unrecognized operator " + str + "!"));
     }
     private class RationalTempInfoHolder{
         public MathInteger numer;
