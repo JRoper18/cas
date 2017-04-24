@@ -165,6 +165,8 @@ public class EquationSubDatabaseTest {
         assertEquals(new Equation("PLUS(2, TIMES(3,_x))", 2), new Equation("PLUS(TIMES(2, _x), PLUS(_x, PLUS(1, 1)))", 2));
         assertEquals(new Equation("PLUS(2, _x, TIMES(2, POWER(_x, 2), POWER(_y, 2)))", 2), new Equation("PLUS(TIMES(2, _x, POWER(_y, 2), POWER(_x, ADD(3, -2))), PLUS(_x, PLUS(1, 1)))", 2));
         assertEquals(new Equation("POWER(_x, TIMES(3, _y))", 2), new Equation("TIMES(POWER(_x, _y), POWER(_x, TIMES(2, _y))))", 2));
+        assertEquals(new Equation("NATURAL_LOG(2)", 0), new Equation("NATURAL_LOG(2)"));
+        assertEquals(new Equation("MULTIPLY(NATURAL_LOG(2), _x)", 0), new Equation("MULTIPLY(NATURAL_LOG(2), _x)", 2));
     }
 //All functions past this point should deal with only autosimplified equations
 

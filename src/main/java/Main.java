@@ -12,6 +12,7 @@ import java.sql.ResultSet;
  */
 public class Main {
     public static void main(String[] args) {
-        DatabaseConnection.makeConnection();
+        System.out.println(new Equation("SIMPLIFY_RATIONAL_EXPRESSION(MULTIPLY(1, NATURAL_LOG(2)))", 1));
+        //        DatabaseConnection.makeConnection();
     }
 }

@@ -17,7 +17,7 @@ public class IdentifierTest {
         assertFalse(new Equation("_n_VARCONSTANT", 0).isType(IdentificationType.CONSTANT));
         assertTrue(new Equation("E", 0).isType(IdentificationType.CONSTANT));
         assertTrue(new Equation("E", 0).isType(IdentificationType.CONSTANT));
-
+        assertTrue(new Equation("NATURAL_LOG(2)").isType(IdentificationType.CONSTANT));
     }
 
     @Test
@@ -30,6 +30,7 @@ public class IdentifierTest {
     public void testRationalExpressionRecognition() throws Exception {
         assertEquals(false, new Equation("PLUS(_x, 1)", 0).isType(IdentificationType.RATIONAL_NUMBER_EXPRESSION));
         assertEquals(true, new Equation("PLUS(2, 1)", 0).isType(IdentificationType.RATIONAL_NUMBER_EXPRESSION));
+        assertEquals(false, new Equation("MULTIPLY(LN(2), 1)", 0).isType(IdentificationType.RATIONAL_NUMBER_EXPRESSION));
     }
 
     @Test

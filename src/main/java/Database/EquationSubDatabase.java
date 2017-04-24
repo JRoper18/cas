@@ -21,7 +21,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     }
                 }
                 return new Equation(new Tree<>(new MathInteger(gcd)));
-            }), new MathObject(MathOperator.GREATEST_COMMON_DENOMINATOR)),
+            }), new MathObject(MathOperator.GCD_META)),
             new EquationSub((Serializable & DirectOperation) (eq -> {
                 return new Equation(new Tree<MathObject>(new MathInteger(eq.getSubEquation(0).tree.getNumberOfChildren())));
             }), new MathObject(MathOperator.NUMBER_OF_OPERANDS)),
@@ -226,6 +226,22 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 return eq;
             }), new MathObject(MathOperator.BASE)),
             new EquationSub((DirectOperation & Serializable) (eq -> {
+                Equation newEq = eq.getSubEquation(0);
+                if(newEq.isType(IdentificationType.RATIONAL_NUMBER_EXPRESSION)){
+                    return Simplifier.simplifyWithMetaFunction(newEq, MathOperator.SIMPLIFY_RATIONAL_EXPRESSION);
+                }
+                if(newEq.tree.hasChildren()){
+                    int count = 0;
+                    for(Equation operand: newEq.getOperands()){
+                        newEq.tree.setChild(count, Simplifier.simplifyWithMetaFunction(operand, MathOperator.SIMPLIFY_CONSTANT).tree);
+                        count++; //Not sure why I'm not using a regular for loop
+                    }
+                }
+                List<Equation> operands = newEq.getOperands();
+                return eq;
+
+            }), new MathObject(MathOperator.SIMPLIFY_CONSTANT)),
+            new EquationSub((DirectOperation & Serializable) (eq -> {
                 if(eq.getRoot().getOperator() == MathOperator.EXPONENT){
                     Equation toEval = eq.getSubEquation(0);
                     MathOperator op = toEval.getRoot().getOperator();
@@ -252,7 +268,6 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     return new Equation("UNDEFINED");
                 }
                 if(newEq.isType(IdentificationType.INTEGER) || newEq.isType(MathOperatorSubtype.SYMBOL)){
-
                     return newEq;
                 }
                 if(newEq.isType(MathOperator.FRACTION)){
@@ -260,7 +275,6 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     return new Equation("SIMPLIFY_RATIONAL_FRACTION(" + newEq + ")", 1);
                 }
                 if(newEq.isType(IdentificationType.RATIONAL_NUMBER_EXPRESSION)){
-
                     return new Equation("SIMPLIFY_RATIONAL_EXPRESSION(" + newEq + ")", 1);
                 }
                 else{

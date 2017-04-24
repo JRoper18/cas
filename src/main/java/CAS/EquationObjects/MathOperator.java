@@ -7,76 +7,76 @@ import CAS.Equation;
  */
 public enum MathOperator {
     //Atomic/building block/unchanging values/symbols
-    NUMBER(0, false, false, MathOperatorSubtype.SYMBOL, null),
-    TRUE(0, false, false, MathOperatorSubtype.SYMBOL, null),
-    FALSE(0, false, false, MathOperatorSubtype.SYMBOL, null),
-    EXPRESSION(0, false, false, MathOperatorSubtype.SYMBOL, null),
-    UNDEFINED(0, false, false, MathOperatorSubtype.SYMBOL, null),
-    E(0, false, false, MathOperatorSubtype.SYMBOL, null),
-    PI(0, false, false, MathOperatorSubtype.SYMBOL, null),
+    NUMBER(0, false, false, MathOperatorSubtype.SYMBOL, null, null, false),
+    TRUE(0, false, false, MathOperatorSubtype.SYMBOL, null, null, false),
+    FALSE(0, false, false, MathOperatorSubtype.SYMBOL, null, null, false),
+    EXPRESSION(0, false, false, MathOperatorSubtype.SYMBOL, null, null, false),
+    UNDEFINED(0, false, false, MathOperatorSubtype.SYMBOL, null, null, false),
+    E(0, false, false, MathOperatorSubtype.SYMBOL, null, null, false),
+    PI(0, false, false, MathOperatorSubtype.SYMBOL, null, null, false),
 
-    ADD(2, false, true, MathOperatorSubtype.MATH, "0"),
-    MULTIPLY(2, false, true, MathOperatorSubtype.MATH, "1"),
-    SUBTRACT(2, true, false, MathOperatorSubtype.MATH, "0"),
-    DIVIDE(2, true, false, MathOperatorSubtype.MATH, "1"),
-    FRACTION(2, true, false, MathOperatorSubtype.MATH, null),
-    REMAINDER(2, true, false, MathOperatorSubtype.MATH, "1"),
-    GREATEST_COMMON_DENOMINATOR(2, false, true, MathOperatorSubtype.META, "1"),
-    POWER(2, true, false, MathOperatorSubtype.MATH, null),
-    SINE(1, true, false, MathOperatorSubtype.MATH, null),
-    COSINE(1, true, false, MathOperatorSubtype.MATH, null),
-    TANGENT(1, true, false, MathOperatorSubtype.MATH, null),
-    FACTORIAL(1, true, false, MathOperatorSubtype.MATH, null),
-    DERIVATIVE(2, true, false, MathOperatorSubtype.MATH, null),
-    CUSTOM_FUNCTION(0, false, false, MathOperatorSubtype.MATH, null), //Placeholder values - check customfunction class,
-    NATURAL_LOG(1, true, false, MathOperatorSubtype.MATH, null),
-    LIST(1, true, true, MathOperatorSubtype.MATH, null),
+    ADD(2, false, true, MathOperatorSubtype.MATH, "0", null, false),
+    MULTIPLY(2, false, true, MathOperatorSubtype.MATH, "1", null, false),
+    SUBTRACT(2, true, false, MathOperatorSubtype.MATH, "0", null, false),
+    DIVIDE(2, true, false, MathOperatorSubtype.MATH, "1", null, false),
+    FRACTION(2, true, false, MathOperatorSubtype.MATH, null, null, false),
+    REMAINDER(2, true, false, MathOperatorSubtype.MATH, "1", null, false),
+    POWER(2, true, false, MathOperatorSubtype.MATH, null, null, false),
+    GREATEST_COMMON_DENOMINATOR(2, false, true, MathOperatorSubtype.META, "1", null, false),
+    SINE(1, true, false, MathOperatorSubtype.MATH, null, null, false),
+    COSINE(1, true, false, MathOperatorSubtype.MATH, null, null, false),
+    TANGENT(1, true, false, MathOperatorSubtype.MATH, null, null, false),
+    FACTORIAL(1, true, false, MathOperatorSubtype.MATH, null, null, false),
+    DERIVATIVE(2, true, false, MathOperatorSubtype.MATH, null, null, true),
+    CUSTOM_FUNCTION(0, false, false, MathOperatorSubtype.MATH, null, null, false), //Placeholder values - check customfunction class,
+    NATURAL_LOG(1, true, false, MathOperatorSubtype.MATH, null, null, true),
+    LIST(1, true, true, MathOperatorSubtype.MATH, null, null, false),
     //Pattern matching
-    PATTERN_OR(2, false, true, MathOperatorSubtype.PATTERN, "FALSE"),
-    PATTERN_AND(2, false, true, MathOperatorSubtype.PATTERN, "TRUE"),
+    PATTERN_OR(2, false, true, MathOperatorSubtype.PATTERN, "FALSE", null, false),
+    PATTERN_AND(2, false, true, MathOperatorSubtype.PATTERN, "TRUE", null, false),
     //Booleans and conditionals
-    OR(2, false, true, MathOperatorSubtype.BOOLEAN, "FALSE"),
-    AND(2, false, true, MathOperatorSubtype.BOOLEAN, "TRUE"),
-    NOT(1, false, false, MathOperatorSubtype.BOOLEAN, null),
-    EQUALS(2, false, true, MathOperatorSubtype.BOOLEAN, null),
-    LESS_EQUAL(2, true, false, MathOperatorSubtype.BOOLEAN, null),
-    LESS(2, true, false, MathOperatorSubtype.BOOLEAN, null),
+    OR(2, false, true, MathOperatorSubtype.BOOLEAN, "FALSE", null, false),
+    AND(2, false, true, MathOperatorSubtype.BOOLEAN, "TRUE", null, false),
+    NOT(1, false, false, MathOperatorSubtype.BOOLEAN, null, null, false),
+    EQUALS(2, false, true, MathOperatorSubtype.BOOLEAN, null, null, false),
+    LESS_EQUAL(2, true, false, MathOperatorSubtype.BOOLEAN, null, null, false),
+    LESS(2, true, false, MathOperatorSubtype.BOOLEAN, null, null, false),
     //Meta functions beyond here
-    TYPEOF(1, false, false, MathOperatorSubtype.META, null),
-    NUMBER_OF_OPERANDS(2, true, false, MathOperatorSubtype.META, null),
-    OPERAND(2, true, false, MathOperatorSubtype.META, null),
-    CONTAINS(1, false, false, MathOperatorSubtype.META, null),
-    ADJOIN(2, false, false, MathOperatorSubtype.META, null),
-    REST(1, false, false, MathOperatorSubtype.META, null),
-    EXPAND(1, false, false, MathOperatorSubtype.META, null),
-    SIMPLIFY_RATIONAL_FRACTION(1, false, false, MathOperatorSubtype.META, null),
-    SIMPLIFY_RATIONAL_EXPRESSION(1, false, false, MathOperatorSubtype.META, null),
-    AUTOSIMPLIFY(1, false, false, MathOperatorSubtype.META, null),
-    SIMPLIFY_SUM(1, false, false, MathOperatorSubtype.META, null),
-    SIMPLIFY_PRODUCT(1, false, false, MathOperatorSubtype.META, null),
-    SIMPLIFY_POWER(1, false, false, MathOperatorSubtype.META, null),
-    BASE(1, false, false, MathOperatorSubtype.META, null),
-    EXPONENT(1, false, false, MathOperatorSubtype.META, null),
-    TERM(1, false, false, MathOperatorSubtype.META, null),
-    COEFFICIENT(1, false, false, MathOperatorSubtype.META, null);
+    TYPEOF(1, false, false, MathOperatorSubtype.META, null, null, false),
+    NUMBER_OF_OPERANDS(2, true, false, MathOperatorSubtype.META, null, null, false),
+    OPERAND(2, true, false, MathOperatorSubtype.META, null, null, false),
+    CONTAINS(1, false, false, MathOperatorSubtype.META, null, null, false),
+    ADJOIN(2, false, false, MathOperatorSubtype.META, null, null, false),
+    REST(1, false, false, MathOperatorSubtype.META, null, null, false),
+    GCD_META(2, false, true, MathOperatorSubtype.META, "1", null, false),
+    EXPAND(1, false, false, MathOperatorSubtype.META, null, null, false),
+    SIMPLIFY_RATIONAL_FRACTION(1, false, false, MathOperatorSubtype.META, null, null, false),
+    SIMPLIFY_RATIONAL_EXPRESSION(1, false, false, MathOperatorSubtype.META, null, null, false),
+    AUTOSIMPLIFY(1, false, false, MathOperatorSubtype.META, null, null, false),
+    SIMPLIFY_SUM(1, false, false, MathOperatorSubtype.META, null, null, false),
+    SIMPLIFY_PRODUCT(1, false, false, MathOperatorSubtype.META, null, null, false),
+    SIMPLIFY_POWER(1, false, false, MathOperatorSubtype.META, null, null, false),
+    SIMPLIFY_CONSTANT(1, false, false, MathOperatorSubtype.META, null, null, false),
+    BASE(1, false, false, MathOperatorSubtype.META, null, null, false),
+    EXPONENT(1, false, false, MathOperatorSubtype.META, null, null, false),
+    TERM(1, false, false, MathOperatorSubtype.META, null, null, false),
+    COEFFICIENT(1, false, false, MathOperatorSubtype.META, null, null, false);
 
     private final int arguments;
     private final boolean ordered;
     private final boolean associative;
     private final MathOperatorSubtype subType;
     private final String identity;
-    private MathOperator(int arguments){
-        this(arguments, false, false, MathOperatorSubtype.MATH, null);
-    }
-    private MathOperator(int arguments, boolean ordered, boolean associative){
-        this(arguments, ordered, associative, MathOperatorSubtype.MATH, null);
-    }
-    private MathOperator(int arguments, boolean ordered, boolean associative, MathOperatorSubtype subType, String identity){
+    private final String inverse;
+    private final boolean transcendental;
+    private MathOperator(int arguments, boolean ordered, boolean associative, MathOperatorSubtype subType, String identity, String inverse, boolean trans){
         this.arguments = arguments;
         this.ordered = ordered;
         this.associative = associative;
         this.subType = subType;
         this.identity = identity;
+        this.inverse = inverse;
+        this.transcendental = trans;
     }
     public MathOperatorSubtype getSubType(){
         return this.subType;
