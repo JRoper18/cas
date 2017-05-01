@@ -69,15 +69,15 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 }
                 return eq; //No change
             }), (new MathObject(MathOperator.ADD))),
-            new EquationSub((Serializable & DirectOperation) (eq -> {
+            new EquationSub("Simplifies multiplication between integers and fractions", (Serializable & DirectOperation) (eq -> {
                 if (eq.tree.data.equals(new MathObject(MathOperator.MULTIPLY)) && eq.tree.getNumberOfChildren() == 2) {
                     if (eq.tree.getChild(0).data instanceof MathInteger && eq.tree.getChild(1).data instanceof MathInteger) {
                         BigInteger num1 = ((MathInteger) eq.tree.getChild(0).data).num;
                         BigInteger num2 = ((MathInteger) eq.tree.getChild(1).data).num;
-                        return new Equation(num1.multiply(num2).toString());
+                        return new Equation(num1.multiply(num2).toString(), 0);
                     }
-                    Equation arg1 = eq.getSubEquation(0);
-                    Equation arg2 = eq.getSubEquation(1);
+                    Equation arg1 = eq.getSubEquation(0).clone();
+                    Equation arg2 = eq.getSubEquation(1).clone();
                     if(arg1.isType(IdentificationType.INTEGER)){
                         arg1 = new Equation("FRACTION(" + arg1 + ", 1)", 1);
                     }
@@ -90,9 +90,10 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                         return new Equation("SIMPLIFY_RATIONAL_FRACTION(FRACTION(" + newNumer + "," + newDenom + "))", 1);
                     }
                 }
+
                 return eq; //No change
             }), (new MathObject(MathOperator.MULTIPLY))),
-            new EquationSub((Serializable & DirectOperation) (eq -> {
+            new EquationSub("Multiplies two operands", (Serializable & DirectOperation) (eq -> {
                 if (eq.tree.data.equals(new MathObject(MathOperator.SUBTRACT)) && eq.tree.getNumberOfChildren() == 2) {
                     if (eq.tree.getChild(0).data instanceof MathInteger && eq.tree.getChild(1).data instanceof MathInteger) {
                         return new Equation(((MathInteger) eq.tree.getChild(0).data).sub((MathInteger) eq.tree.getChild(1).data).toString());
@@ -111,7 +112,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 }
                 return eq; //No change
             }), (new MathObject(MathOperator.DIVIDE))),
-            new EquationSub((Serializable & DirectOperation) (eq -> {
+            new EquationSub("Simplifies a fraction by dividing the numerator and denominator by their GCD", (Serializable & DirectOperation) (eq -> {
                 PatternMatcher matcher = new PatternMatcher();
                 PatternMatchResult data = matcher.patternMatch(eq, new Equation("FRACTION ( _numer , _denom )", 1));
                 if(data.match) {
@@ -127,7 +128,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 }
                 return eq; //CHANGE THIS
             }),(new MathObject(MathOperator.FRACTION))),
-            new EquationSub((Serializable & DirectOperation) (eq -> {
+            new EquationSub("Simplifies a fraction with integer or fraction numerator and denominator", (Serializable & DirectOperation) (eq -> {
                 Equation newEq = eq.clone();
                 if(eq.getRoot().equals(new MathObject(MathOperator.SIMPLIFY_RATIONAL_FRACTION))){
                     newEq = eq.getSubEquation(0).clone();
@@ -153,7 +154,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     return newEq;
                 }
             }), new MathObject(MathOperator.SIMPLIFY_RATIONAL_FRACTION)),
-            new EquationSub((Serializable & DirectOperation) (eq -> {
+            new EquationSub("Simplifies any rational expression", (Serializable & DirectOperation) (eq -> {
                 if(eq.isType(MathOperator.POWER)){
                     for(Equation child: eq.getOperands()){
                         if(!child.isType(IdentificationType.INTEGER)){
@@ -230,16 +231,43 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 if(newEq.isType(IdentificationType.RATIONAL_NUMBER_EXPRESSION)){
                     return Simplifier.simplifyWithMetaFunction(newEq, MathOperator.SIMPLIFY_RATIONAL_EXPRESSION);
                 }
-                if(newEq.tree.hasChildren()){
-                    int count = 0;
-                    for(Equation operand: newEq.getOperands()){
-                        newEq.tree.setChild(count, Simplifier.simplifyWithMetaFunction(operand, MathOperator.SIMPLIFY_CONSTANT).tree);
-                        count++; //Not sure why I'm not using a regular for loop
+                List<Equation> operands = newEq.getOperands();
+                List<Equation> newList = new ArrayList<>();
+                List<Equation> irrationalVars = new ArrayList<>();
+                int count = 0;
+                for(Equation operand: operands){
+                    if(operand.isType(IdentificationType.IRRATIONAL)){
+                        int possibleIndexOfCopy = irrationalVars.indexOf(operand);
+                        if(possibleIndexOfCopy != -1){
+                            newList.add(new Equation("_v" + possibleIndexOfCopy));
+                        }
+                        else{
+                            newList.add(new Equation("_v" + count));
+                            irrationalVars.add(operand);
+                            count++;
+                        }
+                    }
+                    else{
+                        newList.add(operand);
                     }
                 }
-                List<Equation> operands = newEq.getOperands();
-                return eq;
+                //Convert the list back into an equation and simplify it like a normal equation.
+                Equation variableReplaced = Equation.fromList(newList);
+                variableReplaced.tree.data = newEq.getRoot();
+                Equation variableSimplified = Simplifier.simplifyWithMetaFunction(variableReplaced, MathOperator.AUTOSIMPLIFY);
 
+                 //Now simplify the irrationals if possible.
+                List<Equation> simplifiedVars = new ArrayList<>();
+                for(Equation irrationalEquation: irrationalVars){
+                    simplifiedVars.add(Simplifier.simplifyWithMetaFunction(irrationalEquation, MathOperator.SIMPLIFY_CONSTANT));
+                }
+                //Finally, put the irrationals back in.
+                for(int i = 0; i<irrationalVars.size(); i++){
+                    GenericExpression toReplace = new GenericExpression("v" + Integer.toString(i));
+                    variableSimplified.tree.replaceAll(new Tree<>(toReplace), (simplifiedVars.get(i).tree));
+                }
+
+                return variableSimplified;
             }), new MathObject(MathOperator.SIMPLIFY_CONSTANT)),
             new EquationSub((DirectOperation & Serializable) (eq -> {
                 if(eq.getRoot().getOperator() == MathOperator.EXPONENT){
@@ -252,7 +280,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 }
                 return eq;
             }), new MathObject(MathOperator.EXPONENT)),
-            new EquationSub((DirectOperation & Serializable) (eq -> {
+            new EquationSub("Our autosimplify algorithm", (DirectOperation & Serializable) (eq -> {
                 Equation newEq = eq.getSubEquation(0).clone(); //Autosimplify is the root term
                 EquationSub sub = new EquationSub((DirectOperation) (equation -> {
                     if(equation.isType(MathOperator.DIVIDE)){
@@ -264,8 +292,9 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     return equation;
                 }));
                 newEq = sub.applyEverywhere(newEq);
+                newEq = Simplifier.orderEquation(newEq);
                 if(newEq.tree.containsData(new MathObject(MathOperator.UNDEFINED))){
-                    return new Equation("UNDEFINED");
+                    return new Equation("UNDEFINED", 0);
                 }
                 if(newEq.isType(IdentificationType.INTEGER) || newEq.isType(MathOperatorSubtype.SYMBOL)){
                     return newEq;
@@ -277,34 +306,33 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 if(newEq.isType(IdentificationType.RATIONAL_NUMBER_EXPRESSION)){
                     return new Equation("SIMPLIFY_RATIONAL_EXPRESSION(" + newEq + ")", 1);
                 }
-                else{
-                    Tree<MathObject> newTree = new Tree<>(newEq.getRoot());
-                    for(Equation childEq: newEq.getOperands()){ //Recursivly get autosimplified expression.
-                        Equation toReplace = Simplifier.simplifyWithMetaFunction(childEq, MathOperator.AUTOSIMPLIFY);
-                        newTree.addChild(toReplace.tree);
-                    }
-                    newEq = new Equation(newTree,0);
-                    Equation toReturn;
-                    switch(newEq.getRoot().getOperator()){
-                        case POWER:
-                            toReturn = new Equation("SIMPLIFY_POWER(" + newEq + ")", 1);
-                            break;
-                        case ADD:
-                            toReturn = new Equation("SIMPLIFY_SUM(" + newEq + ")", 1);
-                            break;
-                        case MULTIPLY:
-                            toReturn = new Equation("SIMPLIFY_PRODUCT(" + newEq + ")", 1);
-                            break;
-                        case FACTORIAL:
-                            toReturn = new Equation("SIMPLIFY_FACTORIAL(" + newEq + ")", 1);
-                            break;
-                        default:
-                            toReturn = newEq;
-                    }
-                    return toReturn;
+                Tree<MathObject> newTree = new Tree<>(newEq.getRoot());
+                for(Equation childEq: newEq.getOperands()){ //Recursivly get autosimplified expression.
+                    Equation toReplace = Simplifier.simplifyWithMetaFunction(childEq, MathOperator.AUTOSIMPLIFY);
+                    newTree.addChild(toReplace.tree);
                 }
+                newEq = new Equation(newTree,0);
+                Equation toReturn;
+                switch(newEq.getRoot().getOperator()){
+                    case POWER:
+                        toReturn = new Equation("SIMPLIFY_POWER(" + newEq + ")", 1);
+                        break;
+                    case ADD:
+                        toReturn = new Equation("SIMPLIFY_SUM(" + newEq + ")", 1);
+                        break;
+                    case MULTIPLY:
+                        toReturn = new Equation("SIMPLIFY_PRODUCT(" + newEq + ")", 1);
+                        break;
+                    case FACTORIAL:
+                        toReturn = new Equation("SIMPLIFY_FACTORIAL(" + newEq + ")", 1);
+                        break;
+                    default:
+                        toReturn = newEq.clone();
+                }
+
+                return Simplifier.orderEquation(toReturn);
             }), new MathObject(MathOperator.AUTOSIMPLIFY)),
-            new EquationSub((DirectOperation & Serializable) eq -> {
+            new EquationSub("Simplifies a sum", (DirectOperation & Serializable) eq -> {
                 Equation sum = eq.getSubEquation(0).clone();
                 List<Equation> operands = sum.getOperands();
                 HashMap<String, String> terms = new HashMap<>(); //term equation in string form, coefficient equation (also string form)
@@ -383,7 +411,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     return newTerms.get(0);
                 }
             }, new MathObject(MathOperator.SIMPLIFY_SUM)),
-            new EquationSub((DirectOperation & Serializable) eq -> {
+            new EquationSub("Simplifies a product", (DirectOperation & Serializable) eq -> {
                 Equation newEq = eq.getSubEquation(0);
                 //Now we're collecting like powers
                 if(!newEq.isType(MathOperator.MULTIPLY)){

@@ -108,6 +108,15 @@ public class Tree<T> implements Serializable{
         }
         return -1;
     }
+    public void applyCommand(TreeCommand command){
+        if(this.hasChildren()){
+            for(Tree<T> child: this.children){
+                child.applyCommand(command);
+            }
+        }
+        command.apply(this);
+
+    }
     private LinkedList<Integer> pathFromRoot(){
         if(this.isRoot()){
             return new LinkedList<>();

@@ -53,7 +53,7 @@ public class Simplifier {
 
     }
     public static Equation simplifyByOperator(Equation eq, MathObject operation, boolean full){
-        return simplifyWithData(eq, operation, full).result     ;
+        return simplifyWithData(eq, operation, full).result;
     }
     public static Equation simplifyByOperator(Equation eq, boolean full){
         return simplifyByOperator(eq, eq.getRoot(), full);

@@ -22,6 +22,13 @@ public class Identifier {
                     return (((GenericExpression) equation.getRoot()).type == INTEGER);
                 }
                 return (equation.getRoot() instanceof MathInteger);
+            case IRRATIONAL:
+                for(Equation operand: equation.getOperands()){
+                    if(operand.isType(IRRATIONAL)){
+                        return true;
+                    }
+                }
+                return op.isTranscendental();
             case VARCONSTANT:
                 if(equation.getRoot() instanceof GenericExpression){
                     return ((GenericExpression) equation.getRoot()).type == VARCONSTANT;

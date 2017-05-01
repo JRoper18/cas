@@ -99,6 +99,9 @@ public enum MathOperator {
         }
         return null;
     }
+    public boolean isTranscendental(){
+        return this.transcendental;
+    }
     public boolean hasIdentity(){
         return this.identity != null;
     }

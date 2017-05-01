@@ -10,14 +10,22 @@ import java.io.Serializable;
  */
 public class EquationSub implements Serializable {
     public final DirectOperation operation;
+    public final String description;
     public MathObject rootOperator;
     public EquationSub(DirectOperation operation){
         this.operation = operation;
         this.rootOperator = null;
+        this.description = new String();
     }
     public EquationSub(DirectOperation operation, MathObject operator){ //I'm hoping I'll only have to ever use this for adding, subtracting, division, and multiplication. Hoping.
         this.operation = operation;
         this.rootOperator = operator;
+        this.description = new String();
+    }
+    public EquationSub( String desc, DirectOperation operation, MathObject operator) { //I'm hoping I'll only have to ever use this for adding, subtracting, division, and multiplication. Hoping.
+        this.operation = operation;
+        this.rootOperator = operator;
+        this.description = desc;
     }
     public Equation apply(Equation equation){
         Equation newEq = equation.clone();
@@ -55,5 +63,8 @@ public class EquationSub implements Serializable {
             }
             return this.apply(new Equation(newEqTree, 0));
         }
+    }
+    public String toString(){
+        return (this.description.length() > 0)? this.description : super.toString();
     }
 }
