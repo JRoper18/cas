@@ -374,7 +374,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     constant = constantTerms.get(0);
                 }
                 else{
-                      constant = Simplifier.simplifyWithMetaFunction(Equation.fromList(constantTerms, MathOperator.ADD), MathOperator.SIMPLIFY_RATIONAL_EXPRESSION);
+                      constant = Simplifier.simplifyWithMetaFunction(Equation.fromList(constantTerms, MathOperator.ADD), MathOperator.SIMPLIFY_CONSTANT);
                 }
                 List<Equation> newTerms = new ArrayList<>();
                 if(!constant.equals(new Equation("0"))){
@@ -454,7 +454,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     constant = constantList.get(0);
                 }
                 else{
-                    constant = Simplifier.simplifyWithMetaFunction(Equation.fromList(constantList, MathOperator.MULTIPLY), MathOperator.SIMPLIFY_RATIONAL_EXPRESSION);
+                    constant = Simplifier.simplifyWithMetaFunction(Equation.fromList(constantList, MathOperator.MULTIPLY), MathOperator.SIMPLIFY_CONSTANT);
                 }
                 if(!constant.equals(new Equation("1"))){
                     newOperands.add(constant);
