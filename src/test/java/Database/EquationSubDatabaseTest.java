@@ -125,6 +125,7 @@ public class EquationSubDatabaseTest {
         assertEquals(new Equation("PLUS(TIMES(3, _x), TIMES(-3, _y))", 0), new Equation("SIMPLIFY_SUM(PLUS(TIMES(-2, _y), TIMES(3, _x), TIMES(-1, _y)))",1));
         assertEquals(new Equation("TIMES(3, POWER(_x, 2))", 0), new Equation("SIMPLIFY_SUM(PLUS(POWER(_x, 2), TIMES(2, POWER(_x, 2))))",1));
         assertEquals(new Equation("TIMES(2, TIMES(_y, POWER(_x, 2)))", 0), new Equation("SIMPLIFY_SUM(PLUS(TIMES(_y, POWER(_x, 2)), TIMES(_y, POWER(_x, 2))))",1));
+
     }
 
     @Test
@@ -145,6 +146,8 @@ public class EquationSubDatabaseTest {
         assertEquals(new Equation("-1", 0), new Equation("SIMPLIFY_PRODUCT(TIMES(TIMES(-1, POWER(_x, -1)), _x))", 1));
         assertEquals(new Equation("1", 0), new Equation("SIMPLIFY_PRODUCT(TIMES(TIMES(-1, -1, POWER(_x, -1)), _x))", 1));
         assertEquals(new Equation("4", 0), new Equation("SIMPLIFY_PRODUCT(TIMES(2, 2))", 1));
+        assertEquals(new Equation("-4", 0), new Equation("SIMPLIFY_PRODUCT(TIMES(2, -2))", 1));
+        assertEquals(new Equation("-2", 0), new Equation("SIMPLIFY_PRODUCT(TIMES(2, -1))", 1));
     }
 
     @Test
@@ -153,6 +156,10 @@ public class EquationSubDatabaseTest {
         assertEquals(new Equation("_x"), new Equation("SIMPLIFY_POWER(POWER(_x, 1))", 1));
         assertEquals(new Equation("PLUS(2, _x)"), new Equation("SIMPLIFY_POWER(POWER(PLUS(2, _x), 1))", 1));
         assertEquals(new Equation("1"), new Equation("SIMPLIFY_POWER(POWER(PLUS(2, _x), 0))", 1));
+        assertEquals(new Equation("POWER(_x, -2)",0), new Equation("SIMPLIFY_POWER(POWER(POWER(_x, 2), -1))", 1));
+        assertEquals(new Equation("POWER(_x, 4)", 0), new Equation("SIMPLIFY_POWER(POWER(POWER(POWER(_x, 2), -2), -1))", 1));
+        assertEquals(new Equation("POWER(_x, TIMES(4, _x))", 0), new Equation("SIMPLIFY_POWER(POWER(POWER(POWER(POWER(_x, 2), -2), -1), _x))", 1));
+
     }
 
     @Test
@@ -199,5 +206,6 @@ public class EquationSubDatabaseTest {
         assertEquals(new Equation("PLUS(1, _x, TIMES(3, POWER(_x, 2)))"), Simplifier.simplifyByOperator(new Equation("DERIV(PLUS(_x, DIVIDE(POWER(_x, 2), 2), POWER(_x, 3)), _x)"), true));
         assertEquals(new Equation("POWER(E, _x)"), Simplifier.simplifyByOperator(new Equation("DERIV(POWER(E, _x), _x)"), true));
         assertEquals(new Equation("TIMES(NATURAL_LOG(2), POWER(2, _x))"), Simplifier.simplifyByOperator(new Equation("DERIV(POWER(2, _x), _x)"), true));
+        assertEquals(new Equation("TIMES(-6, POWER(_x, -3))"), Simplifier.simplifyByOperator(new Equation("DERIV(DIVIDE(3, POWER(_x, 2)), _x)"), true));
     }
 }

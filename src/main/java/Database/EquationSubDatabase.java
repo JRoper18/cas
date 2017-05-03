@@ -497,6 +497,16 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                 if(base.equals(new Equation("0")) && exponent.isType(IdentificationType.NEGATIVE_CONSTANT)){
                     return new Equation("UNDEFINED");
                 }
+                if(base.isType(MathOperator.POWER)){
+                    while(base.getSubEquation(0).isType(MathOperator.POWER)){
+                        base = new Equation("SIMPLIFY_POWER(" + base + ")");
+                    }
+                    Equation basebase = base.getSubEquation(0);
+                    Equation baseexpo = base.getSubEquation(1);
+                    Equation newExpo = new Equation("SIMPLIFY_PRODUCT(TIMES(" + baseexpo + "," + exponent + "))", 1);
+                    return new Equation("POWER(" + basebase + ", " + newExpo + ")", 0);
+
+                }
                 return newEq;
             }, new MathObject(MathOperator.SIMPLIFY_POWER)),
             new EquationSub((DirectOperation & Serializable) eq -> {
