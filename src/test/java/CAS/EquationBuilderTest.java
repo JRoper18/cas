@@ -65,4 +65,9 @@ public class EquationBuilderTest {
     public void testExpressionsAndVariables() throws Exception {
         System.out.println(new Equation("CUSTOM_FUNCTION{f,_x, _y}", 0).tree);
     }
+
+    @Test
+    public void testAltGen() throws Exception {
+        builder.infixToPrefix("DERIVATIVE(1 + 2, _x)");
+    }
 }

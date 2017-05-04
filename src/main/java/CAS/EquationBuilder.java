@@ -37,6 +37,75 @@ public class EquationBuilder{
             }
         }
     }
+    public static List<Object> infixToPrefix(String str){
+        String newStr = "( " + str.replace(")", " )").trim() + " )";
+        List<Object> equationObjectList = new ArrayList<>();
+        String build = "";
+        boolean buildingNumber = false;
+        boolean buildingFunction = false;
+        for(int i = 0; i<newStr.length(); i++) {
+            char current = newStr.charAt(i);
+            if(Character.isDigit(current) && !buildingNumber){ //If we found a number, but we weren't previously building a number, we are now!
+                buildingNumber = true;
+                //Whatever we had earlier HAS to be a function or operator
+                getOperatorFromString(build, equationObjectList);
+                build = "";
+                build += current;
+                continue;
+            }
+            if(buildingNumber && !Character.isDigit(current) && current != '.'){ //If we were making a number, but we just encountered a lteer or something that isn't a numner, add the number.
+                try{ //Check for numbers BEFORE we add the character to the build.
+                    double num = Double.parseDouble(build);
+                    if(Math.floor(num) == num){ //Easy way to check if num is an int
+                        equationObjectList.add(new MathInteger((int) num));
+                        build = "";
+                        continue;
+                    }
+                    //Nope, it's decimal. We hate decimal numbers, turn them into rational numbers.
+                    //Remove the decimal place and turn it into a fraction.
+                        /*
+                        3.7 = 37/10
+                        3.503 = 3503 / 1000
+                        345.234 = 345234 / 1000
+                         */
+                    int afterDecLength = build.length() - build.indexOf('.') - 1;
+                    int denom = (int) Math.pow(10, afterDecLength);
+                    int numer = (int) (num * denom);
+                    equationObjectList.add(new EquationBuilder().new RationalTempInfoHolder(new MathInteger(numer), new MathInteger(denom)));
+                    build = "";
+                    continue;
+                } catch(NumberFormatException e){
+                    //IGNORE IT
+                }
+            }
+            build += current;
+            if(current == '('){
+                
+            }
+
+        }
+        return null;
+    }
+
+    private static void getOperatorFromString(String str, List<Object> list) {
+        //Check the list of mathematical operators.
+        try{
+            MathObject obj = new MathObject(MathOperator.valueOf(str));
+            //If no error, we found our math object. USE IT!
+            list.add(obj);
+        } catch (IllegalArgumentException er){
+            //IGNORED (I'm such a badass)
+        }
+
+        //Check the abbriviations table
+        AbbriviationData abbrData = (MathObjectAbbriviations.abbriviations.get(str));
+        if(abbrData != null){ //A HashMap's .get() method returns null if there's no key.
+            list.add(abbrData);
+        }
+        throw new UncheckedIOException(new IOException("Unrecognized operator " + str + "!"));
+    }
+
+    /*
     public static Equation makeEquation(String str){
         return makeEquation(str, 2);
     }
@@ -199,6 +268,9 @@ public class EquationBuilder{
         if(str.equals(")")){
             return new SyntaxTerminator();
         }
+        if(str.trim().equals("")){
+            return new SyntaxSeperator();
+        }
         //Next, check for numbers
         try{
             double num = Double.parseDouble(str);
@@ -207,11 +279,10 @@ public class EquationBuilder{
             }
             //Nope, it's decimal. We hate decimal numbers, turn them into rational numbers.
             //Remove the decimal place and turn it into a fraction.
-            /*
-            3.7 = 37/10
-            3.503 = 3503 / 1000
-            345.234 = 345234 / 1000
-             */
+            //3.7 = 37/10
+            //3.503 = 3503 / 1000
+            //345.234 = 345234 / 1000
+
             int afterDecLength = str.length() - str.indexOf('.') - 1;
 
             int denom = (int) Math.pow(10, afterDecLength);
@@ -221,7 +292,8 @@ public class EquationBuilder{
             //IGNORE IT
         }
         //Maybe it's a generic. If it's an expression it'll look like _<genericName>
-        if(str.charAt(0) == '_'){ //There's a _ so it's a generic.
+        if(str.charAt(0) == '_'){
+            //There's a _ so it's a generic.
             // NOTE: In the future you might make a function with a _ in it's name. Sorry, but I don't care enough to account for that.
             //A generic looks like this:
             //_ (_ if named) name (_type)
@@ -280,6 +352,7 @@ public class EquationBuilder{
         }
         throw new UncheckedIOException(new IOException("Unrecognized operator " + str + "!"));
     }
+    */
     private class RationalTempInfoHolder{
         public MathInteger numer;
         public MathInteger denom;
@@ -300,6 +373,12 @@ public class EquationBuilder{
         @Override
         public boolean equals(Object n){
             return n instanceof SyntaxTerminator;
+        }
+    }
+    private static class SyntaxSeperator{
+        @Override
+        public boolean equals(Object n){
+            return n instanceof SyntaxSeperator;
         }
     }
 }
