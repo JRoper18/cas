@@ -59,15 +59,17 @@ public class EquationBuilderTest {
         assertEquals(new Equation("PLUS(1, TIMES(2, PLUS(3, 4)))", 0), new Equation("1 + 2 * 3 + 4", 0));
         assertEquals(new Equation("POWER(_x, 2)", 0), new Equation("_x ^ 2", 0));
         assertEquals(new Equation("POWER(_x, SIN(2))", 0), new Equation("_x ^ SIN(2)", 0));
+        assertEquals(new Equation("POWER(PLUS(1, 2), 2)", 0), new Equation("POWER(1 + 2, 2)", 0));
     }
 
     @Test
-    public void testExpressionsAndVariables() throws Exception {
-        System.out.println(new Equation("CUSTOM_FUNCTION{f,_x, _y}", 0).tree);
+    public void testOther() throws Exception {
+        builder.makeEquationWithSyntax("SIN(1 + 2, _x)");
     }
 
     @Test
     public void testAltGen() throws Exception {
-        builder.infixToPrefix("DERIVATIVE(1 + 2, _x)");
+        builder.infixToPrefix("SIN(1,_x)");
+        builder.infixToPrefix("1+2");
     }
 }

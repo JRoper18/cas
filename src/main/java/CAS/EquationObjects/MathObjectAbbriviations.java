@@ -21,7 +21,5 @@ public class MathObjectAbbriviations {
         abbriviations.put("DERIV", new AbbriviationData(new MathObject(MathOperator.DERIVATIVE), AbbriviationType.PREFIX));
         abbriviations.put("DERIV", new AbbriviationData(new MathObject(MathOperator.DERIVATIVE), AbbriviationType.PREFIX));
         abbriviations.put("LN", new AbbriviationData(new MathObject(MathOperator.NATURAL_LOG), AbbriviationType.PREFIX));
-
-
     }
 }

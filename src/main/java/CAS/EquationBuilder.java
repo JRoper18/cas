@@ -6,9 +6,7 @@ import Database.EquationSubDatabase;
 import javax.management.AttributeList;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class EquationBuilder{
     public static Equation makeEquation(String str, int autoSimplifyLevel){
@@ -37,77 +35,103 @@ public class EquationBuilder{
             }
         }
     }
-    public static List<Object> infixToPrefix(String str){
-        String newStr = "( " + str.replace(")", " )").trim() + " )";
-        List<Object> equationObjectList = new ArrayList<>();
-        String build = "";
-        boolean buildingNumber = false;
-        boolean buildingFunction = false;
-        for(int i = 0; i<newStr.length(); i++) {
-            char current = newStr.charAt(i);
-            if(Character.isDigit(current) && !buildingNumber){ //If we found a number, but we weren't previously building a number, we are now!
-                buildingNumber = true;
-                //Whatever we had earlier HAS to be a function or operator
-                getOperatorFromString(build, equationObjectList);
-                build = "";
-                build += current;
-                continue;
+    public static String infixToPrefix(String str){
+        String newStr =str.trim().replaceAll(" ", "");
+        String[] tokens = newStr.split(generateStringSplitRegex());
+        List<String> newList = new ArrayList<>();
+        Stack<String> stack = new Stack<>();
+        for(String token: tokens) {
+            if(token.charAt(0) == '_' || Character.isDigit(token.charAt(0))){ //Variable or number
+                newList.add("(");
+                newList.add(token);
             }
-            if(buildingNumber && !Character.isDigit(current) && current != '.'){ //If we were making a number, but we just encountered a lteer or something that isn't a numner, add the number.
-                try{ //Check for numbers BEFORE we add the character to the build.
-                    double num = Double.parseDouble(build);
-                    if(Math.floor(num) == num){ //Easy way to check if num is an int
-                        equationObjectList.add(new MathInteger((int) num));
-                        build = "";
-                        continue;
-                    }
-                    //Nope, it's decimal. We hate decimal numbers, turn them into rational numbers.
-                    //Remove the decimal place and turn it into a fraction.
-                        /*
-                        3.7 = 37/10
-                        3.503 = 3503 / 1000
-                        345.234 = 345234 / 1000
-                         */
-                    int afterDecLength = build.length() - build.indexOf('.') - 1;
-                    int denom = (int) Math.pow(10, afterDecLength);
-                    int numer = (int) (num * denom);
-                    equationObjectList.add(new EquationBuilder().new RationalTempInfoHolder(new MathInteger(numer), new MathInteger(denom)));
-                    build = "";
-                    continue;
-                } catch(NumberFormatException e){
-                    //IGNORE IT
+            else if(token.charAt(token.length()-1) == '('){ //It's either a prefix function or a plain open paren
+                if(token.length() == 1){ //Open paren
+                    stack.push(token);
+                }
+                else { //Function
+                    stack.push(token);
                 }
             }
-            build += current;
-            if(current == '('){
-                
+            else if(token.equals(",")){
+                newList.add(")");
             }
-
+            else if(token.equals(")")){
+                String unstackedToken = stack.peek();
+                while(!stack.isEmpty() && unstackedToken != "("){
+                    unstackedToken = stack.pop();
+                    newList.add(")");
+                    newList.add(unstackedToken);
+                }
+            }
+            else{ //It's an infix operator
+                newList.add(")");
+                stack.push(token);
+            }
         }
-        return null;
+        while(!stack.isEmpty()){
+            newList.add(stack.pop());
+            newList.add(")");
+        }
+        Collections.reverse(newList);
+        StringBuilder unprocessed = new StringBuilder(String.join(" ", newList));
+        System.out.println(unprocessed);
+        Set<Integer> parenLocations = new HashSet<>();
+        for(int i = 0; i<unprocessed.length(); i++){
+            if(unprocessed.charAt(i) == ')' ){
+                unprocessed.setCharAt(i, '(');
+                parenLocations.add(i);
+            }
+        }
+        int offset = 0;
+        for(int i = 0; i<unprocessed.length(); i++){
+            if(unprocessed.charAt(i) == '(' && !parenLocations.contains(i - offset) && unprocessed.charAt(i-1) == ' '){
+                unprocessed.setCharAt(i, ')');
+                unprocessed.insert(i+1, ',');
+                offset++;
+            }
+        }
+        unprocessed.deleteCharAt(unprocessed.length()-1); //Remove the last extra comma
+        System.out.println(unprocessed.toString());
+        return newList.toString();
     }
 
-    private static void getOperatorFromString(String str, List<Object> list) {
-        //Check the list of mathematical operators.
-        try{
-            MathObject obj = new MathObject(MathOperator.valueOf(str));
-            //If no error, we found our math object. USE IT!
-            list.add(obj);
-        } catch (IllegalArgumentException er){
-            //IGNORED (I'm such a badass)
+    /**
+     * Creates a regex expression that splits an input string into seperate equation parts to be processed
+     * @return A Regex string that will break up any equation string input into it's parts
+     */
+    private static String generateStringSplitRegex(){
+        String innerBuild = "([\\\\)])"; //All equation must be split up with )
+        final String specialChars = "\\.[]{}()*+-?^$|/"; //Special characters that require a \\ in order to be put correctly into a string or regex
+        for(String key: MathObjectAbbriviations.abbriviations.keySet()){
+            if(MathObjectAbbriviations.abbriviations.get(key).type != AbbriviationType.PREFIX){
+                //Add all non-prefix functions to be split up
+                if(specialChars.indexOf(key) != -1){
+                    innerBuild += ("|([\\\\" + key + "])");
+                }
+                else{
+                    innerBuild += ("|([" + key + "])|");
+                }
+            }
         }
+        return "(?<=(" + innerBuild + "|([\\(,])))|(?=(" + innerBuild + "|([,])))";
+        //The positive lookbehind and ahead are so that we includ the delimiters in our array when we split the string.
 
-        //Check the abbriviations table
-        AbbriviationData abbrData = (MathObjectAbbriviations.abbriviations.get(str));
-        if(abbrData != null){ //A HashMap's .get() method returns null if there's no key.
-            list.add(abbrData);
-        }
-        throw new UncheckedIOException(new IOException("Unrecognized operator " + str + "!"));
     }
-
-    /*
     public static Equation makeEquation(String str){
         return makeEquation(str, 2);
+    }
+    public static List<Object> makeEquationWithSyntax(String str){
+        String newStr = "( " + str.replace(")", " )").trim() + " )";
+        String[] tokens = newStr.trim().split("[ ,(]");
+        List<Object> eqList = new ArrayList<>();
+        for(String token : tokens){
+            System.out.println(token);
+            if(token.equals(""))
+            eqList.add(token);
+        }
+
+        return null;
     }
     public static Equation makeUnprocessedEquation(String str){
         return new Equation(makeEquationTree(str));
@@ -210,7 +234,7 @@ public class EquationBuilder{
             }
             currentEqList = newList;
         } while(!last.equals(currentEqList));
-        //Now set add abbrivations to operators
+        //Now set all abbrivations to operators
         List<Object> newList = new ArrayList<>();
         for(int i = 0; i<currentEqList.size()-1; i++){ //The minus one is because our above process adds extra syntax terminators
             Object current = currentEqList.get(i);
@@ -268,7 +292,7 @@ public class EquationBuilder{
         if(str.equals(")")){
             return new SyntaxTerminator();
         }
-        if(str.trim().equals("")){
+        if(str.trim().equals(",")){
             return new SyntaxSeperator();
         }
         //Next, check for numbers
@@ -352,7 +376,7 @@ public class EquationBuilder{
         }
         throw new UncheckedIOException(new IOException("Unrecognized operator " + str + "!"));
     }
-    */
+
     private class RationalTempInfoHolder{
         public MathInteger numer;
         public MathInteger denom;
