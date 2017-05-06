@@ -7,8 +7,11 @@ import javax.management.AttributeList;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EquationBuilder{
+    private static final String regex = generateStringSplitRegex();
     public static Equation makeEquation(String str, int autoSimplifyLevel){
         return simplifyTree(makeEquationTree(str), autoSimplifyLevel);
     }
@@ -36,8 +39,8 @@ public class EquationBuilder{
         }
     }
     public static String infixToPrefix(String str){
-        String newStr =str.trim().replaceAll(" ", "");
-        String[] tokens = newStr.split(generateStringSplitRegex());
+        String newStr ="(" + str.trim().replaceAll(" ", "") + ")";
+        String[] tokens = newStr.split(regex);
         List<String> newList = new ArrayList<>();
         Stack<String> stack = new Stack<>();
         for(String token: tokens) {
@@ -48,34 +51,36 @@ public class EquationBuilder{
             else if(token.charAt(token.length()-1) == '('){ //It's either a prefix function or a plain open paren
                 if(token.length() == 1){ //Open paren
                     stack.push(token);
+                    newList.add("(");
                 }
                 else { //Function
                     stack.push(token);
                 }
             }
-            else if(token.equals(",")){
-                newList.add(")");
-            }
-            else if(token.equals(")")){
-                String unstackedToken = stack.peek();
-                while(!stack.isEmpty() && unstackedToken != "("){
-                    unstackedToken = stack.pop();
+            else if(token.equals(")") || token.equals(",")){
+                while(!stack.isEmpty() && stack.peek().indexOf("(") == -1){
                     newList.add(")");
-                    newList.add(unstackedToken);
+                    newList.add(stack.pop());
+                }
+                if(!stack.isEmpty()){
+                    stack.pop();
                 }
             }
             else{ //It's an infix operator
-                newList.add(")");
+                if(!stack.isEmpty()){
+                    newList.add(")");
+                }
                 stack.push(token);
             }
+            System.out.println(token + "   " +  newList + "           " + stack);
         }
         while(!stack.isEmpty()){
-            newList.add(stack.pop());
+            String next = stack.pop();
             newList.add(")");
+            newList.add(next);
         }
         Collections.reverse(newList);
         StringBuilder unprocessed = new StringBuilder(String.join(" ", newList));
-        System.out.println(unprocessed);
         Set<Integer> parenLocations = new HashSet<>();
         for(int i = 0; i<unprocessed.length(); i++){
             if(unprocessed.charAt(i) == ')' ){
@@ -87,13 +92,11 @@ public class EquationBuilder{
         for(int i = 0; i<unprocessed.length(); i++){
             if(unprocessed.charAt(i) == '(' && !parenLocations.contains(i - offset) && unprocessed.charAt(i-1) == ' '){
                 unprocessed.setCharAt(i, ')');
-                unprocessed.insert(i+1, ',');
-                offset++;
             }
         }
-        unprocessed.deleteCharAt(unprocessed.length()-1); //Remove the last extra comma
-        System.out.println(unprocessed.toString());
-        return newList.toString();
+        String parenSwitched = unprocessed.toString();
+        String parensRemoved = parenSwitched.replaceAll("(\\( (\\w) \\))", "$2");
+        return parensRemoved;
     }
 
     /**
@@ -126,7 +129,6 @@ public class EquationBuilder{
         String[] tokens = newStr.trim().split("[ ,(]");
         List<Object> eqList = new ArrayList<>();
         for(String token : tokens){
-            System.out.println(token);
             if(token.equals(""))
             eqList.add(token);
         }
@@ -196,48 +198,22 @@ public class EquationBuilder{
         return tree;
     }
     private static List<Object> preProcess(String equationStr){
-        String newStr = "( " + equationStr.replace(")", " )").trim() + " )";
+        String newStr = infixToPrefix(equationStr);
         String[] tokens = newStr.trim().split("[ ,(]");
         List<Object> equationObjectList = new ArrayList<>();
         for(int i = 0; i<tokens.length; i++){
+            if(tokens[i].trim().isEmpty()){
+                continue;
+            }
             Object next = parseString(tokens[i]);
             if(next != null){
                 equationObjectList.add(next);
             }
         }
-        //Reorder for infix and postfix to prefix
-        List<Object> last;
-        List<Object> currentEqList = new ArrayList<>(equationObjectList);
-        do {
-            last = new ArrayList<>(currentEqList);
-            List<Object> newList = new ArrayList<>(currentEqList); //Clone it
-            boolean didWeChangeAlready = false;
-            for(int i = 0; i<currentEqList.size(); i++){
-                Object current = currentEqList.get(i);
-                if(current instanceof AbbriviationData){
-                    AbbriviationData data = (AbbriviationData) current;
-                    if(data.type == AbbriviationType.INFIX){
-                        //Find the function right before this one.
-                        int beginLastEquationIndex = getLastEquationStartIndex(currentEqList, i);
-                        List<Object> previousEquation = currentEqList.subList(beginLastEquationIndex, i);
-                        //Now swap places with the previous equation and the operator.
-                        List<Object> beforeSwap = new ArrayList<>(currentEqList.subList(0, beginLastEquationIndex)); //Before the swap. Also, cloned.
-                        beforeSwap.add(data.op); //Then add the operator and prefix it
-                        beforeSwap.addAll(previousEquation); //Then the swapped term
-                        beforeSwap.addAll(currentEqList.subList(i+1, currentEqList.size())); //Then add the second term and a syntax terminator.
-                        beforeSwap.add(new SyntaxTerminator());
-                        newList = beforeSwap;
-                        didWeChangeAlready = true;
-                        break;
-                    }
-                }
-            }
-            currentEqList = newList;
-        } while(!last.equals(currentEqList));
         //Now set all abbrivations to operators
         List<Object> newList = new ArrayList<>();
-        for(int i = 0; i<currentEqList.size()-1; i++){ //The minus one is because our above process adds extra syntax terminators
-            Object current = currentEqList.get(i);
+        for(int i = 0; i<equationObjectList.size()-1; i++){ //The minus one is because our above process adds extra syntax terminators
+            Object current = equationObjectList.get(i);
             if(current instanceof AbbriviationData){
                 newList.add(((AbbriviationData) current).op);
             }
@@ -397,6 +373,10 @@ public class EquationBuilder{
         @Override
         public boolean equals(Object n){
             return n instanceof SyntaxTerminator;
+        }
+        @Override
+        public String toString(){
+            return ")";
         }
     }
     private static class SyntaxSeperator{

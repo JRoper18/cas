@@ -10,4 +10,9 @@ public class AbbriviationData {
         this.op = op;
         this.type = type;
     }
+
+    @Override
+    public String toString(){
+        return this.op.toString();
+    }
 }

@@ -63,13 +63,11 @@ public class EquationBuilderTest {
     }
 
     @Test
-    public void testOther() throws Exception {
-        builder.makeEquationWithSyntax("SIN(1 + 2, _x)");
-    }
-
-    @Test
     public void testAltGen() throws Exception {
-        builder.infixToPrefix("SIN(1,_x)");
-        builder.infixToPrefix("1+2");
+        System.out.println(builder.infixToPrefix("1+2"));
+        System.out.println(builder.infixToPrefix("(1+2)*3"));
+        System.out.println(builder.infixToPrefix("3*(2+1)"));
+        System.out.println(builder.infixToPrefix("4*(3/(2+1))"));
+        System.out.println(builder.infixToPrefix("SIN(2+1, 3)"));
     }
 }
