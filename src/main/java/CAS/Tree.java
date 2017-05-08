@@ -2,6 +2,7 @@ package CAS;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -93,6 +94,14 @@ public class Tree<T> implements Serializable{
             return this;
         }
         return this.continuePath(path, 0);
+    }
+    public void reverseChildrenOrder(){
+        if(this.hasChildren()){
+            for(Tree child: this.children){
+                child.reverseChildrenOrder();
+            }
+        }
+        Collections.reverse(this.children);
     }
     private Tree continuePath(LinkedList<Integer> path, int index){
         if(index == path.size()){

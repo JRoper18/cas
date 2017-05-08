@@ -10,6 +10,7 @@ import java.util.Properties;
  */
 public class ConfigData {
     public static int simplifyOverflowLimit;
+    public static boolean autoInitDatabase;
     private static ConfigData ourInstance = new ConfigData();
 
     public static ConfigData getInstance() {
@@ -27,7 +28,8 @@ public class ConfigData {
             // load a properties file
             prop.load(input);
 
-            // get the property value and print it out
+            // get the property values
+            this.autoInitDatabase = Boolean.parseBoolean(prop.getProperty("autoinitdatabse"));
             this.simplifyOverflowLimit = Integer.parseInt(prop.getProperty("simplifyoverflowlimit"));
         } catch (IOException ex) {
             ex.printStackTrace();

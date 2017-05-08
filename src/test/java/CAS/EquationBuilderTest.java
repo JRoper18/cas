@@ -28,6 +28,7 @@ public class EquationBuilderTest {
     @Test
     public void testTreeCreation() throws Exception {
         Equation test1 = builder.makeEquation("ADD ( 4 , 5 )", 0);
+        test1.tree.print();
         Tree<MathObject> expectedTree1 = new Tree<>(new MathObject(MathOperator.ADD));
         expectedTree1.addChildWithData(new MathInteger(4));
         expectedTree1.addChildWithData(new MathInteger(5));
@@ -38,10 +39,10 @@ public class EquationBuilderTest {
 
     @Test
     public void testDecimalToFraction() throws Exception {
-        assertEquals(new Equation("FRACTION(1, 2)", 0), new Equation(".5"));
-        assertEquals(new Equation("FRACTION(-1, 2)", 0), new Equation("-.5"));
-        assertEquals(new Equation("FRACTION(-1, 2)", 0), new Equation("-0.5"));
-        assertEquals(new Equation("TIMES(1, FRACTION(1, 2))", 0), new Equation("TIMES(1, .5)",0));
+        new Equation("SIN(-1)",0);
+        assertEquals(new Equation("FRACTION(5, 10)", 0), new Equation(".5",0));
+        assertEquals(new Equation("FRACTION(-5, 10)", 0), new Equation("-0.5",0));
+        assertEquals(new Equation("TIMES(1, FRACTION(5, 10))", 0), new Equation("TIMES(1, .5)",0));
     }
 
     @Test
@@ -62,12 +63,4 @@ public class EquationBuilderTest {
         assertEquals(new Equation("POWER(PLUS(1, 2), 2)", 0), new Equation("POWER(1 + 2, 2)", 0));
     }
 
-    @Test
-    public void testAltGen() throws Exception {
-        System.out.println(builder.infixToPrefix("1+2"));
-        System.out.println(builder.infixToPrefix("(1+2)*3"));
-        System.out.println(builder.infixToPrefix("3*(2+1)"));
-        System.out.println(builder.infixToPrefix("4*(3/(2+1))"));
-        System.out.println(builder.infixToPrefix("SIN(2+1, 3)"));
-    }
 }

@@ -13,6 +13,9 @@ import java.util.regex.Pattern;
 public class EquationBuilder{
     private static final String regex = generateStringSplitRegex();
     public static Equation makeEquation(String str, int autoSimplifyLevel){
+        if(autoSimplifyLevel == 0){
+            return new Equation(makeEquationTree(str));
+        }
         return simplifyTree(makeEquationTree(str), autoSimplifyLevel);
     }
     public static Equation simplifyTree(Tree<MathObject> tree, int autoSimplifyLevel){
@@ -38,46 +41,59 @@ public class EquationBuilder{
             }
         }
     }
-    public static String infixToPrefix(String str){
-        String newStr ="(" + str.trim().replaceAll(" ", "") + ")";
+
+    /**
+     * Takes an input string that can include both infix and prefix notation and converts it to solely prefix notation.
+     * @param str The equation input
+     * @return A correctly formatted prefix string, but with arguements reversed.
+     */
+    private static String infixToPrefix(String str){
+        String newStr ="" + str.trim().replaceAll(" ", "") + "";
         String[] tokens = newStr.split(regex);
+        if(tokens.length == 1){
+            return (tokens[0]);
+        }
         List<String> newList = new ArrayList<>();
         Stack<String> stack = new Stack<>();
         for(String token: tokens) {
-            if(token.charAt(0) == '_' || Character.isDigit(token.charAt(0))){ //Variable or number
-                newList.add("(");
+            if(token.charAt(0) == '_' || Character.isDigit(token.charAt(0)) || (token.charAt(0)== '-' && Character.isDigit(token.charAt(1)))){ //Variable or number
                 newList.add(token);
             }
             else if(token.charAt(token.length()-1) == '('){ //It's either a prefix function or a plain open paren
                 if(token.length() == 1){ //Open paren
-                    stack.push(token);
                     newList.add("(");
                 }
                 else { //Function
                     stack.push(token);
                 }
             }
-            else if(token.equals(")") || token.equals(",")){
-                while(!stack.isEmpty() && stack.peek().indexOf("(") == -1){
-                    newList.add(")");
-                    newList.add(stack.pop());
+            else{
+                if(token.equals(")") || token.equals(",")){
+                    while(!stack.isEmpty() && stack.peek().indexOf("(") == -1){
+                        backtrackParen(newList);
+                        String pop = stack.pop();
+                        if(pop.length() != 1){ //Function
+                            newList.add(pop.substring(0, pop.length()-1));
+                        }
+                        else{
+                            newList.add(pop);
+                        }
+                    }
                 }
-                if(!stack.isEmpty()){
-                    stack.pop();
+                else{ //It's an infix operator
+                    stack.push(token);
                 }
             }
-            else{ //It's an infix operator
-                if(!stack.isEmpty()){
-                    newList.add(")");
-                }
-                stack.push(token);
-            }
-            System.out.println(token + "   " +  newList + "           " + stack);
         }
         while(!stack.isEmpty()){
-            String next = stack.pop();
-            newList.add(")");
-            newList.add(next);
+            backtrackParen(newList);
+            String pop = stack.pop();
+            if(pop.length() != 1){ //Function
+                newList.add(pop.substring(0, pop.length()-1));
+            }
+            else{
+                newList.add(pop);
+            }
         }
         Collections.reverse(newList);
         StringBuilder unprocessed = new StringBuilder(String.join(" ", newList));
@@ -95,10 +111,30 @@ public class EquationBuilder{
             }
         }
         String parenSwitched = unprocessed.toString();
-        String parensRemoved = parenSwitched.replaceAll("(\\( (\\w) \\))", "$2");
-        return parensRemoved;
+        parenSwitched = parenSwitched.replaceAll("\\(", "");
+        return parenSwitched;
     }
-
+    private static void backtrackParen(List<String> tokens){
+        if(tokens.size() <= 1 || !tokens.get(tokens.size() -1).equals(")")){
+            tokens.add(0, "(");
+            tokens.add(")");
+            return;
+        }
+        int level = 0;
+        for(int i = tokens.size() - 1; i>=0; i--) {
+            if (tokens.get(i).equals("(")) {
+                level--;
+            }
+            if (tokens.get(i).equals(")")) {
+                level++;
+            }
+            if (level == 0) {
+                tokens.add(tokens.size() - i, "(");
+                tokens.add(")");
+                return;
+            }
+        }
+    }
     /**
      * Creates a regex expression that splits an input string into seperate equation parts to be processed
      * @return A Regex string that will break up any equation string input into it's parts
@@ -106,10 +142,14 @@ public class EquationBuilder{
     private static String generateStringSplitRegex(){
         String innerBuild = "([\\\\)])"; //All equation must be split up with )
         final String specialChars = "\\.[]{}()*+-?^$|/"; //Special characters that require a \\ in order to be put correctly into a string or regex
+        final String unaryPrefixChars = "-!";
         for(String key: MathObjectAbbriviations.abbriviations.keySet()){
             if(MathObjectAbbriviations.abbriviations.get(key).type != AbbriviationType.PREFIX){
                 //Add all non-prefix functions to be split up
-                if(specialChars.indexOf(key) != -1){
+                if(unaryPrefixChars.indexOf(key) != -1){
+                    innerBuild += "|([\\" + key + "](?!\\d?\\.?\\d+))";
+                }
+                else if(specialChars.indexOf(key) != -1){
                     innerBuild += ("|([\\\\" + key + "])");
                 }
                 else{
@@ -123,17 +163,6 @@ public class EquationBuilder{
     }
     public static Equation makeEquation(String str){
         return makeEquation(str, 2);
-    }
-    public static List<Object> makeEquationWithSyntax(String str){
-        String newStr = "( " + str.replace(")", " )").trim() + " )";
-        String[] tokens = newStr.trim().split("[ ,(]");
-        List<Object> eqList = new ArrayList<>();
-        for(String token : tokens){
-            if(token.equals(""))
-            eqList.add(token);
-        }
-
-        return null;
     }
     public static Equation makeUnprocessedEquation(String str){
         return new Equation(makeEquationTree(str));
@@ -158,14 +187,13 @@ public class EquationBuilder{
                 MathObject operator = (MathObject) selected.data;
                 //Check the number of args isn't too little.
                 if (operator.getArgs() > selected.getNumberOfChildren()) {
-                    throw new UncheckedIOException(new IOException("You have the wrong number of arguments for the operator: " + selected.data + ". It takes " + operator.getArgs() + " arguments, but you put in too little. "));
+                    throw new UncheckedIOException(new IOException("You have the wrong number of arguments for the operator: " + selected.data + ". It takes " + operator.getArgs() + " arguments, but you put in too little with the equation: " + equationStr));
                 }
                 selected = selected.getParent().getChild(selected.getParent().getNumberOfChildren() - 1);
             } else if (equationObject instanceof RationalTempInfoHolder) {  //It's not syntax. Is it a temporary info holder?
                 selected.data = new MathObject(MathOperator.FRACTION);
                 selected.addChildWithData(((RationalTempInfoHolder) equationObject).numer);
                 selected.addChildWithData(((RationalTempInfoHolder) equationObject).denom);
-                selected.replaceWith(new Equation("SIMPLIFY_RATIONAL_FRACTION(" + new Equation(selected) + ")", 1).tree);
                 if(!selected.isRoot()){
                     selected.getParent().addEmptyChild();
                 }
@@ -194,12 +222,13 @@ public class EquationBuilder{
         } catch(Exception e){
             System.err.println("Missing a parenthesis on your equation: " + equationStr);
         }
-
+        //Now remember to reverse the order, because our infix to prefix returns operators in the wrong order.
+        tree.reverseChildrenOrder();
         return tree;
     }
     private static List<Object> preProcess(String equationStr){
         String newStr = infixToPrefix(equationStr);
-        String[] tokens = newStr.trim().split("[ ,(]");
+        String[] tokens = newStr.trim().split(" ");
         List<Object> equationObjectList = new ArrayList<>();
         for(int i = 0; i<tokens.length; i++){
             if(tokens[i].trim().isEmpty()){
@@ -212,7 +241,7 @@ public class EquationBuilder{
         }
         //Now set all abbrivations to operators
         List<Object> newList = new ArrayList<>();
-        for(int i = 0; i<equationObjectList.size()-1; i++){ //The minus one is because our above process adds extra syntax terminators
+        for(int i = 0; i<equationObjectList.size(); i++){
             Object current = equationObjectList.get(i);
             if(current instanceof AbbriviationData){
                 newList.add(((AbbriviationData) current).op);
@@ -223,43 +252,6 @@ public class EquationBuilder{
         }
         return newList;
     }
-    private static int getLastEquationStartIndex(List<Object> eqList, int lastIndex) { //Takes a list and finds the parenthesis matching the last parenthesis, and then returns the equation between them.
-        return getLastEquationStartIndex(eqList.subList(0, lastIndex));
-    }
-    private static int getLastEquationStartIndex(List<Object> eqList){ //Takes a list and finds the parenthesis matching the last parenthesis, and then returns the equation between them.
-        int level = 0;
-        for(int i = eqList.size() - 1; i >= 0; i--){
-            Object current = eqList.get(i);
-            if(current instanceof SyntaxTerminator){
-                level++;
-            }
-            else if(current instanceof MathObject){
-                if(((MathObject) current).getArgs() > 0){
-                    level--;
-                }
-            }
-            else if(current instanceof AbbriviationData){
-                AbbriviationData data = (AbbriviationData) current;
-                if(data.type == AbbriviationType.PREFIX){
-                    if(data.op.getArgs() > 0) {
-                        level--;
-                    }
-                }
-                else if(data.type == AbbriviationType.INFIX){ //This will come up in multiple infix operators, like (1+2) + 3 when evaluating the + before the 3.
-                    //Find where the previous infix would have it's start index.
-                    int lastIndex = getLastEquationStartIndex(eqList, i);
-                    i = lastIndex;
-                    level--;
-                }
-
-            }
-
-            if(level <= 0){
-                return i;
-            }
-        }
-        return -1; //DNE
-    }
     public static Object parseString(String str){
         if(str.length() == 0){
             return null;
@@ -267,9 +259,6 @@ public class EquationBuilder{
         //Check it it's a terminator
         if(str.equals(")")){
             return new SyntaxTerminator();
-        }
-        if(str.trim().equals(",")){
-            return new SyntaxSeperator();
         }
         //Next, check for numbers
         try{
@@ -357,8 +346,9 @@ public class EquationBuilder{
         public MathInteger numer;
         public MathInteger denom;
         public RationalTempInfoHolder(MathInteger numer, MathInteger denom){
-            this.numer = numer;
-            this.denom = denom;
+            //Don't forget, our infix to prefix algorthm reverses EVERYTHING
+            this.numer = denom;
+            this.denom = numer;
         }
 
         @Override
@@ -377,12 +367,6 @@ public class EquationBuilder{
         @Override
         public String toString(){
             return ")";
-        }
-    }
-    private static class SyntaxSeperator{
-        @Override
-        public boolean equals(Object n){
-            return n instanceof SyntaxSeperator;
         }
     }
 }
