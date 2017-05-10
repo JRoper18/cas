@@ -19,9 +19,6 @@ public class DatabaseConnection {
         return statement.executeQuery(query);
     }
     public static void makeConnection(){
-        if(!ConfigData.autoInitDatabase){
-            return;
-        }
         try {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:subs.db");

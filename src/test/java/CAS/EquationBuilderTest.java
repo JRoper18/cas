@@ -39,28 +39,8 @@ public class EquationBuilderTest {
 
     @Test
     public void testDecimalToFraction() throws Exception {
-        new Equation("SIN(-1)",0);
-        assertEquals(new Equation("FRACTION(5, 10)", 0), new Equation(".5",0));
-        assertEquals(new Equation("FRACTION(-5, 10)", 0), new Equation("-0.5",0));
-        assertEquals(new Equation("TIMES(1, FRACTION(5, 10))", 0), new Equation("TIMES(1, .5)",0));
+        assertEquals(new Equation("FRACTION(1, 2)", 0), new Equation("0.5",0));
+        assertEquals(new Equation("FRACTION(-1, 2)", 0), new Equation("-0.5",0));
+        assertEquals(new Equation("TIMES(1, FRACTION(1, 2))", 0), new Equation("TIMES(1, 0.5)",0));
     }
-
-    @Test
-    public void testInfixToPrefix() throws Exception {
-        assertEquals(new Equation("PLUS(1, 2)", 0), new Equation("1 + 2", 0));
-        assertEquals(new Equation("PLUS(1, 2)", 0), new Equation("1 + 2", 0));
-        assertEquals(new Equation("TIMES(1, 2)", 0), new Equation("1 * 2", 0));
-        assertEquals(new Equation("PLUS(PLUS(1, 2), 3)", 0), new Equation("PLUS(1, 2) + 3", 0));
-        assertEquals(new Equation("PLUS(PLUS(1, 2), 3)", 0), new Equation("(1 + 2) + 3", 0));
-        assertEquals(new Equation("PLUS(TIMES(1, 2), 3)", 0), new Equation("(1 * 2) + 3", 0));
-        assertEquals(new Equation("TIMES(1, PLUS(2, 3))", 0), new Equation("1 * (2 + 3)", 0));
-        assertEquals(new Equation("PLUS(1, PLUS(2, 3))", 0), new Equation("1 + 2 + 3", 0));
-        assertEquals(new Equation("PLUS(1, PLUS(2, PLUS(3, 4)))", 0), new Equation("1 + 2 + 3 + 4", 0));
-        assertEquals(new Equation("PLUS(1, PLUS(2, PLUS(3, 4)))", 0), new Equation("1 + 2 + PLUS(3, 4)", 0));
-        assertEquals(new Equation("PLUS(1, TIMES(2, PLUS(3, 4)))", 0), new Equation("1 + 2 * 3 + 4", 0));
-        assertEquals(new Equation("POWER(_x, 2)", 0), new Equation("_x ^ 2", 0));
-        assertEquals(new Equation("POWER(_x, SIN(2))", 0), new Equation("_x ^ SIN(2)", 0));
-        assertEquals(new Equation("POWER(PLUS(1, 2), 2)", 0), new Equation("POWER(1 + 2, 2)", 0));
-    }
-
 }

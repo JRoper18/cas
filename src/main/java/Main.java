@@ -12,8 +12,6 @@ import java.sql.ResultSet;
  */
 public class Main {
     public static void main(String[] args) {
-        DatabaseConnection.makeConnection();
-        SimplifierResult data = Simplifier.simplifyWithData(new Equation("DERIV(DIVIDE(3, POWER(_x, 2)), _x)"), true);
-        System.out.println(data.steps());
+        System.out.println(new Equation("", 0));
     }
 }

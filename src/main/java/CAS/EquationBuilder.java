@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EquationBuilder{
-    private static final String regex = generateStringSplitRegex();
+    public static final String regex = generateStringSplitRegex();
     public static Equation makeEquation(String str, int autoSimplifyLevel){
         if(autoSimplifyLevel == 0){
             return new Equation(makeEquationTree(str));
@@ -47,17 +47,27 @@ public class EquationBuilder{
      * @param str The equation input
      * @return A correctly formatted prefix string, but with arguements reversed.
      */
-    private static String infixToPrefix(String str){
-        String newStr ="" + str.trim().replaceAll(" ", "") + "";
-        String[] tokens = newStr.split(regex);
-        if(tokens.length == 1){
-            return (tokens[0]);
+    public static String infixToPrefix(String str){
+        String newStr = str.trim().replaceAll("((\\s|^)\\-(\\S))", "@$3"); //The @ will be a negative sign.
+        newStr = "" + newStr.trim().replaceAll(" ", "") + "";
+        List<String> tokens = Arrays.asList(newStr.split(regex));
+        if(tokens.size() == 1){
+            if(tokens.get(0).charAt(0) == '@'){
+                return ("-" + tokens.get(0).substring(1, tokens.get(0).length()));
+            }
+            return (tokens.get(0));
         }
         List<String> newList = new ArrayList<>();
         Stack<String> stack = new Stack<>();
         for(String token: tokens) {
-            if(token.charAt(0) == '_' || Character.isDigit(token.charAt(0)) || (token.charAt(0)== '-' && Character.isDigit(token.charAt(1)))){ //Variable or number
-                newList.add(token);
+            token = token.trim();
+            if(token.charAt(0) == '_' || Character.isDigit(token.charAt(0)) || (token.charAt(0)== '@' && Character.isDigit(token.charAt(1)))){ //Variable or number
+                if(token.charAt(0) == '@'){
+                    newList.add("-" + token.substring(1, token.length()));
+                }
+                else{
+                    newList.add(token);
+                }
             }
             else if(token.charAt(token.length()-1) == '('){ //It's either a prefix function or a plain open paren
                 if(token.length() == 1){ //Open paren
@@ -65,10 +75,33 @@ public class EquationBuilder{
                 }
                 else { //Function
                     stack.push(token);
+                    newList.add("(");
                 }
             }
             else{
-                if(token.equals(")") || token.equals(",")){
+                if(token.equals(")")){
+                    while(!stack.isEmpty() && stack.peek().indexOf("(") == -1){
+                        backtrackParen(newList);
+                        String pop = stack.pop();
+                        if(pop.length() != 1){ //Function
+                            newList.add(pop.substring(0, pop.length()-1));
+                         }
+                        else{
+                            newList.add(pop);
+                        }
+                    }
+                    if(!stack.isEmpty() && stack.peek().indexOf("(") != -1){
+                        newList.add(")");
+                        String pop = stack.pop();
+                        if(pop.length() != 1){ //Function
+                            newList.add(pop.substring(0, pop.length()-1));
+                        }
+                        else{
+                            newList.add(pop);
+                        }
+                    }
+                }
+                else if(token.equals(",")){
                     while(!stack.isEmpty() && stack.peek().indexOf("(") == -1){
                         backtrackParen(newList);
                         String pop = stack.pop();
@@ -115,7 +148,10 @@ public class EquationBuilder{
         return parenSwitched;
     }
     private static void backtrackParen(List<String> tokens){
-        if(tokens.size() <= 1 || !tokens.get(tokens.size() -1).equals(")")){
+        if(tokens.size() == 0){
+            return;
+        }
+        if(tokens.size() == 1 || !tokens.get(tokens.size() -1).equals(")")){
             tokens.add(0, "(");
             tokens.add(")");
             return;
@@ -146,10 +182,7 @@ public class EquationBuilder{
         for(String key: MathObjectAbbriviations.abbriviations.keySet()){
             if(MathObjectAbbriviations.abbriviations.get(key).type != AbbriviationType.PREFIX){
                 //Add all non-prefix functions to be split up
-                if(unaryPrefixChars.indexOf(key) != -1){
-                    innerBuild += "|([\\" + key + "](?!\\d?\\.?\\d+))";
-                }
-                else if(specialChars.indexOf(key) != -1){
+                if(specialChars.indexOf(key) != -1){
                     innerBuild += ("|([\\\\" + key + "])");
                 }
                 else{
@@ -192,10 +225,29 @@ public class EquationBuilder{
                 selected = selected.getParent().getChild(selected.getParent().getNumberOfChildren() - 1);
             } else if (equationObject instanceof RationalTempInfoHolder) {  //It's not syntax. Is it a temporary info holder?
                 selected.data = new MathObject(MathOperator.FRACTION);
-                selected.addChildWithData(((RationalTempInfoHolder) equationObject).numer);
+                selected.addChildWithData(((RationalTempInfoHolder) equationObject).numer); //Order is switched
                 selected.addChildWithData(((RationalTempInfoHolder) equationObject).denom);
+                Equation newFrac = Simplifier.simplifyWithMetaFunction(new Equation(selected), MathOperator.SIMPLIFY_RATIONAL_FRACTION);
+                if(newFrac.getRoot().getOperator() == MathOperator.FRACTION){ //It didn't turn it into a whole number, whose order isn't switched
+                    selected.replaceWith(newFrac.tree);
+                }
+                else{
+                    //Else it's a whole number when simplified, meaning it's reversed should be something like 1/10 instead of 10.
+                    Tree<MathObject> fractionReplace = new Tree<>(new MathObject(MathOperator.FRACTION));
+                    if(newFrac.isType(IdentificationType.NEGATIVE_CONSTANT)){
+                        //Negative numbers on top.
+                        fractionReplace.addChildWithData(new MathInteger(((MathInteger) newFrac.getRoot()).num.abs()));
+                        fractionReplace.addChildWithData(new MathInteger(-1));
+                    }
+                    else{
+                        fractionReplace.addChildWithData(newFrac.getRoot());
+                        fractionReplace.addChildWithData(new MathInteger(1));
+                    }
+                    selected.replaceWith(fractionReplace);
+                }
                 if(!selected.isRoot()){
                     selected.getParent().addEmptyChild();
+                    selected = selected.getParent().getChild(selected.getParent().getNumberOfChildren()-1);
                 }
             } else {
                 MathObject current = (MathObject) equationObject;
@@ -224,10 +276,13 @@ public class EquationBuilder{
         }
         //Now remember to reverse the order, because our infix to prefix returns operators in the wrong order.
         tree.reverseChildrenOrder();
+        tree.print();
+        //Also, we're going to have MINUS(...) whever someone types a negative. Replace a minus signs with negative numbers if possible.
         return tree;
     }
     private static List<Object> preProcess(String equationStr){
         String newStr = infixToPrefix(equationStr);
+
         String[] tokens = newStr.trim().split(" ");
         List<Object> equationObjectList = new ArrayList<>();
         for(int i = 0; i<tokens.length; i++){
@@ -253,6 +308,9 @@ public class EquationBuilder{
         return newList;
     }
     public static Object parseString(String str){
+        if(str.charAt(0) == '@') {
+            str = "-" + str.substring(1, str.length());
+        }
         if(str.length() == 0){
             return null;
         }

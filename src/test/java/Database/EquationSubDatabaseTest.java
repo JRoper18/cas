@@ -34,7 +34,7 @@ public class EquationSubDatabaseTest {
 
     @Test
     public void testFractionMultiplicaton() throws Exception {
-        assertEquals(new Equation("2.5", 0), Simplifier.simplifyByOperator(new Equation("TIMES(5, .5)",0)));
+        assertEquals(new Equation("2.5", 0), Simplifier.simplifyByOperator(new Equation("TIMES(5, 0.5)",0)));
         assertEquals(new Equation("-2", 0), Simplifier.simplifyByOperator(new Equation("TIMES(FRACTION(1, 2), -4)",0)));
     }
 
