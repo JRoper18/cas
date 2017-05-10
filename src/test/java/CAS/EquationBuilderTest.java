@@ -43,4 +43,21 @@ public class EquationBuilderTest {
         assertEquals(new Equation("FRACTION(-1, 2)", 0), new Equation("-0.5",0));
         assertEquals(new Equation("TIMES(1, FRACTION(1, 2))", 0), new Equation("TIMES(1, 0.5)",0));
     }
+
+    @Test
+    public void testUnaryNegative() throws Exception {
+        assertEquals(new Tree<MathObject>(new MathInteger(-1)), new Equation("-1", 0).tree);
+        Tree<MathObject> test2 = new Tree<>(new MathObject(MathOperator.SINE));
+        test2.addChildWithData(new MathInteger(-1));
+        assertEquals(test2, new Equation("SIN(-1)", 0).tree);
+        Tree<MathObject> test3 = new Tree<>(new MathObject(MathOperator.SUBTRACT));
+        test3.addChildWithData(new MathInteger(2));
+        test3.addChildWithData(new MathInteger(3));
+        assertEquals(test3, new Equation("2-3",0).tree);
+        Tree<MathObject> test4 = new Tree<>(new MathObject(MathOperator.MULTIPLY));
+        test4.addChildWithData(new MathInteger(2));
+        test4.addChildWithData(new MathInteger(-1));
+        assertEquals(test4, new Equation("TIMES(2, -1)", 0).tree);
+        assertEquals(test4, new Equation("TIMES(2,-1)", 0).tree);
+    }
 }

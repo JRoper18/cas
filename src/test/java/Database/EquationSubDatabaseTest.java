@@ -207,6 +207,5 @@ public class EquationSubDatabaseTest {
         assertEquals(new Equation("POWER(E, _x)"), Simplifier.simplifyByOperator(new Equation("DERIV(POWER(E, _x), _x)"), true));
         assertEquals(new Equation("TIMES(NATURAL_LOG(2), POWER(2, _x))"), Simplifier.simplifyByOperator(new Equation("DERIV(POWER(2, _x), _x)"), true));
         assertEquals(new Equation("TIMES(-6, POWER(_x, -3))"), Simplifier.simplifyByOperator(new Equation("DERIV(DIVIDE(3, POWER(_x, 2)), _x)"), true));
-        assertEquals(new Equation("DIVIDE(TIMES(3, POWER(_x, 3)), PLUS(_x, 1))"), Simplifier.simplifyByOperator(new Equation("DERIV(DIVIDE(TIMES(3, POWER(_x, 3)), PLUS(_x, 1)), _x)")));
     }
 }

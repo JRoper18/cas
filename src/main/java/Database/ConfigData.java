@@ -20,7 +20,9 @@ public class ConfigData {
     private ConfigData() {
         Properties prop = new Properties();
         InputStream input = null;
-
+        if(true){
+            return;
+        }
         try {
 
             input = new FileInputStream("config.properties");

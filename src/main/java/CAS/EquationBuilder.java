@@ -49,6 +49,7 @@ public class EquationBuilder{
      */
     public static String infixToPrefix(String str){
         String newStr = str.trim().replaceAll("((\\s|^)\\-(\\S))", "@$3"); //The @ will be a negative sign.
+        newStr = newStr.trim().replaceAll("((\\(|\\,)\\-(\\S))", "$2@$3"); //Might be a ( or , before a negative sign
         newStr = "" + newStr.trim().replaceAll(" ", "") + "";
         List<String> tokens = Arrays.asList(newStr.split(regex));
         if(tokens.size() == 1){
@@ -276,7 +277,6 @@ public class EquationBuilder{
         }
         //Now remember to reverse the order, because our infix to prefix returns operators in the wrong order.
         tree.reverseChildrenOrder();
-        tree.print();
         //Also, we're going to have MINUS(...) whever someone types a negative. Replace a minus signs with negative numbers if possible.
         return tree;
     }
