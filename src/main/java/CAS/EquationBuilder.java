@@ -1,14 +1,13 @@
 package CAS;
 
 import CAS.EquationObjects.*;
-import Database.EquationSubDatabase;
+import Identification.IdentificationType;
+import Simplification.Simplifier;
+import Simplification.SimplifierObjective;
 
-import javax.management.AttributeList;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class EquationBuilder{
     public static final String regex = generateStringSplitRegex();
@@ -31,7 +30,7 @@ public class EquationBuilder{
             }
             switch(autoSimplifyLevel){
                 case 1: //Only do meta-functions.
-                    return Simplifier.simplifyMetaFunctions(processedEquation);
+                    return Simplifier.directSimplify(processedEquation, SimplifierObjective.REMOVE_META);
                 case 2: //Autosimplify this
                     processedEquation = Simplifier.simplifyWithMetaFunction(processedEquation, MathOperator.SIMPLIFY_RATIONAL_EXPRESSION);
                     processedEquation = Simplifier.orderEquation(processedEquation);

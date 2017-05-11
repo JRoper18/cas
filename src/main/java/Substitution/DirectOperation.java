@@ -1,4 +1,6 @@
-package CAS;
+package Substitution;
+
+import CAS.Equation;
 
 import java.io.Serializable;
 

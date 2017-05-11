@@ -1,6 +1,6 @@
 package CAS.EquationObjects;
 
-import CAS.IdentificationType;
+import Identification.IdentificationType;
 
 /**
  * Created by Ulysses Howard Smith on 10/26/2016.

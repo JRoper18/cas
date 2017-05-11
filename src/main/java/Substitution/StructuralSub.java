@@ -1,9 +1,14 @@
-package CAS;
+package Substitution;
 
 
+import CAS.Equation;
 import CAS.EquationObjects.GenericExpression;
 import CAS.EquationObjects.MathObject;
 import CAS.EquationObjects.MathOperator;
+import CAS.Tree;
+import PatternMatching.PatternMatchResult;
+import PatternMatching.PatternMatcher;
+import Simplification.Simplifier;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -21,7 +26,7 @@ public class StructuralSub extends EquationSub implements Serializable {
         this(Simplifier.simplifyWithMetaFunction(new Equation(before), MathOperator.AUTOSIMPLIFY), Simplifier.simplifyWithMetaFunction(new Equation(after), MathOperator.AUTOSIMPLIFY));
     }
     public StructuralSub(Equation before, Equation after){
-        super((DirectOperation & Serializable) ( equation -> {
+        super((DirectOperation & Serializable) (equation -> {
             PatternMatcher matcher = new PatternMatcher();
             PatternMatchResult data = matcher.patternMatch(equation, before);
             if(data.match) {

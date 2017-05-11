@@ -1,8 +1,8 @@
 package Database;
 
 import CAS.EquationObjects.MathObject;
-import CAS.EquationSub;
-import CAS.StructuralSub;
+import Substitution.EquationSub;
+import Substitution.StructuralSub;
 
 import java.sql.*;
 
@@ -29,6 +29,7 @@ public class DatabaseConnection {
             statement.executeUpdate("create table subs (id int primary key not null, algorithm blob not null, operator string, subtype string)");
             int idCount = 0;
             for(EquationSub sub : EquationSubDatabase.subs){
+
                 String toPrepare = "insert into subs values(?, ?, ?, ?)";
                 PreparedStatement prepared = connection.prepareStatement(toPrepare);
                 prepared.setInt(1, idCount);

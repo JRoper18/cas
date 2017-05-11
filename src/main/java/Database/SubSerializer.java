@@ -1,6 +1,6 @@
 package Database;
 
-import CAS.EquationSub;
+import Substitution.EquationSub;
 
 import java.io.*;
 

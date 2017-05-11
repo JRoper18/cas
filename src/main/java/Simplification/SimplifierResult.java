@@ -1,5 +1,11 @@
-package CAS;
+package Simplification;
 
+import CAS.Equation;
+import Substitution.EquationSub;
+
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,6 +16,12 @@ public class SimplifierResult {
     public Equation result;
     public List<EquationSub> subsUsed;
     public List<Equation> changes;
+    public SimplifierResult(Equation initial){
+        this.initial = initial;
+        this.result = null;
+        this.subsUsed = new ArrayList<>();
+        this.changes = new ArrayList<>();
+    }
     public SimplifierResult(Equation initial, Equation eq, List<EquationSub> subs, List<Equation> changes){
         this.initial = initial;
         this.result = eq;
@@ -30,5 +42,18 @@ public class SimplifierResult {
         }
         build.append(result.toString());
         return build.toString();
+    }
+
+    /**
+     * Combines two seperate simplifications, provided that result is a comtinuation of this simplification.
+     * @param result The next steps in our simplification that we want to combine.
+     */
+    public void combine(SimplifierResult combine){
+        if(!combine.initial.equals(this.result)){
+            throw new UncheckedIOException(new IOException("The appended result must be a continuation of this result. "));
+        }
+        this.changes.addAll(combine.changes);
+        this.subsUsed.addAll(combine.subsUsed);
+        this.result = combine.result;
     }
 }

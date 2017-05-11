@@ -1,8 +1,11 @@
-package CAS;
+package PatternMatching;
 
+import CAS.Equation;
 import CAS.EquationObjects.GenericExpression;
 import CAS.EquationObjects.MathObject;
 import CAS.EquationObjects.MathOperator;
+import CAS.Tree;
+import Identification.IdentificationType;
 
 import java.util.HashMap;
 import java.util.LinkedList;

@@ -1,6 +1,8 @@
 package CAS;
 
 import CAS.EquationObjects.*;
+import Identification.IdentificationType;
+import Identification.Identifier;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -72,13 +74,13 @@ public class Equation implements Serializable, Comparable<Equation>{
         }
         else{
             String build = this.tree.data.toString();
-            build += (" ( ");
+            build += ("(");
             for(Tree<MathObject> child : this.tree.getChildren()){
-                build += (new Equation(child).toString() + " , ");
+                build += (new Equation(child).toString() + ",");
             }
             //Remove the last comma and add an end paren
-            build = build.substring(0, build.length() - 3);
-            build += " ) ";
+            build = build.substring(0, build.length() - 1);
+            build += ")";
             return build;
         }
     }

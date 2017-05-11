@@ -1,9 +1,8 @@
 package CAS;
 
-import CAS.EquationObjects.MathInteger;
+import PatternMatching.PatternMatchResult;
+import PatternMatching.PatternMatcher;
 import org.junit.Test;
-
-import java.util.LinkedList;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

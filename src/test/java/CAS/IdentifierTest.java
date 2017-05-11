@@ -1,5 +1,6 @@
 package CAS;
 
+import Identification.IdentificationType;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

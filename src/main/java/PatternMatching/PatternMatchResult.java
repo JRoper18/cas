@@ -1,4 +1,6 @@
-package CAS;
+package PatternMatching;
+
+import CAS.Equation;
 
 import java.util.HashMap;
 import java.util.LinkedList;

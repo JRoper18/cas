@@ -1,5 +1,7 @@
 package CAS;
 
+import Simplification.Simplifier;
+import Simplification.SimplifierObjective;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -22,7 +24,7 @@ public class SimplifierTest {
 
     @Test
     public void testMetaFunctions() throws Exception {
-        assertEquals(EquationBuilder.makeUnprocessedEquation("2"), s.simplifyMetaFunctions(EquationBuilder.makeUnprocessedEquation("OPERAND(PLUS(4,2),1)")));
+        assertEquals(EquationBuilder.makeUnprocessedEquation("2"), s.directSimplify(EquationBuilder.makeUnprocessedEquation("OPERAND(PLUS(4,2),1)"), SimplifierObjective.REMOVE_META));
         assertEquals(new Equation("ADJOIN(OPERAND(LIST(23, 4), 1), LIST(2,3,4))", 1), new Equation("LIST(4,2,3,4)"));
     }
 
@@ -34,9 +36,9 @@ public class SimplifierTest {
 
     @Test
     public void testSimplifyByOperation() throws Exception {
-        assertEquals(new Equation("2"), Simplifier.simplifyByOperator(new Equation("TIMES(1, 2)", 0)));
-        assertEquals(new Equation("3"), Simplifier.simplifyByOperator(new Equation("ADD(1, 2)", 0)));
-        assertEquals(new Equation("2"), Simplifier.simplifyByOperator(new Equation("DIVIDE(4, 2)", 0)));
+        assertEquals(new Equation("2"), Simplifier.directSimplify(new Equation("TIMES(1, 2)", 0), SimplifierObjective.REMOVE_META));
+        assertEquals(new Equation("3"), Simplifier.directSimplify(new Equation("ADD(1, 2)", 0), SimplifierObjective.REMOVE_META));
+        assertEquals(new Equation("2"), Simplifier.directSimplify(new Equation("DIVIDE(4, 2)", 0), SimplifierObjective.REMOVE_META));
     }
 
     @Test

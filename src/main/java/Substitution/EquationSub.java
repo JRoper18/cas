@@ -1,7 +1,10 @@
-package CAS;
+package Substitution;
 
+import CAS.Equation;
 import CAS.EquationObjects.MathObject;
-import com.rits.cloning.Cloner;
+import CAS.Tree;
+import Simplification.Simplifier;
+import Simplification.SimplifierObjective;
 
 import java.io.Serializable;
 
@@ -43,7 +46,7 @@ public class EquationSub implements Serializable {
                     //EXAMPLE: 1 + 2 + 3 + 4 -> (((1+2)+3)+4) -> (3 + 3) + 4 -> 6 + 4 -> 10
                     //EXAMPLE 2: OR(F, F, T, F) -> OR ( OR (F, F) , T , F) -> OR (F, T, F ) -> OR(OR(F,T), F) -> OR(T, F) -> TRUE
                     Equation subEquation = new Equation(subEquationTree);
-                    Equation temp = Simplifier.simplifyByOperator(subEquation);
+                    Equation temp = Simplifier.directSimplify(subEquation, SimplifierObjective.SIMPLIFY_TOP_OPERATOR);
                     //Now replace
                     newEq.tree.setChild(0, temp.tree);
                     newEq.tree.removeChild(1);

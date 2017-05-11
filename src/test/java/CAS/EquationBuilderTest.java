@@ -4,6 +4,7 @@ import CAS.EquationObjects.GenericExpression;
 import CAS.EquationObjects.MathInteger;
 import CAS.EquationObjects.MathObject;
 import CAS.EquationObjects.MathOperator;
+import Identification.IdentificationType;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

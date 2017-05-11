@@ -1,9 +1,8 @@
 package Database;
 
 import CAS.*;
-import CAS.EquationObjects.MathInteger;
-import CAS.EquationObjects.MathObject;
-import CAS.EquationObjects.MathOperator;
+import Simplification.Simplifier;
+import Simplification.SimplifierObjective;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -15,27 +14,27 @@ public class EquationSubDatabaseTest {
 
     @Test
     public void testIntegerAddition() throws Exception {
-        assertEquals(new Equation("3"), Simplifier.simplifyByOperator(new Equation("ADD(2, 1)")));
-        assertEquals(new Equation("4"), Simplifier.simplifyByOperator(new Equation("ADD(2, 2)")));
-        assertEquals(new Equation("10001"), Simplifier.simplifyByOperator(new Equation("ADD(10000, 1)")));
-        assertEquals(new Equation("-8"), Simplifier.simplifyByOperator(new Equation("ADD(-5, -3)")));
-        assertEquals(new Equation("18"), Simplifier.simplifyByOperator(new Equation("ADD(9, 3, 3, 3)")));
-        assertEquals(new Equation("3"), Simplifier.simplifyByOperator(new Equation("ADD(1, 2)")));
+        assertEquals(new Equation("3"), Simplifier.directSimplify(new Equation("ADD(2, 1)", 0), SimplifierObjective.SIMPLIFY_TOP_OPERATOR));
+        assertEquals(new Equation("4"), Simplifier.directSimplify(new Equation("ADD(2, 2)", 0), SimplifierObjective.SIMPLIFY_TOP_OPERATOR));
+        assertEquals(new Equation("10001"), Simplifier.directSimplify(new Equation("ADD(10000, 1)", 0), SimplifierObjective.SIMPLIFY_TOP_OPERATOR));
+        assertEquals(new Equation("-8"), Simplifier.directSimplify(new Equation("ADD(-5, -3)", 0), SimplifierObjective.SIMPLIFY_TOP_OPERATOR));
+        assertEquals(new Equation("18"), Simplifier.directSimplify(new Equation("ADD(9, 3, 3, 3)", 0), SimplifierObjective.SIMPLIFY_TOP_OPERATOR));
+        assertEquals(new Equation("3"), Simplifier.directSimplify(new Equation("ADD(1, 2)", 0), SimplifierObjective.SIMPLIFY_TOP_OPERATOR));
     }
 
     @Test
     public void testIntegerMultiplication() throws Exception {
-        assertEquals(new Equation("6"), Simplifier.simplifyByOperator(new Equation("TIMES(2, 3)")));
-        assertEquals(new Equation("8"), Simplifier.simplifyByOperator(new Equation("TIMES(2, 2, 2)")));
-        assertEquals(new Equation("25"), Simplifier.simplifyByOperator(new Equation("TIMES(5, 5, 1, 1, 1, 1)")));
-        assertEquals(new Equation("-8"), Simplifier.simplifyByOperator(new Equation("TIMES(2, -4)")));
-        assertEquals(new Equation("8"), Simplifier.simplifyByOperator(new Equation("TIMES(-2, -4)")));
+        assertEquals(new Equation("6"), Simplifier.directSimplify(new Equation("TIMES(2, 3)", 0), SimplifierObjective.SIMPLIFY_TOP_OPERATOR));
+        assertEquals(new Equation("8"), Simplifier.directSimplify(new Equation("TIMES(2, 2, 2)", 0), SimplifierObjective.SIMPLIFY_TOP_OPERATOR));
+        assertEquals(new Equation("25"), Simplifier.directSimplify(new Equation("TIMES(5, 5, 1, 1, 1, 1)", 0), SimplifierObjective.SIMPLIFY_TOP_OPERATOR));
+        assertEquals(new Equation("-8"), Simplifier.directSimplify(new Equation("TIMES(2, -4)", 0), SimplifierObjective.SIMPLIFY_TOP_OPERATOR));
+        assertEquals(new Equation("8"), Simplifier.directSimplify(new Equation("TIMES(-2, -4)", 0), SimplifierObjective.SIMPLIFY_TOP_OPERATOR));
     }
 
     @Test
     public void testFractionMultiplicaton() throws Exception {
-        assertEquals(new Equation("2.5", 0), Simplifier.simplifyByOperator(new Equation("TIMES(5, 0.5)",0)));
-        assertEquals(new Equation("-2", 0), Simplifier.simplifyByOperator(new Equation("TIMES(FRACTION(1, 2), -4)",0)));
+        assertEquals(new Equation("2.5", 0), Simplifier.directSimplify(new Equation("TIMES(5, 0.5)",0), SimplifierObjective.SIMPLIFY_TOP_OPERATOR));
+        assertEquals(new Equation("-2", 0), Simplifier.directSimplify(new Equation("TIMES(FRACTION(1, 2), -4)",0), SimplifierObjective.SIMPLIFY_TOP_OPERATOR));
     }
 
     @Test
@@ -196,16 +195,16 @@ public class EquationSubDatabaseTest {
 
     @Test
     public void testDerivative() throws Exception {
-        assertEquals(new Equation("1"), Simplifier.simplifyByOperator(new Equation("DERIV(_y, _y)"), true));
-        assertEquals(new Equation("0"), Simplifier.simplifyByOperator(new Equation("DERIV(_y, _x)"), true));
-        assertEquals(new Equation("2 * _x"), Simplifier.simplifyByOperator(new Equation("DERIV(POWER(_x, 2), _x)"), true));
-        assertEquals(new Equation("5"), Simplifier.simplifyByOperator(new Equation("DERIV(TIMES(5, _x), _x)"), true));
-        assertEquals(new Equation("TIMES(4, _x)"), Simplifier.simplifyByOperator(new Equation("DERIV(TIMES(2, POWER(_x, 2)), _x)"), true));
-        assertEquals(new Equation("_y"), Simplifier.simplifyByOperator(new Equation("DERIV(TIMES(_x, _y), _x)"), true));
-        assertEquals(new Equation("TIMES(2, _y)"), Simplifier.simplifyByOperator(new Equation("DERIV(TIMES(_x, _y, 2), _x)"), true));
-        assertEquals(new Equation("PLUS(1, _x, TIMES(3, POWER(_x, 2)))"), Simplifier.simplifyByOperator(new Equation("DERIV(PLUS(_x, DIVIDE(POWER(_x, 2), 2), POWER(_x, 3)), _x)"), true));
-        assertEquals(new Equation("POWER(E, _x)"), Simplifier.simplifyByOperator(new Equation("DERIV(POWER(E, _x), _x)"), true));
-        assertEquals(new Equation("TIMES(NATURAL_LOG(2), POWER(2, _x))"), Simplifier.simplifyByOperator(new Equation("DERIV(POWER(2, _x), _x)"), true));
-        assertEquals(new Equation("TIMES(-6, POWER(_x, -3))"), Simplifier.simplifyByOperator(new Equation("DERIV(DIVIDE(3, POWER(_x, 2)), _x)"), true));
+        assertEquals(new Equation("1"), Simplifier.directSimplify(new Equation("DERIV(_y, _y)"), SimplifierObjective.REMOVE_OPERATOR));
+        assertEquals(new Equation("0"), Simplifier.directSimplify(new Equation("DERIV(_y, _x)"), SimplifierObjective.REMOVE_OPERATOR));
+        assertEquals(new Equation("2 * _x"), Simplifier.directSimplify(new Equation("DERIV(POWER(_x, 2), _x)"), SimplifierObjective.REMOVE_OPERATOR));
+        assertEquals(new Equation("5"), Simplifier.directSimplify(new Equation("DERIV(TIMES(5, _x), _x)"), SimplifierObjective.REMOVE_OPERATOR));
+        assertEquals(new Equation("TIMES(4, _x)"), Simplifier.directSimplify(new Equation("DERIV(TIMES(2, POWER(_x, 2)), _x)"), SimplifierObjective.REMOVE_OPERATOR));
+        assertEquals(new Equation("_y"), Simplifier.directSimplify(new Equation("DERIV(TIMES(_x, _y), _x)"), SimplifierObjective.REMOVE_OPERATOR));
+        assertEquals(new Equation("TIMES(2, _y)"), Simplifier.directSimplify(new Equation("DERIV(TIMES(_x, _y, 2), _x)"), SimplifierObjective.REMOVE_OPERATOR));
+        assertEquals(new Equation("PLUS(1, _x, TIMES(3, POWER(_x, 2)))"), Simplifier.directSimplify(new Equation("DERIV(PLUS(_x, DIVIDE(POWER(_x, 2), 2), POWER(_x, 3)), _x)"), SimplifierObjective.REMOVE_OPERATOR));
+        assertEquals(new Equation("POWER(E, _x)"), Simplifier.directSimplify(new Equation("DERIV(POWER(E, _x), _x)"), SimplifierObjective.REMOVE_OPERATOR));
+        assertEquals(new Equation("TIMES(NATURAL_LOG(2), POWER(2, _x))"), Simplifier.directSimplify(new Equation("DERIV(POWER(2, _x), _x)"), SimplifierObjective.REMOVE_OPERATOR));
+        assertEquals(new Equation("TIMES(-6, POWER(_x, -3))"), Simplifier.directSimplify(new Equation("DERIV(DIVIDE(3, POWER(_x, 2)), _x)"), SimplifierObjective.REMOVE_OPERATOR));
     }
 }
