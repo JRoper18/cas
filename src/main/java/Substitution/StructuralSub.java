@@ -41,9 +41,6 @@ public class StructuralSub extends EquationSub implements Serializable {
                 }
                 return Simplifier.simplifyWithMetaFunction(newEquation, MathOperator.AUTOSIMPLIFY);
             }
-            else {
-                //Can we change the equation to Fix the before algorithm?
-            }
             return equation;
         }), getProbableAssignedOperator(before));
         this.before = before.clone();

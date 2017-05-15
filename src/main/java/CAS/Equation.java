@@ -85,7 +85,7 @@ public class Equation implements Serializable, Comparable<Equation>{
         }
     }
     public Equation clone(){
-        return new Equation(this);
+        return new Equation(this.tree);
     }
     public MathObject getRoot(){
         return this.tree.data;

@@ -1,5 +1,7 @@
 package CAS;
 
+import com.rits.cloning.Cloner;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -182,7 +184,8 @@ public class Tree<T> implements Serializable{
         return this.children.size();
     }
     public Tree<T> clone(){
-        Tree<T> newTree = new Tree(this.data);
+        Cloner cloner = new Cloner();
+        Tree<T> newTree = new Tree(cloner.deepClone(this.data));
         for(Tree<T> child: this.children){
             newTree.addChild(child.clone());
         }

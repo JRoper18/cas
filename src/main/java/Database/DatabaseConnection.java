@@ -63,6 +63,7 @@ public class DatabaseConnection {
             System.err.println(e.getMessage());
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            e.printStackTrace();
             System.exit(0);
         }
     }

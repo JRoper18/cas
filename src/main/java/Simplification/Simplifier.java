@@ -1,6 +1,7 @@
 package Simplification;
 
 import CAS.Equation;
+import CAS.EquationObjects.MathInteger;
 import CAS.EquationObjects.MathObject;
 import CAS.EquationObjects.MathOperator;
 import CAS.EquationObjects.MathOperatorSubtype;
@@ -16,6 +17,7 @@ import java.io.UncheckedIOException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -43,16 +45,19 @@ public class Simplifier {
     private static SimplifierResult simplifyWithOperator(Equation eq){
         MathOperator operator = eq.getRoot().getOperator();
         SimplifierResult result = new SimplifierResult(eq);
-        try{
-            ResultSet results = DatabaseConnection.runQuery("select algorithm from subs where (operator == '" + operator + "')");
+        try {
             Equation newEq = eq.clone();
-            while(results.next()){
-                Equation temp = newEq.clone();
+            Equation temp = new Equation("0", 0);
+            ResultSet results = DatabaseConnection.runQuery("select algorithm from subs where (operator == '" + operator + "')");
+            while (results.next()) {
                 EquationSub tempSub = SubSerializer.deserialize(results.getBytes("algorithm"));
-                newEq = tempSub.apply(newEq);
                 applyAndRecordChange(result, temp, newEq, tempSub);
+                if(result.subsUsed.size() == 1){
+                    //We only do 1 sub
+                    break;
+                }
             }
-        } catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return result;
@@ -61,14 +66,18 @@ public class Simplifier {
         SimplifierResult result = new SimplifierResult(eq);
         boolean overflow = false;
         Equation newEq = eq.clone();
-        Equation last;
         do{
-            last = newEq.clone();
-            result.combine(simplifyWithOperator(eq));
-            overflow = (result.subsUsed.size() > ConfigData.simplifyOverflowLimit);
-            newEq = result.result;
+            if(newEq.tree.containsData(eq.getRoot())){
+                List<LinkedList<Integer>> paths = newEq.tree.findPaths(eq.getRoot());
+                for(LinkedList<Integer> path: paths){
+                    Tree<MathObject> tempTree = newEq.tree.getChildThroughPath(path);
+                    SimplifierResult data = Simplifier.simplifyWithOperator(new Equation(tempTree));
+                    tempTree.replaceWith(data.result.tree);
+                }
+            }
 
-        } while (!newEq.equals(last) && !overflow);
+            overflow = (result.subsUsed.size() > ConfigData.simplifyOverflowLimit);
+        } while (!overflow && newEq.tree.containsData(eq.getRoot()));
         result.result = Simplifier.simplifyWithMetaFunction(newEq, MathOperator.AUTOSIMPLIFY);
         return result;
 
@@ -126,9 +135,11 @@ public class Simplifier {
     }
     private static SimplifierResult recursiveApplyMeta(Equation applyTo){
         SimplifierResult result = new SimplifierResult(applyTo);
+        result.result = applyTo.clone();
         if(applyTo.tree.hasChildren()){
             for(Tree<MathObject> child : applyTo.tree.getChildren()){
-                child.replaceWith(recursiveApplyMeta(new Equation(child)).result.tree);
+                SimplifierResult data = recursiveApplyMeta(new Equation(child));
+                child.replaceWith(data.result.tree);
             }
         }
         try{

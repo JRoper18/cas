@@ -2,9 +2,14 @@ package CAS;
 
 import Simplification.Simplifier;
 import Simplification.SimplifierObjective;
+import Simplification.SimplifierResult;
+import Substitution.StructuralSub;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by jack on 1/9/2017.
@@ -36,9 +41,9 @@ public class SimplifierTest {
 
     @Test
     public void testSimplifyByOperation() throws Exception {
-        assertEquals(new Equation("2"), Simplifier.directSimplify(new Equation("TIMES(1, 2)", 0), SimplifierObjective.REMOVE_META));
-        assertEquals(new Equation("3"), Simplifier.directSimplify(new Equation("ADD(1, 2)", 0), SimplifierObjective.REMOVE_META));
-        assertEquals(new Equation("2"), Simplifier.directSimplify(new Equation("DIVIDE(4, 2)", 0), SimplifierObjective.REMOVE_META));
+        assertEquals(new Equation("2"), Simplifier.directSimplify(new Equation("TIMES(1, 2)", 0), SimplifierObjective.SIMPLIFY_TOP_OPERATOR));
+        assertEquals(new Equation("3"), Simplifier.directSimplify(new Equation("ADD(1, 2)", 0), SimplifierObjective.SIMPLIFY_TOP_OPERATOR));
+        assertEquals(new Equation("2"), Simplifier.directSimplify(new Equation("DIVIDE(4, 2)", 0), SimplifierObjective.SIMPLIFY_TOP_OPERATOR));
     }
 
     @Test
@@ -60,6 +65,24 @@ public class SimplifierTest {
         assertEquals(new Equation("DERIV(PLUS(1, _x), _x)", 0), Simplifier.orderEquation(new Equation("DERIV(PLUS(_x, 1), _x)", 0)));
         assertEquals(new Equation("DERIV(PLUS(_n_VARCONSTANT, _f), _x)", 0), Simplifier.orderEquation(new Equation("DERIV(PLUS(_f, _n_VARCONSTANT), _x)", 0)));
         assertEquals(new Equation("TIMES(LN(2), _x)", 0), Simplifier.orderEquation(new Equation("TIMES(_x, LN(2))", 0)));
+    }
 
+    @Test
+    public void testStepCollection() throws Exception {
+        SimplifierResult test1 = Simplifier.simplify(new Equation("DERIV(_x^2, _x)"), SimplifierObjective.SIMPLIFY_TOP_OPERATOR);
+        assertEquals(0, test1.changes.size());
+        assertEquals(1, test1.subsUsed.size());
+    }
+
+    @Test
+    public void testResultCombination() throws Exception {
+        SimplifierResult res1 = new SimplifierResult(new Equation("1"));
+        SimplifierResult res2 = new SimplifierResult(new Equation("1"));
+        res2.subsUsed.add(new StructuralSub("1 -> 2"));
+        res2.result = new Equation("2");
+        res1.combine(res2);
+        assertEquals(new Equation("2"), res1.result);
+        assertTrue(res1.changes.isEmpty());
+        assertEquals(1, res1.subsUsed.size());
     }
 }

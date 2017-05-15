@@ -11,18 +11,9 @@ import java.util.Properties;
 public class ConfigData {
     public static int simplifyOverflowLimit;
     public static boolean autoInitDatabase;
-    private static ConfigData ourInstance = new ConfigData();
-
-    public static ConfigData getInstance() {
-        return ourInstance;
-    }
-
-    private ConfigData() {
+    static  {
         Properties prop = new Properties();
         InputStream input = null;
-        if(true){
-            return;
-        }
         try {
 
             input = new FileInputStream("config.properties");
@@ -31,8 +22,8 @@ public class ConfigData {
             prop.load(input);
 
             // get the property values
-            this.autoInitDatabase = Boolean.parseBoolean(prop.getProperty("autoinitdatabse"));
-            this.simplifyOverflowLimit = Integer.parseInt(prop.getProperty("simplifyoverflowlimit"));
+            autoInitDatabase = Boolean.parseBoolean(prop.getProperty("autoinitdatabse"));
+            simplifyOverflowLimit = Integer.parseInt(prop.getProperty("simplifyoverflowlimit"));
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {

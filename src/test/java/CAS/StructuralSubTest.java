@@ -24,8 +24,6 @@ public class StructuralSubTest {
         assertEquals(new Equation("TRUE"), sub3.apply(new Equation("__y_INTEGER")));
 
 
-        StructuralSub sub4 = new StructuralSub(new Equation("DERIV((_n_CONSTANT * _f_EXPRESSION), _#1)"), new Equation("2"));
-        assertEquals(new Equation("2"), sub4.apply(new Equation("DERIV(TIMES(2, POWER(_x, 2)), _sd)")));
 
         StructuralSub sub5 = new StructuralSub("PLUS(1, _f_EXPRESSION) -> TIMES(2, _f_EXPRESSION)");
         assertEquals(new Equation("TIMES(2, _x)"), sub5.apply(new Equation("PLUS(1, _x)")));

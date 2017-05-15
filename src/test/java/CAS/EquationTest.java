@@ -35,6 +35,10 @@ public class EquationTest {
         Equation clone = orig.clone();
         clone.tree.replaceAll(new Equation("1", 0).tree, new Equation("0",0).tree);
         assertNotEquals(clone, orig);
+        Equation orig1 = new Equation("3", 0);
+        Equation clone1 = orig1.clone();
+        orig1 = new Equation("2", 0);
+        assertNotEquals(orig1, clone1);
         assertEquals(new GenericExpression("_v0"), new GenericExpression("_v0"));
     }
 }
