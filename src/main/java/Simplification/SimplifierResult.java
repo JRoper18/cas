@@ -48,8 +48,16 @@ public class SimplifierResult {
         build.append(result.toString());
         return build.toString();
     }
-    public void combineSub(SimplifierResult combine){
-
+    public void combineSubequationSimplify(SimplifierResult combine, LinkedList<Integer> path){
+        Tree<MathObject> newTree = this.result.tree.getChildThroughPath(path).clone();
+        Equation last = this.result.clone();
+        for(EquationSub sub: combine.subsUsed){
+            newTree = (sub.apply(new Equation(newTree)).tree);
+            last.tree.getChildThroughPath(path).replaceWith(newTree);
+            this.changes.add(last);
+            this.subsUsed.add(sub);
+        }
+        this.result = this.changes.get(this.changes.size()-1);
     }
     /**
      * Combines two seperate simplifications, provided that result is a comtinuation of this simplification.

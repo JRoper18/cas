@@ -89,6 +89,9 @@ public class Tree<T> implements Serializable{
                 }
             }
         }
+        if(this.isRoot() && this.data.equals(toFind)){
+            paths.add(new LinkedList<>());
+        }
         return paths;
     }
     public Tree<T> getChildThroughPath(LinkedList<Integer> path){

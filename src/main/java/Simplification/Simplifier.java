@@ -66,18 +66,21 @@ public class Simplifier {
         SimplifierResult result = new SimplifierResult(eq);
         boolean overflow = false;
         Equation newEq = eq.clone();
+        Equation last = newEq.clone();
         do{
+            last = newEq.clone();
             if(newEq.tree.containsData(eq.getRoot())){
                 List<LinkedList<Integer>> paths = newEq.tree.findPaths(eq.getRoot());
-                for(LinkedList<Integer> path: paths){
-                    Tree<MathObject> tempTree = newEq.tree.getChildThroughPath(path);
-                    SimplifierResult data = Simplifier.simplifyWithOperator(new Equation(tempTree));
-                    tempTree.replaceWith(data.result.tree);
-                }
+                Tree<MathObject> tempTree = newEq.tree.getChildThroughPath(paths.get(0));
+                SimplifierResult data = Simplifier.simplifyWithOperator(new Equation(tempTree));
+                data.result = Simplifier.simplifyWithMetaFunction(data.result, MathOperator.AUTOSIMPLIFY);
+                result.combineSubequationSimplify(data, paths.get(0));
+                result.result = Simplifier.simplifyWithMetaFunction(result.result, MathOperator.AUTOSIMPLIFY);
+                tempTree.replaceWith(data.result.tree);
             }
-
+            newEq = Simplifier.simplifyWithMetaFunction(newEq, MathOperator.AUTOSIMPLIFY);
             overflow = (result.subsUsed.size() > ConfigData.simplifyOverflowLimit);
-        } while (!overflow && newEq.tree.containsData(eq.getRoot()));
+        } while (!newEq.equals(last) && !overflow && newEq.tree.containsData(eq.getRoot()));
         result.result = Simplifier.simplifyWithMetaFunction(newEq, MathOperator.AUTOSIMPLIFY);
         return result;
 
