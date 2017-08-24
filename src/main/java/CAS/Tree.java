@@ -94,6 +94,9 @@ public class Tree<T> implements Serializable{
         }
         return paths;
     }
+    public int getNumberOfOccurances(T toFind){
+        return this.findPaths(toFind).size();
+    }
     public Tree<T> getChildThroughPath(LinkedList<Integer> path){
         if(path.isEmpty()){
             return this;

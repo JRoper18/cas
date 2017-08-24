@@ -62,18 +62,17 @@ public class Simplifier {
         }
         return result;
     }
-    private static SimplifierResult simplifyToRemoveFunction(Equation eq){
+    private static SimplifierResult simplifyToRemoveFunction(Equation eq) {
         SimplifierResult result = new SimplifierResult(eq);
         boolean overflow = false;
         Equation newEq = eq.clone();
         Equation last = newEq.clone();
-        do{
+        do {
             last = newEq.clone();
-            if(newEq.tree.containsData(eq.getRoot())){
+            if (newEq.tree.containsData(eq.getRoot())) {
                 List<LinkedList<Integer>> paths = newEq.tree.findPaths(eq.getRoot());
                 Tree<MathObject> tempTree = newEq.tree.getChildThroughPath(paths.get(0));
                 SimplifierResult data = Simplifier.simplifyWithOperator(new Equation(tempTree));
-                data.result = Simplifier.simplifyWithMetaFunction(data.result, MathOperator.AUTOSIMPLIFY);
                 result.combineSubequationSimplify(data, paths.get(0));
                 result.result = Simplifier.simplifyWithMetaFunction(result.result, MathOperator.AUTOSIMPLIFY);
                 tempTree.replaceWith(data.result.tree);
@@ -83,7 +82,13 @@ public class Simplifier {
         } while (!newEq.equals(last) && !overflow && newEq.tree.containsData(eq.getRoot()));
         result.result = Simplifier.simplifyWithMetaFunction(newEq, MathOperator.AUTOSIMPLIFY);
         return result;
+    }
+    private int numberOfOperators(Equation eq, MathOperator op){ //Will be used as a hueristic for traversing a graph of all possible alternate forms of our input equation.
+        return eq.tree.getNumberOfOccurances(new MathObject(op)); //Note: I'm not actually sure if this is admissible, and I'm using an A* algorithm to traverse simplifications. So, it might
+        //not find the optimal solution. Still, better than a brute-force greedy or depth-first search.
 
+        //Note: It's only hueristic if we don't define rules for a function that skip steps. For example, definining that sin*sin + cos^2 = 1 would not make the removal of sin admissable.
+        //This is because our hueristic wil return 2 because there's two occurances of sin, but with this transformation will only take 1 transformation/step. So it's sometimes admissable. 
     }
 
     /**

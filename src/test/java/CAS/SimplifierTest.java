@@ -70,8 +70,6 @@ public class SimplifierTest {
     @Test
     public void testStepCollection() throws Exception {
         SimplifierResult test1 = Simplifier.simplify(new Equation("DERIV(_x^2, _x)"), SimplifierObjective.SIMPLIFY_TOP_OPERATOR);
-        System.out.println(test1.steps());
-        assertEquals(0, test1.changes.size());
         assertEquals(1, test1.subsUsed.size());
     }
 

@@ -61,4 +61,6 @@ public class EquationBuilderTest {
         assertEquals(test4, new Equation("TIMES(2, -1)", 0).tree);
         assertEquals(test4, new Equation("TIMES(2,-1)", 0).tree);
     }
+
+
 }

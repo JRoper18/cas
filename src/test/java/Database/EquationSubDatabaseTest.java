@@ -3,6 +3,7 @@ package Database;
 import CAS.*;
 import Simplification.Simplifier;
 import Simplification.SimplifierObjective;
+import Simplification.SimplifierResult;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -206,5 +207,8 @@ public class EquationSubDatabaseTest {
         assertEquals(new Equation("POWER(E, _x)"), Simplifier.directSimplify(new Equation("DERIV(POWER(E, _x), _x)"), SimplifierObjective.REMOVE_OPERATOR));
         assertEquals(new Equation("TIMES(NATURAL_LOG(2), POWER(2, _x))"), Simplifier.directSimplify(new Equation("DERIV(POWER(2, _x), _x)"), SimplifierObjective.REMOVE_OPERATOR));
         assertEquals(new Equation("TIMES(-6, POWER(_x, -3))"), Simplifier.directSimplify(new Equation("DERIV(DIVIDE(3, POWER(_x, 2)), _x)"), SimplifierObjective.REMOVE_OPERATOR));
+        assertEquals(new Equation("DIVIDE(-2, POWER(_x, 3))"), Simplifier.directSimplify(new Equation("DERIV(DIVIDE(1, POWER(_x, 2)), _x)"), SimplifierObjective.REMOVE_OPERATOR));
+        assertEquals(new Equation("DIVIDE(-1, POWER(PLUS(_x, 2), 2))"), Simplifier.directSimplify(new Equation("DERIV(DIVIDE(1, PLUS(_x, 2)), _x)"), SimplifierObjective.REMOVE_OPERATOR));
+        assertEquals(new Equation("DIVIDE(1, POWER(PLUS(_x, 1), 2))"), Simplifier.directSimplify(new Equation("DERIV(DIVIDE(_x, PLUS(_x, 1)), _x)"), SimplifierObjective.REMOVE_OPERATOR));
     }
 }

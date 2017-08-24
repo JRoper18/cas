@@ -19,6 +19,7 @@ import java.util.HashMap;
 public class StructuralSub extends EquationSub implements Serializable {
     public final Equation before;
     public final Equation after;
+    public final int operatorCost;
     public StructuralSub(String total){
         this(total.split("->")[0], total.split("->")[1]);
     }
@@ -45,6 +46,7 @@ public class StructuralSub extends EquationSub implements Serializable {
         }), getProbableAssignedOperator(before));
         this.before = before.clone();
         this.after = after.clone();
+        this.operatorCost = after.tree.getNumberOfOccurances(this.rootOperator) - before.tree.getNumberOfOccurances(this.rootOperator);
     }
     private static MathObject getProbableAssignedOperator(Equation equation){
         MathObject probableOperator = null;
