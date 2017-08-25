@@ -43,6 +43,9 @@ public class PatternMatcherTest {
         PatternMatchResult res1 = matcher.patternMatch(new Equation("PLUS(1, 2)", 0), new Equation("_x_GENERICFUNCTION(1, 2)"));
         assertTrue(res1.match);
         assertEquals(new MathObject(MathOperator.ADD), res1.variableValues.get("_x_GENERICFUNCTION").tree.data);
+        PatternMatchResult res2 = matcher.patternMatch(new Equation("PLUS(POWER(_x, 2), 2)", 0), new Equation("_x_GENERICFUNCTION(_y_GENERICFUNCTION(__x, 2), 2)"));
+        assertTrue(res2.match);
+        System.out.println(res2.variableValues);
     }
 
     @Test
