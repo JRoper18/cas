@@ -1,9 +1,6 @@
 package CAS;
 
-import CAS.EquationObjects.GenericExpression;
-import CAS.EquationObjects.MathInteger;
-import CAS.EquationObjects.MathObject;
-import CAS.EquationObjects.MathOperator;
+import CAS.EquationObjects.*;
 import Identification.IdentificationType;
 import org.junit.Test;
 
@@ -62,5 +59,11 @@ public class EquationBuilderTest {
         assertEquals(test4, new Equation("TIMES(2,-1)", 0).tree);
     }
 
-
+    @Test
+    public void testGenericFunctions() throws Exception {
+        Tree<MathObject> test1 = new Tree<>(new GenericFunction("x"));
+        test1.addChildWithData(new MathInteger(1));
+        test1.addChildWithData(new MathInteger(2));
+        assertEquals(test1, EquationBuilder.makeEquation("_x_GENERICFUNCTION(1, 2)", 0).tree);
+    }
 }

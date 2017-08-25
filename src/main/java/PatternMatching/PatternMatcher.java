@@ -101,18 +101,16 @@ public class PatternMatcher {
                     } else {
                         //Add the tag to the values map
                         values.put(tag, eq);
-                                return new PatternMatcher().new MatchData(true, values, varTags, path);
-
+                        return new PatternMatcher().new MatchData(true, values, varTags, path);
                     }
                 }
 
                 //No tag. Just return true.
-                        return new PatternMatcher().new MatchData(true, values, varTags, path);
-
+                return new PatternMatcher().new MatchData(true, values, varTags, path);
             default:
         }
         //Compare raw data.
-        if(!eq.data.equals(pattern.data)){
+        if(!eq.data.equals(pattern.data) && compare.getOperator() != MathOperator.GENERIC_FUNCTION){
             return new PatternMatcher().new MatchData(false, values, varTags, path);
         }
         //Compare the number of children (unless pattern's children are generics or logical operators
@@ -191,6 +189,9 @@ public class PatternMatcher {
                 path.addFirst(i);
                 return new PatternMatcher().new MatchData(false, values, varTags, path);
             }
+        }
+        if(compare.getOperator() == MathOperator.GENERIC_FUNCTION){
+            values.put(compare.getName(), new Tree<>(current));
         }
         //Checked everything possible
         return new PatternMatcher().new MatchData(true, values, varTags, path);

@@ -196,6 +196,7 @@ public class EquationSubDatabaseTest {
 
     @Test
     public void testDerivative() throws Exception {
+        assertEquals(new Equation("1"), Simplifier.directSimplify(new Equation("DERIV(PLUS(1, _x), _x)"), SimplifierObjective.REMOVE_OPERATOR));
         assertEquals(new Equation("1"), Simplifier.directSimplify(new Equation("DERIV(_y, _y)"), SimplifierObjective.REMOVE_OPERATOR));
         assertEquals(new Equation("0"), Simplifier.directSimplify(new Equation("DERIV(_y, _x)"), SimplifierObjective.REMOVE_OPERATOR));
         assertEquals(new Equation("2 * _x"), Simplifier.directSimplify(new Equation("DERIV(POWER(_x, 2), _x)"), SimplifierObjective.REMOVE_OPERATOR));

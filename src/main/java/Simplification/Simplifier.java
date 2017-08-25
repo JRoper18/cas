@@ -15,10 +15,7 @@ import Substitution.EquationSub;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -94,7 +91,7 @@ public class Simplifier {
     /**
      * Applys a meta function to the given equation. Equivalent to new Equation("meta(" + oldEq + ")");
      * @param eq The equation that the meta function will be applied to.
-     * @param metaFunction The Meta Fcuntion to be applied.
+     * @param metaFunction The Meta Function to be applied.
      * @return The equation with the meta function applied.
      */
     public static Equation simplifyWithMetaFunction(Equation eq, MathOperator metaFunction){
@@ -105,9 +102,9 @@ public class Simplifier {
         newTree.addChild(eq.tree);
         return simplifyMetaFunctions(new Equation(newTree)).result;
     }
-    private static SimplifierResult simplifyMetaFunctions(Equation equation){
+    private static SimplifierResult simplifyMetaFunctions(Equation equation) {
         EquationSub sub = new EquationSub((DirectOperation) eq -> {
-            if(eq.isType(MathOperator.DIVIDE)){
+            if (eq.isType(MathOperator.DIVIDE)) {
                 return new Equation("TIMES(" + eq.getSubEquation(0) + ", POWER(" + eq.getSubEquation(1) + ", -1))", 0);
             }
             if (eq.isType(MathOperator.SUBTRACT)) {

@@ -11,7 +11,7 @@ public class CustomFunction extends MathObject {
         super(args, ordered, associative, MathOperator.CUSTOM_FUNCTION);
         this.functionName = functionName;
     }
-    public CustomFunction( String functionName, List<GenericExpression> args){
+    public CustomFunction(String functionName, List<GenericExpression> args){
         super(args.size(), true, false, MathOperator.CUSTOM_FUNCTION);
         this.functionName = functionName;
     }

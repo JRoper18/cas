@@ -14,6 +14,7 @@ public enum MathOperator {
     UNDEFINED(0, false, false, MathOperatorSubtype.SYMBOL, null, null, false),
     E(0, false, false, MathOperatorSubtype.SYMBOL, null, null, false),
     PI(0, false, false, MathOperatorSubtype.SYMBOL, null, null, false),
+    GENERIC_FUNCTION(1, true, false, MathOperatorSubtype.SYMBOL, null, null, false),
 
     ADD(2, false, true, MathOperatorSubtype.MATH, "0", null, false),
     MULTIPLY(2, false, true, MathOperatorSubtype.MATH, "1", null, false),

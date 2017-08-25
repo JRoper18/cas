@@ -61,7 +61,7 @@ public class EquationBuilder{
         Stack<String> stack = new Stack<>();
         for(String token: tokens) {
             token = token.trim();
-            if(token.charAt(0) == '_' || Character.isDigit(token.charAt(0)) || (token.charAt(0)== '@' && Character.isDigit(token.charAt(1)))){ //Variable or number
+            if((token.charAt(0) == '_' && !token.contains("GENERICFUNCTION"))|| Character.isDigit(token.charAt(0)) || (token.charAt(0)== '@' && Character.isDigit(token.charAt(1)))){ //Variable or number
                 if(token.charAt(0) == '@'){
                     newList.add("-" + token.substring(1, token.length()));
                 }
@@ -377,6 +377,9 @@ public class EquationBuilder{
             }
             if(typeBuild.length() == 0){
                 return new GenericExpression(nameBuild.toString(), named, IdentificationType.VARIABLE);
+            }
+            if(typeBuild.toString().equals("GENERICFUNCTION")){
+                return new GenericFunction(nameBuild.toString());
             }
             return new GenericExpression(nameBuild.toString(), named, IdentificationType.valueOf(typeBuild.toString()));
         }

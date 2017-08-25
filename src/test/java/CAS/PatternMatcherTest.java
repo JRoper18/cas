@@ -1,10 +1,13 @@
 package CAS;
 
+import CAS.EquationObjects.MathObject;
+import CAS.EquationObjects.MathOperator;
 import PatternMatching.PatternMatchResult;
 import PatternMatching.PatternMatcher;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -33,9 +36,14 @@ public class PatternMatcherTest {
         assertEquals(false, matcher.doesMatchPattern(new Equation("DERIV(_x, _x)", 0), new Equation("DERIV(_#1, _#2)", 0)));
         assertEquals(false, matcher.doesMatchPattern(new Equation("PLUS(_y_VARIABLE, _y_VARIABLE)",0), new Equation("PLUS(_#2, _#1)",0)));
         assertEquals(true, matcher.doesMatchPattern(new Equation("PLUS(_y_VARIABLE, _x_VARIABLE)",0), new Equation("PLUS(_#2, _#1)",0)));
-
     }
 
+    @Test
+    public void testFunctionMatching() throws Exception {
+        PatternMatchResult res1 = matcher.patternMatch(new Equation("PLUS(1, 2)", 0), new Equation("_x_GENERICFUNCTION(1, 2)"));
+        assertTrue(res1.match);
+        assertEquals(new MathObject(MathOperator.ADD), res1.variableValues.get("_x_GENERICFUNCTION").tree.data);
+    }
 
     @Test
     public void testTooManyOperands() throws Exception {
