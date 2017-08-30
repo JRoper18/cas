@@ -22,6 +22,7 @@ import java.util.*;
  * Created by jack on 1/5/2017.
  */
 public class Simplifier {
+
     public static SimplifierResult simplify(Equation eq, SimplifierObjective objective) {
         switch (objective) {
             case LEAST_COMPLEX:
@@ -38,7 +39,6 @@ public class Simplifier {
     public static Equation directSimplify(Equation eq, SimplifierObjective objective) {
         return simplify(eq, objective).result;
     }
-
     private static SimplifierResult simplifyWithOperator(Equation eq){
         MathOperator operator = eq.getRoot().getOperator();
         SimplifierResult result = new SimplifierResult(eq);
@@ -60,7 +60,7 @@ public class Simplifier {
         return result;
     }
     private static SimplifierResult simplifyToRemoveFunction(Equation eq) {
-        SimplifierResult result = new SimplifierResult(eq);
+        SimplifierTree tree = new SimplifierTree(new SubstitutionData(null, eq.clone()));
         boolean overflow = false;
         Equation newEq = eq.clone();
         Equation last = newEq.clone();
@@ -79,6 +79,10 @@ public class Simplifier {
         } while (!newEq.equals(last) && !overflow && newEq.tree.containsData(eq.getRoot()));
         result.result = Simplifier.simplifyWithMetaFunction(newEq, MathOperator.AUTOSIMPLIFY);
         return result;
+    }
+    public static HashSet<SubstitutionData> getAllPossibleSubstitutions(Equation eq){
+        HashSet possibleSubs = new HashSet();
+
     }
     private int numberOfOperators(Equation eq, MathOperator op){ //Will be used as a hueristic for traversing a graph of all possible alternate forms of our input equation.
         return eq.tree.getNumberOfOccurances(new MathObject(op)); //Note: I'm not actually sure if this is admissible, and I'm using an A* algorithm to traverse simplifications. So, it might

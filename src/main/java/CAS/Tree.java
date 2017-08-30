@@ -134,7 +134,7 @@ public class Tree<T> implements Serializable{
         command.apply(this);
 
     }
-    private LinkedList<Integer> pathFromRoot(){
+    public LinkedList<Integer> pathFromRoot(){
         if(this.isRoot()){
             return new LinkedList<>();
         }
@@ -143,6 +143,14 @@ public class Tree<T> implements Serializable{
             list.addLast(this.getParentChildIndex());
             return list;
         }
+    }
+    public Tree<T> getRoot(){
+        int parents = this.pathFromRoot().size();
+        Tree<T> parent = this.parent;
+        for(int i = 1; i<parents; i++){
+            parent = parent.getParent();
+        }
+        return parent;
     }
     public void replaceWith(Tree<T> newTree){
         if(this.parent != null){
@@ -188,6 +196,18 @@ public class Tree<T> implements Serializable{
     }
     public int getNumberOfChildren(){
         return this.children.size();
+    }
+    public List<Tree<T>> getLevelChildren(int level){
+        List<Tree<T>> children = new ArrayList<Tree<T>>();
+        children.add(this);
+        for(int i = 0; i<level; i++){
+            ArrayList<Tree<T>> tempChildren = new ArrayList<>();
+            for(int j = 0; j<children.size(); j++){
+                tempChildren.addAll(children.get(j).getChildren());
+            }
+            children = tempChildren;
+        }
+        return children;
     }
     public Tree<T> clone(){
         Cloner cloner = new Cloner();

@@ -14,12 +14,14 @@ public class PatternMatchResult {
     public final Equation equation;
     public final Equation pattern;
     public final LinkedList<Integer> errorPath;
-    public PatternMatchResult(Equation eq, Equation pattern, boolean match, HashMap<String, Equation> patternValues, LinkedList<Integer> path){
+    public final HashMap<String, Equation> functions;
+    public PatternMatchResult(Equation eq, Equation pattern, boolean match, HashMap<String, Equation> patternValues, LinkedList<Integer> path, HashMap<String, Equation> functions){
         this.equation = eq;
         this.pattern = pattern;
         this.match = match;
         this.variableValues = patternValues;
         this.errorPath = path;
+        this.functions = functions;
     }
     public void printError(){
         if(this.match){

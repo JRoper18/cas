@@ -42,10 +42,10 @@ public class PatternMatcherTest {
     public void testFunctionMatching() throws Exception {
         PatternMatchResult res1 = matcher.patternMatch(new Equation("PLUS(1, 2)", 0), new Equation("_x_GENERICFUNCTION(1, 2)"));
         assertTrue(res1.match);
-        assertEquals(new MathObject(MathOperator.ADD), res1.variableValues.get("_x_GENERICFUNCTION").tree.data);
-        PatternMatchResult res2 = matcher.patternMatch(new Equation("PLUS(POWER(_x, 2), 2)", 0), new Equation("_x_GENERICFUNCTION(_y_GENERICFUNCTION(__x, 2), 2)"));
+        assertEquals(new Equation("PLUS(1, 2", 0), res1.functions.get("_x_GENERICFUNCTION"));
+        PatternMatchResult res2 = matcher.patternMatch(new Equation("PLUS(POWER(_x, 2), 2)", 0), new Equation("_f_GENERICFUNCTION(_g_GENERICFUNCTION(_x_EXPRESSION))"));
         assertTrue(res2.match);
-        System.out.println(res2.variableValues);
+        System.out.println(res2.functions);
     }
 
     @Test
@@ -71,7 +71,6 @@ public class PatternMatcherTest {
         data = matcher.patternMatch(new Equation("DERIV(TIMES(2, _x, _y), _x)"), new Equation("DERIV(TIMES(_f_EXPRESSION, _g_EXPRESSION), _d)"));
         assertEquals(new Equation("2", 0), data.variableValues.get("f"));
         assertEquals(new Equation("TIMES(_x, _y)", 0), data.variableValues.get("g"));
-
     }
 
     @Test
