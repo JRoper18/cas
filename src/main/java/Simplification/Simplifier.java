@@ -9,6 +9,7 @@ import CAS.Tree;
 import Database.ConfigData;
 import Database.DatabaseConnection;
 import Database.SubSerializer;
+import Simplification.Methods.BruteForceRemoveOperator;
 import Substitution.DirectOperation;
 import Substitution.EquationSub;
 
@@ -60,29 +61,8 @@ public class Simplifier {
         return result;
     }
     private static SimplifierResult simplifyToRemoveFunction(Equation eq) {
-        SimplifierTree tree = new SimplifierTree(new SubstitutionData(null, eq.clone()));
-        boolean overflow = false;
-        Equation newEq = eq.clone();
-        Equation last = newEq.clone();
-        do {
-            last = newEq.clone();
-            if (newEq.tree.containsData(eq.getRoot())) {
-                List<LinkedList<Integer>> paths = newEq.tree.findPaths(eq.getRoot());
-                Tree<MathObject> tempTree = newEq.tree.getChildThroughPath(paths.get(0));
-                SimplifierResult data = Simplifier.simplifyWithOperator(new Equation(tempTree));
-                result.combineSubequationSimplify(data, paths.get(0));
-                result.result = Simplifier.simplifyWithMetaFunction(result.result, MathOperator.AUTOSIMPLIFY);
-                tempTree.replaceWith(data.result.tree);
-            }
-            newEq = Simplifier.simplifyWithMetaFunction(newEq, MathOperator.AUTOSIMPLIFY);
-            overflow = (result.subsUsed.size() > ConfigData.simplifyOverflowLimit);
-        } while (!newEq.equals(last) && !overflow && newEq.tree.containsData(eq.getRoot()));
-        result.result = Simplifier.simplifyWithMetaFunction(newEq, MathOperator.AUTOSIMPLIFY);
-        return result;
-    }
-    public static HashSet<SubstitutionData> getAllPossibleSubstitutions(Equation eq){
-        HashSet possibleSubs = new HashSet();
-
+        SimplifierStrategy strat = new BruteForceRemoveOperator(3);
+        return strat.simplify(eq);
     }
     private int numberOfOperators(Equation eq, MathOperator op){ //Will be used as a hueristic for traversing a graph of all possible alternate forms of our input equation.
         return eq.tree.getNumberOfOccurances(new MathObject(op)); //Note: I'm not actually sure if this is admissible, and I'm using an A* algorithm to traverse simplifications. So, it might

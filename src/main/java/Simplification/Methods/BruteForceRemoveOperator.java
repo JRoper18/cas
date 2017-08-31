@@ -2,11 +2,15 @@ package Simplification.Methods;
 
 import CAS.Equation;
 import CAS.Tree;
+import Database.DatabaseConnection;
+import Database.SubSerializer;
 import Simplification.SimplifierResult;
 import Simplification.SimplifierStrategy;
 import Simplification.SimplifierTree;
 import Simplification.SubstitutionData;
+import Substitution.EquationSub;
 
+import java.sql.ResultSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,16 +34,26 @@ public class BruteForceRemoveOperator implements SimplifierStrategy{
                 SimplifierTree currentNode = (SimplifierTree) currentLevel.get(i);
                 Equation currentEq = currentNode.data.equation;
                 //Check if the node is good.
-                List<LinkedList<Integer>> pathsToFunc = currentEq.tree.findPaths(eq.getRoot());
-                if(pathsToFunc.isEmpty()){
+                if(!currentEq.tree.containsData(eq.getRoot())){
                     //No paths to the root operator we are trying to remove. That means it's not there! Yay!
                     return currentNode.getResult();
                 }
-                for(LinkedList<Integer> path: pathsToFunc){
-                    Equation subEquation = new Equation(currentEq.tree.getChildThroughPath(path), 0);
-
+                try {
+                    Equation tempEq = eq.clone();
+                    ResultSet results = DatabaseConnection.runQuery("select algorithm from subs where (operator == '" + currentEq.getRoot() + "')");
+                    while (results.next()) {
+                        EquationSub tempSub = SubSerializer.deserialize(results.getBytes("algorithm"));
+                        Equation subbedEq = tempSub.applyEverywhere(tempEq);
+                        SubstitutionData data = new SubstitutionData(tempSub, subbedEq);
+                        if(!tree.containsData(data)){ //No duplicates
+                            currentNode.addChildWithData(data);
+                        }
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
             }
         }
+        return null;
     }
 }
