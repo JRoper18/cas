@@ -21,22 +21,27 @@ import java.util.*;
  * Created by jack on 1/5/2017.
  */
 public class Simplifier {
-
     public static SimplifierResult simplify(Equation eq, SimplifierObjective objective) {
-        switch (objective) {
-            case LEAST_COMPLEX:
-                break;
-            case REMOVE_META:
-                return simplifyMetaFunctions(eq);
-            case REMOVE_OPERATOR:
-                return simplifyToRemoveFunction(eq);
-            case SIMPLIFY_TOP_OPERATOR:
-                return simplifyWithOperator(eq);
+        try{
+            switch (objective) {
+                case LEAST_COMPLEX:
+                    break;
+                case REMOVE_META:
+                    return simplifyMetaFunctions(eq);
+                case REMOVE_OPERATOR:
+                    SimplifierStrategy strat = new BruteForceRemoveOperator(3);
+                    return strat.simplify(eq);
+                case SIMPLIFY_TOP_OPERATOR:
+                    return simplifyWithOperator(eq);
+            }
+        } catch (SimplifyObjectiveNotDoneException ex){
+            ex.printStackTrace();
         }
         return null;
     }
     public static Equation directSimplify(Equation eq, SimplifierObjective objective) {
-        return simplify(eq, objective).result;
+        SimplifierResult res = simplify(eq, objective);
+        return res.result;
     }
     private static SimplifierResult simplifyWithOperator(Equation eq){
         MathOperator operator = eq.getRoot().getOperator();
@@ -57,10 +62,6 @@ public class Simplifier {
             ex.printStackTrace();
         }
         return result;
-    }
-    private static SimplifierResult simplifyToRemoveFunction(Equation eq) {
-        SimplifierStrategy strat = new BruteForceRemoveOperator(3);
-        return strat.simplify(eq);
     }
     private int numberOfOperators(Equation eq, MathOperator op){ //Will be used as a hueristic for traversing a graph of all possible alternate forms of our input equation.
         return eq.tree.getNumberOfOccurances(new MathObject(op)); //Note: I'm not actually sure if this is admissible, and I'm using an A* algorithm to traverse simplifications. So, it might

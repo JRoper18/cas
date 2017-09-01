@@ -1,13 +1,10 @@
 package Simplification.Methods;
 
 import CAS.Equation;
+import Simplification.*;
 import Util.Tree;
 import Database.DatabaseConnection;
 import Database.SubSerializer;
-import Simplification.SimplifierResult;
-import Simplification.SimplifierStrategy;
-import Simplification.SimplifierTree;
-import Simplification.SubstitutionData;
 import Substitution.EquationSub;
 
 import java.sql.ResultSet;
@@ -25,12 +22,12 @@ public class BruteForceRemoveOperator implements SimplifierStrategy{
         this.maxLevel = 5;
     }
     @Override
-    public SimplifierResult simplify(Equation eq) {
+    public SimplifierResult simplify(Equation eq) throws SimplifyObjectiveNotDoneException {
         SimplifierTree tree = new SimplifierTree(new SubstitutionData(null, eq.clone()));
         for(int level = 0; level < this.maxLevel; level++){
             List<Tree<SubstitutionData>> currentLevel = tree.getLevelChildren(level);
             for(int i = 0; i<currentLevel.size(); i++){
-                SimplifierTree currentNode = (SimplifierTree) currentLevel.get(i);
+                SimplifierTree currentNode = SimplifierTree.fromTree(currentLevel.get(i));
                 Equation currentEq = currentNode.data.equation;
                 //Check if the node is good.
                 if(!currentEq.tree.containsData(eq.getRoot())){
@@ -53,6 +50,6 @@ public class BruteForceRemoveOperator implements SimplifierStrategy{
                 }
             }
         }
-        return null;
+        throw new SimplifyObjectiveNotDoneException(this);
     }
 }

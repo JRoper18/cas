@@ -15,7 +15,6 @@ public class SimplifierTree extends Tree<SubstitutionData> {
     public boolean closed;
     public int complexity;
 
-    public SubstitutionData data;
     public SimplifierTree(SubstitutionData data){
         this.data = data;
         this.closed = false;
@@ -35,6 +34,13 @@ public class SimplifierTree extends Tree<SubstitutionData> {
             selected = (SimplifierTree) selected.getChild(path.get(i));
         }
         return new SimplifierResult(changes.get(0), this.data.equation, subs, changes);
+    }
+    public static SimplifierTree fromTree(Tree<SubstitutionData> tree){
+        SimplifierTree newTree = new SimplifierTree(tree.data);
+        for(Tree<SubstitutionData> child: tree.getChildren()){
+            newTree.addChild(fromTree(child));
+        }
+        return newTree;
     }
 
 }
