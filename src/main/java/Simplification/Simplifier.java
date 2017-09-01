@@ -1,12 +1,10 @@
 package Simplification;
 
 import CAS.Equation;
-import CAS.EquationObjects.MathInteger;
 import CAS.EquationObjects.MathObject;
 import CAS.EquationObjects.MathOperator;
 import CAS.EquationObjects.MathOperatorSubtype;
-import CAS.Tree;
-import Database.ConfigData;
+import Util.Tree;
 import Database.DatabaseConnection;
 import Database.SubSerializer;
 import Simplification.Methods.BruteForceRemoveOperator;

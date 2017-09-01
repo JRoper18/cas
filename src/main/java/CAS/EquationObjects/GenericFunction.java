@@ -6,6 +6,11 @@ package CAS.EquationObjects;
 public class GenericFunction extends MathObject{
     public GenericFunction(String name){
         super(MathOperator.GENERIC_FUNCTION);
-        this.name = "_" + name + "_GENERICFUNCTION";
+        this.name = name;
+    }
+
+    @Override
+    public String toString(){
+        return "_" + this.name + "_GENERICFUNCTION";
     }
 }

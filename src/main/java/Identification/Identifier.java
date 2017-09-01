@@ -2,7 +2,7 @@ package Identification;
 
 import CAS.Equation;
 import CAS.EquationObjects.*;
-import CAS.Tree;
+import Util.Tree;
 
 import java.math.BigInteger;
 

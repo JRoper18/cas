@@ -9,6 +9,7 @@ import Simplification.Simplifier;
 import Simplification.SimplifierObjective;
 import Substitution.DirectOperation;
 import Substitution.EquationSub;
+import Util.Tree;
 
 import java.io.Serializable;
 import java.math.BigInteger;

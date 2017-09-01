@@ -1,4 +1,4 @@
-package CAS;
+package Util;
 
 import com.rits.cloning.Cloner;
 
@@ -71,15 +71,22 @@ public class Tree<T> implements Serializable{
         }
     }
     public List<LinkedList<Integer>> findPaths(T toFind){ //Returns linked list of a route to take to find the said child
+        TreeCondition condition = (tree -> {
+            return tree.data.equals(toFind);
+        });
+        return findPaths(condition);
+    }
+    public List<LinkedList<Integer>> findPaths(Tree<T> toFind){
+        TreeCondition condition = (tree -> {
+           return tree.equals(toFind);
+        });
+        return findPaths(condition);
+    }
+    public List<LinkedList<Integer>> findPaths(TreeCondition condition){
         List<LinkedList<Integer>> paths = new ArrayList<LinkedList<Integer>>();
         if (this.hasChildren()) {
             for(int i = 0; i<this.getChildren().size(); i++){
-                if(this.getChild(i).data.equals(toFind)){
-                    LinkedList<Integer> toReturn = new LinkedList<Integer>();
-                    toReturn.add(new Integer(i));
-                    paths.add(toReturn);
-                }
-                List<LinkedList<Integer>> possiblePaths = this.getChild(i).findPaths(toFind);
+                List<LinkedList<Integer>> possiblePaths = this.getChild(i).findPaths(condition);
                 if(!possiblePaths.isEmpty()){
                     for(int j = 0; j<possiblePaths.size(); j++){
                         LinkedList<Integer> currentPath = possiblePaths.get(j);
@@ -89,7 +96,7 @@ public class Tree<T> implements Serializable{
                 }
             }
         }
-        if(this.isRoot() && this.data.equals(toFind)){
+        if(this.isRoot() && condition.checkCondition(this.clone())){
             paths.add(new LinkedList<>());
         }
         return paths;

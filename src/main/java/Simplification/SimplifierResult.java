@@ -2,7 +2,7 @@ package Simplification;
 
 import CAS.Equation;
 import CAS.EquationObjects.MathObject;
-import CAS.Tree;
+import Util.Tree;
 import Substitution.EquationSub;
 
 import java.io.IOException;

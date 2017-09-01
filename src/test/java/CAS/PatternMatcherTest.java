@@ -42,7 +42,7 @@ public class PatternMatcherTest {
     public void testFunctionMatching() throws Exception {
         PatternMatchResult res1 = matcher.patternMatch(new Equation("PLUS(1, 2)", 0), new Equation("_x_GENERICFUNCTION(1, 2)"));
         assertTrue(res1.match);
-        assertEquals(new Equation("PLUS(1, 2", 0), res1.functions.get("_x_GENERICFUNCTION"));
+        assertEquals(new MathObject(MathOperator.ADD), res1.functions.get("_x_GENERICFUNCTION"));
         PatternMatchResult res2 = matcher.patternMatch(new Equation("PLUS(POWER(_x, 2), 2)", 0), new Equation("_f_GENERICFUNCTION(_g_GENERICFUNCTION(_x_EXPRESSION))"));
         assertTrue(res2.match);
         System.out.println(res2.functions);

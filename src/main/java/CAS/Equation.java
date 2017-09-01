@@ -3,6 +3,7 @@ package CAS;
 import CAS.EquationObjects.*;
 import Identification.IdentificationType;
 import Identification.Identifier;
+import Util.Tree;
 
 import java.io.IOException;
 import java.io.Serializable;

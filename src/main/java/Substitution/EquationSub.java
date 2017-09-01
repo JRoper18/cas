@@ -2,7 +2,7 @@ package Substitution;
 
 import CAS.Equation;
 import CAS.EquationObjects.MathObject;
-import CAS.Tree;
+import Util.Tree;
 import Simplification.Simplifier;
 import Simplification.SimplifierObjective;
 

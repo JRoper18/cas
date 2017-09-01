@@ -1,4 +1,4 @@
-package CAS;
+package Util;
 
 /**
  * Created by jack on 1/9/2017.

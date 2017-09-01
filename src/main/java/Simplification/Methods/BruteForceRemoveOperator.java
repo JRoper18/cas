@@ -1,7 +1,7 @@
 package Simplification.Methods;
 
 import CAS.Equation;
-import CAS.Tree;
+import Util.Tree;
 import Database.DatabaseConnection;
 import Database.SubSerializer;
 import Simplification.SimplifierResult;
@@ -11,7 +11,6 @@ import Simplification.SubstitutionData;
 import Substitution.EquationSub;
 
 import java.sql.ResultSet;
-import java.util.LinkedList;
 import java.util.List;
 
 /**

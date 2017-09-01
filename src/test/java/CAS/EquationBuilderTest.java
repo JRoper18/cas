@@ -2,6 +2,7 @@ package CAS;
 
 import CAS.EquationObjects.*;
 import Identification.IdentificationType;
+import Util.Tree;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

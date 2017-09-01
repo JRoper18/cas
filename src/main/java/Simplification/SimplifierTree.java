@@ -1,7 +1,7 @@
 package Simplification;
 
 import CAS.Equation;
-import CAS.Tree;
+import Util.Tree;
 import Substitution.EquationSub;
 
 import java.util.ArrayList;

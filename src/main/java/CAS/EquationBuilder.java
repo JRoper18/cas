@@ -4,6 +4,7 @@ import CAS.EquationObjects.*;
 import Identification.IdentificationType;
 import Simplification.Simplifier;
 import Simplification.SimplifierObjective;
+import Util.Tree;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;

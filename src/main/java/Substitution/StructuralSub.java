@@ -5,7 +5,7 @@ import CAS.Equation;
 import CAS.EquationObjects.GenericExpression;
 import CAS.EquationObjects.MathObject;
 import CAS.EquationObjects.MathOperator;
-import CAS.Tree;
+import Util.Tree;
 import PatternMatching.PatternMatchResult;
 import PatternMatching.PatternMatcher;
 import Simplification.Simplifier;
