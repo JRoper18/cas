@@ -1,6 +1,7 @@
 package PatternMatching;
 
 import CAS.Equation;
+import CAS.EquationObjects.MathObject;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -14,8 +15,8 @@ public class PatternMatchResult {
     public final Equation equation;
     public final Equation pattern;
     public final LinkedList<Integer> errorPath;
-    public final HashMap<String, Equation> functions;
-    public PatternMatchResult(Equation eq, Equation pattern, boolean match, HashMap<String, Equation> patternValues, LinkedList<Integer> path, HashMap<String, Equation> functions){
+    public final HashMap<String, MathObject> functions;
+    public PatternMatchResult(Equation eq, Equation pattern, boolean match, HashMap<String, Equation> patternValues, LinkedList<Integer> path, HashMap<String, MathObject> functions){
         this.equation = eq;
         this.pattern = pattern;
         this.match = match;

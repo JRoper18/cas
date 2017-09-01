@@ -94,7 +94,6 @@ public class DatabaseConnection {
                             }
                         }
                         toBeReplaced.replaceWith(replacement);
-                        System.out.println(new StructuralSub(newBeforeSub, sub.after));
                         subsToAdd.add(new StructuralSub(newBeforeSub, sub.after));
                     }
                 }

@@ -42,6 +42,9 @@ public class Tree<T> implements Serializable{
         return children.get(index);
     }
     public boolean containsData(T data){
+        if(this.data == null){
+            return (data == null);
+        }
         if(this.data.equals(data)){
             return true;
         }
@@ -225,10 +228,11 @@ public class Tree<T> implements Serializable{
         return newTree;
     }
     public void print(){
+        System.out.println("TREE:");
         this.print(1);
     }
     public String toString(){
-        String str = new String();
+        String str = new String("TREE:");
         if(this.data == null){
             str += ("null");
         }

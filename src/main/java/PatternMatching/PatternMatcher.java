@@ -22,7 +22,7 @@ public class PatternMatcher {
         Tree<MathObject> patternTree = pattern.tree;
         MatchData unprocessedData = compareSubTrees(eqTree, patternTree, new PatternMatcher().new MatchData(false /*Isn't ever looked at*/, new HashMap<String,Tree<MathObject>>(), new HashMap<String, String>(),new LinkedList<Integer>(), new HashMap<String, String>()));
         HashMap<String, Equation> newMap = new HashMap<>();
-        HashMap<String, Equation> newFunctions = new HashMap<>();
+        HashMap<String, MathObject> newFunctions = new HashMap<>();
         for(String key: unprocessedData.values.keySet()){
             newMap.put(key, new Equation(unprocessedData.values.get(key)));
         }
@@ -30,7 +30,7 @@ public class PatternMatcher {
             newMap.put(key, new Equation("_" + unprocessedData.varTags.get(key)));
         }
         for(String key: unprocessedData.functions.keySet()){
-            newFunctions.put(key, new Equation(unprocessedData.functions.get(key), 0));
+            newFunctions.put(key, new MathObject(MathOperator.valueOf(unprocessedData.functions.get(key))));
         }
         return new PatternMatchResult(eq, pattern, unprocessedData.match, newMap, unprocessedData.errorPath, newFunctions);
     }
@@ -126,8 +126,10 @@ public class PatternMatcher {
             Tree<MathObject> childPattern = pattern.getChild(i);
             if(i >= eq.getNumberOfChildren()){
                 if(childPattern.data instanceof GenericExpression) {
+                    if(compare.getOperator() == MathOperator.GENERIC_FUNCTION){
+                        functions.put(compare.getName(), current.toString());
+                    }
                     if (((GenericExpression) childPattern.data).type == IdentificationType.EXPRESSION && compare.getOperator().isAssociative()) {
-
                         if(!eq.data.getOperator().hasIdentity()){
                             path.addFirst(i);
                             return new PatternMatcher().new MatchData(false, values, varTags, path, functions);
@@ -150,6 +152,9 @@ public class PatternMatcher {
             }
             Tree<MathObject> childEq = eq.getChild(i);
             if(childPattern.data instanceof GenericExpression){
+                if(compare.getOperator() == MathOperator.GENERIC_FUNCTION){
+                    functions.put(compare.getName(), current.toString());
+                }
                 if(((GenericExpression) childPattern.data).type == IdentificationType.EXPRESSION && compare.getOperator().isAssociative()){
                     //If we have an associative operator (lets call it OP) then we can skip the rest of our children. and just assume that there are an expression with root OP.
                     //OP(2, _EXPRESSION) matches OP(2, 1), OP(2, 3, 4, 5), or anything that is OP(2, .....)
@@ -195,7 +200,7 @@ public class PatternMatcher {
             }
         }
         if(compare.getOperator() == MathOperator.GENERIC_FUNCTION){
-            functions.put(compare.getName(), eq.toString());
+            functions.put(compare.getName(), current.toString());
         }
         //Checked everything possible
         return new PatternMatcher().new MatchData(true, values, varTags, path, functions);

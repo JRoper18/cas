@@ -14,6 +14,8 @@ import java.util.List;
 public class SimplifierTree extends Tree<SubstitutionData> {
     public boolean closed;
     public int complexity;
+
+    public SubstitutionData data;
     public SimplifierTree(SubstitutionData data){
         this.data = data;
         this.closed = false;
