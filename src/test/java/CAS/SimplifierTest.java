@@ -3,6 +3,7 @@ package CAS;
 import Simplification.Simplifier;
 import Simplification.SimplifierObjective;
 import Simplification.SimplifierResult;
+import Simplification.SimplifierTree;
 import Substitution.StructuralSub;
 import org.junit.Test;
 
@@ -84,4 +85,5 @@ public class SimplifierTest {
         assertTrue(res1.changes.isEmpty());
         assertEquals(1, res1.subsUsed.size());
     }
+
 }

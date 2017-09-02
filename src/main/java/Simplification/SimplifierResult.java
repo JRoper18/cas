@@ -15,6 +15,12 @@ import java.util.List;
  * Created by Jack Roper on 4/3/2017.
  */
 public class SimplifierResult {
+    /**
+     * This class holds results from a simplification.
+     * initial holds the starting equation
+     * result holds the final, simplified equation
+     * subsUsed holds which subs were used.
+     */
     public Equation initial;
     public Equation result;
     public List<EquationSub> subsUsed;

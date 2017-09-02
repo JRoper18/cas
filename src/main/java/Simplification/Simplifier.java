@@ -29,7 +29,7 @@ public class Simplifier {
                 case REMOVE_META:
                     return simplifyMetaFunctions(eq);
                 case REMOVE_OPERATOR:
-                    SimplifierStrategy strat = new BruteForceRemoveOperator(3);
+                    SimplifierStrategy strat = new BruteForceRemoveOperator(10);
                     return strat.simplify(eq);
                 case SIMPLIFY_TOP_OPERATOR:
                     return simplifyWithOperator(eq);

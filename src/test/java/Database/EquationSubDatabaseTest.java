@@ -203,6 +203,7 @@ public class EquationSubDatabaseTest {
         assertEquals(new Equation("5"), Simplifier.directSimplify(new Equation("DERIV(TIMES(5, _x), _x)"), SimplifierObjective.REMOVE_OPERATOR));
         assertEquals(new Equation("TIMES(4, _x)"), Simplifier.directSimplify(new Equation("DERIV(TIMES(2, POWER(_x, 2)), _x)"), SimplifierObjective.REMOVE_OPERATOR));
         assertEquals(new Equation("_y"), Simplifier.directSimplify(new Equation("DERIV(TIMES(_x, _y), _x)"), SimplifierObjective.REMOVE_OPERATOR));
+        System.out.println(Simplifier.simplify(new Equation("DERIV(TIMES(_x, _y, 2), _x)"), SimplifierObjective.REMOVE_OPERATOR).steps());
         assertEquals(new Equation("TIMES(2, _y)"), Simplifier.directSimplify(new Equation("DERIV(TIMES(_x, _y, 2), _x)"), SimplifierObjective.REMOVE_OPERATOR));
         assertEquals(new Equation("PLUS(1, _x, TIMES(3, POWER(_x, 2)))"), Simplifier.directSimplify(new Equation("DERIV(PLUS(_x, DIVIDE(POWER(_x, 2), 2), POWER(_x, 3)), _x)"), SimplifierObjective.REMOVE_OPERATOR));
         assertEquals(new Equation("POWER(E, _x)"), Simplifier.directSimplify(new Equation("DERIV(POWER(E, _x), _x)"), SimplifierObjective.REMOVE_OPERATOR));

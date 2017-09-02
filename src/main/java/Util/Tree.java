@@ -99,7 +99,7 @@ public class Tree<T> implements Serializable{
                 }
             }
         }
-        if(this.isRoot() && condition.checkCondition(this.clone())){
+        if(this.isRoot() && condition.checkCondition(this)){
             paths.add(new LinkedList<>());
         }
         return paths;
@@ -191,10 +191,13 @@ public class Tree<T> implements Serializable{
         return size;
     }
     public void addChild(Tree<T> child){
+        child.parent = this;
         this.children.add(child);
     }
     public void addChildWithData(T data){
-        this.children.add(new Tree<T>(data));
+        Tree<T> toAdd = new Tree<T>(data);
+        toAdd.parent = this;
+        this.children.add(toAdd);
     }
     public void addEmptyChild(){
         Tree<T> newChild = new Tree<T>();
