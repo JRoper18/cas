@@ -3,10 +3,7 @@ package Util;
 import com.rits.cloning.Cloner;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by jack on 12/30/2016.
@@ -108,10 +105,12 @@ public class Tree<T> implements Serializable{
         return this.findPaths(toFind).size();
     }
     public Tree<T> getChildThroughPath(LinkedList<Integer> path){
-        if(path.isEmpty()){
-            return this;
+        Iterator it = path.iterator();
+        Tree<T> selected = this;
+        while(it.hasNext()){
+            selected = selected.getChild((int) it.next());
         }
-        return this.continuePath(path, 0);
+        return selected;
     }
     public void reverseChildrenOrder(){
         if(this.hasChildren()){
@@ -120,12 +119,6 @@ public class Tree<T> implements Serializable{
             }
         }
         Collections.reverse(this.children);
-    }
-    private Tree continuePath(LinkedList<Integer> path, int index){
-        if(index == path.size()){
-            return this;
-        }
-        return this.getChild(path.get(index)).continuePath(path, index + 1);
     }
     public int getParentChildIndex(){
         for(int i = 0; i<this.getParent().getNumberOfChildren(); i++){

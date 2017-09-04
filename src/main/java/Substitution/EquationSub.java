@@ -2,6 +2,8 @@ package Substitution;
 
 import CAS.Equation;
 import CAS.EquationObjects.MathObject;
+import Simplification.Methods.RemoveRootOperator;
+import Simplification.SimplifyObjectiveNotDoneException;
 import Util.Tree;
 import Simplification.Simplifier;
 import Simplification.SimplifierObjective;
@@ -46,7 +48,13 @@ public class EquationSub implements Serializable {
                     //EXAMPLE: 1 + 2 + 3 + 4 -> (((1+2)+3)+4) -> (3 + 3) + 4 -> 6 + 4 -> 10
                     //EXAMPLE 2: OR(F, F, T, F) -> OR ( OR (F, F) , T , F) -> OR (F, T, F ) -> OR(OR(F,T), F) -> OR(T, F) -> TRUE
                     Equation subEquation = new Equation(subEquationTree);
-                    Equation temp = Simplifier.directSimplify(subEquation, SimplifierObjective.SIMPLIFY_TOP_OPERATOR);
+                    Equation temp;
+                    try{
+                        temp = new RemoveRootOperator().simplify(subEquation).getResult();
+                    } catch (SimplifyObjectiveNotDoneException ex){
+                        ex.printStackTrace();
+                        return newEq;
+                    }
                     //Now replace
                     newEq.tree.setChild(0, temp.tree);
                     newEq.tree.removeChild(1);

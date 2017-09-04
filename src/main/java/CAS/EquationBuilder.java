@@ -31,7 +31,7 @@ public class EquationBuilder{
             }
             switch(autoSimplifyLevel){
                 case 1: //Only do meta-functions.
-                    return Simplifier.directSimplify(processedEquation, SimplifierObjective.REMOVE_META);
+                    return Simplifier.simplifyMetaFunctions(processedEquation);
                 case 2: //Autosimplify this
                     processedEquation = Simplifier.simplifyWithMetaFunction(processedEquation, MathOperator.SIMPLIFY_RATIONAL_EXPRESSION);
                     processedEquation = Simplifier.orderEquation(processedEquation);

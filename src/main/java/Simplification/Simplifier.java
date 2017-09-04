@@ -4,6 +4,7 @@ import CAS.Equation;
 import CAS.EquationObjects.MathObject;
 import CAS.EquationObjects.MathOperator;
 import CAS.EquationObjects.MathOperatorSubtype;
+import Simplification.Methods.OrderEquationSimplify;
 import Util.Tree;
 import Database.DatabaseConnection;
 import Database.SubSerializer;
@@ -21,48 +22,6 @@ import java.util.*;
  * Created by jack on 1/5/2017.
  */
 public class Simplifier {
-    public static SimplifierResult simplify(Equation eq, SimplifierObjective objective) {
-        try{
-            switch (objective) {
-                case LEAST_COMPLEX:
-                    break;
-                case REMOVE_META:
-                    return simplifyMetaFunctions(eq);
-                case REMOVE_OPERATOR:
-                    SimplifierStrategy strat = new BruteForceRemoveOperator(10);
-                    return strat.simplify(eq);
-                case SIMPLIFY_TOP_OPERATOR:
-                    return simplifyWithOperator(eq);
-            }
-        } catch (SimplifyObjectiveNotDoneException ex){
-            ex.printStackTrace();
-        }
-        return null;
-    }
-    public static Equation directSimplify(Equation eq, SimplifierObjective objective) {
-        SimplifierResult res = simplify(eq, objective);
-        return res.result;
-    }
-    private static SimplifierResult simplifyWithOperator(Equation eq){
-        MathOperator operator = eq.getRoot().getOperator();
-        SimplifierResult result = new SimplifierResult(eq);
-        try {
-            Equation newEq = eq.clone();
-            Equation temp = new Equation("0", 0);
-            ResultSet results = DatabaseConnection.runQuery("select algorithm from subs where (operator == '" + operator + "')");
-            while (results.next()) {
-                EquationSub tempSub = SubSerializer.deserialize(results.getBytes("algorithm"));
-                applyAndRecordChange(result, temp, newEq, tempSub);
-                if(result.subsUsed.size() == 1){
-                    //We only do 1 sub
-                    break;
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return result;
-    }
     private int numberOfOperators(Equation eq, MathOperator op){ //Will be used as a hueristic for traversing a graph of all possible alternate forms of our input equation.
         return eq.tree.getNumberOfOccurances(new MathObject(op)); //Note: I'm not actually sure if this is admissible, and I'm using an A* algorithm to traverse simplifications. So, it might
         //not find the optimal solution. Still, better than a brute-force greedy or depth-first search.
@@ -83,9 +42,9 @@ public class Simplifier {
         }
         Tree<MathObject> newTree = new Tree<>(new MathObject(metaFunction));
         newTree.addChild(eq.tree);
-        return simplifyMetaFunctions(new Equation(newTree)).result;
+        return simplifyMetaFunctions(new Equation(newTree));
     }
-    private static SimplifierResult simplifyMetaFunctions(Equation equation) {
+    public static Equation simplifyMetaFunctions(Equation equation) {
         EquationSub sub = new EquationSub((DirectOperation) eq -> {
             if (eq.isType(MathOperator.DIVIDE)) {
                 return new Equation("TIMES(" + eq.getSubEquation(0) + ", POWER(" + eq.getSubEquation(1) + ", -1))", 0);
@@ -96,38 +55,18 @@ public class Simplifier {
             return eq;
         });
         Equation newEq = sub.applyEverywhere(equation);
-        SimplifierResult data = recursiveApplyMeta(newEq);
-        data.changes.add(0, equation);
-        data.subsUsed.add(0, sub);
+        Equation data = recursiveApplyMeta(newEq);
         return data;
     }
     public static Equation orderEquation(Equation equation){
-        Tree<MathObject> eqTree = equation.tree.clone();
-        List<Equation> newChildren = equation.getOperands();
-        if(eqTree.hasChildren()){
-            newChildren.clear();
-            for(int i = 0; i<eqTree.getNumberOfChildren(); i++){
-                Equation child = equation.getSubEquation(i);
-                newChildren.add(orderEquation(child));
-            }
-        }
-        if(!eqTree.data.isOrdered()){
-            Collections.sort(newChildren);
-        }
-        List<Tree<MathObject>> newOperands = new ArrayList<>();
-        for(Equation newChild : newChildren){
-            newOperands.add(newChild.tree);
-        }
-        eqTree.setChildren(newOperands);
-        return new Equation(eqTree);
+        return new OrderEquationSimplify().simplify(equation).getResult();
     }
-    private static SimplifierResult recursiveApplyMeta(Equation applyTo){
-        SimplifierResult result = new SimplifierResult(applyTo);
-        result.result = applyTo.clone();
-        if(applyTo.tree.hasChildren()){
+    private static Equation recursiveApplyMeta(Equation applyTo){
+        Equation result = applyTo.clone();
+        if(result.tree.hasChildren()){
             for(Tree<MathObject> child : applyTo.tree.getChildren()){
-                SimplifierResult data = recursiveApplyMeta(new Equation(child));
-                child.replaceWith(data.result.tree);
+                Equation newChild = recursiveApplyMeta(new Equation(child));
+                child.replaceWith(newChild.tree);
             }
         }
         try{
@@ -137,20 +76,11 @@ public class Simplifier {
             Equation last = newEq.clone();
             while(results.next()){
                 EquationSub tempSub = SubSerializer.deserialize(results.getBytes("algorithm"));
-                applyAndRecordChange(result, last, newEq, tempSub);
+                result = tempSub.apply(result);
             }
         } catch (Exception ex){
             ex.printStackTrace();
         }
         return result;
-    }
-    private static void applyAndRecordChange(SimplifierResult result, Equation old, Equation current, EquationSub sub){
-        old = current.clone();
-        current = sub.apply(current);
-        if(!old.equals(current)) {
-            result.subsUsed.add(sub);
-            result.changes.add(current);
-            result.result = current;
-        }
     }
 }

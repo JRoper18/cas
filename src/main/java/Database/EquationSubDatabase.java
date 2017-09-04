@@ -5,8 +5,10 @@ import CAS.EquationObjects.*;
 import Identification.IdentificationType;
 import PatternMatching.PatternMatchResult;
 import PatternMatching.PatternMatcher;
+import Simplification.Methods.RemoveRootOperator;
 import Simplification.Simplifier;
 import Simplification.SimplifierObjective;
+import Simplification.SimplifyObjectiveNotDoneException;
 import Substitution.DirectOperation;
 import Substitution.EquationSub;
 import Util.Tree;
@@ -21,7 +23,7 @@ import java.util.*;
 public class EquationSubDatabase { //NOTE: I know, I know, this should be in the actual SQLite database. I WILL do that, but I want to keep these here in case something goes wrong or I want to reference them directly. Once every sub is in the database I can remove this, but UNTIL THEN, it's a good idea to keep these here, in memory just in case.
     private static final EquationSub[] subsArray = {
             new EquationSub((Serializable & DirectOperation) (eq -> {
-                BigInteger gcd = ((MathInteger) Simplifier.directSimplify(eq.getSubEquation(0), SimplifierObjective.REMOVE_META).getRoot()).num.gcd(((MathInteger) Simplifier.directSimplify(eq.getSubEquation(1), SimplifierObjective.REMOVE_META).getRoot()).num);
+                BigInteger gcd = ((MathInteger) Simplifier.simplifyMetaFunctions(eq.getSubEquation(0)).getRoot()).num.gcd(((MathInteger) Simplifier.simplifyMetaFunctions(eq.getSubEquation(1)).getRoot()).num);
                 if(eq.getOperands().size() > 1){
                     for(int i = 2; i<eq.getOperands().size(); i++){
                         Equation currentEq = eq.getSubEquation(i);
@@ -205,8 +207,13 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     if(newBase.isUndefined()){
                         return new Equation("UNDEFINED");
                     }
-                    Equation toReturn = Simplifier.directSimplify(new Equation("POWER(" + newBase + ", " + power + ")", 0), SimplifierObjective.SIMPLIFY_TOP_OPERATOR);
-                    return toReturn;
+                    try{
+                        Equation toReturn = new RemoveRootOperator().simplify(new Equation("POWER(" + newBase + ", " + power + ")", 0)).getResult();
+                        return toReturn;
+                    } catch (SimplifyObjectiveNotDoneException ex){
+                        ex.printStackTrace();
+                        return newEq;
+                    }
                 }
                 else if(newEq.tree.getNumberOfChildren() >= 2){
                     if(newEq.getOperands().contains(new Equation("UNDEFINED"))){
@@ -216,8 +223,13 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                         Equation replace = new Equation("SIMPLIFY_RATIONAL_EXPRESSION(" + new Equation(child) + ")", 1);
                         child.replaceWith(replace.tree);
                     }
-                    Equation operatorSimplified =  Simplifier.directSimplify(newEq, SimplifierObjective.SIMPLIFY_TOP_OPERATOR);
-                    return Simplifier.simplifyWithMetaFunction(operatorSimplified, MathOperator.SIMPLIFY_RATIONAL_FRACTION);
+                    try{
+                        Equation operatorSimplified =  new RemoveRootOperator().simplify(newEq).getResult();
+                        return Simplifier.simplifyWithMetaFunction(operatorSimplified, MathOperator.SIMPLIFY_RATIONAL_FRACTION);
+                    } catch (SimplifyObjectiveNotDoneException ex){
+                        return newEq;
+                    }
+
                 }
                 else{
                     return newEq;

@@ -30,7 +30,7 @@ public class SimplifierTest {
 
     @Test
     public void testMetaFunctions() throws Exception {
-        assertEquals(EquationBuilder.makeUnprocessedEquation("2"), s.directSimplify(EquationBuilder.makeUnprocessedEquation("OPERAND(PLUS(4,2),1)"), SimplifierObjective.REMOVE_META));
+        assertEquals(EquationBuilder.makeUnprocessedEquation("2"), (EquationBuilder.makeUnprocessedEquation("OPERAND(PLUS(4,2),1)"), SimplifierObjective.REMOVE_META));
         assertEquals(new Equation("ADJOIN(OPERAND(LIST(23, 4), 1), LIST(2,3,4))", 1), new Equation("LIST(4,2,3,4)"));
     }
 
