@@ -3,7 +3,6 @@ package CAS;
 import CAS.EquationObjects.*;
 import Identification.IdentificationType;
 import Simplification.Simplifier;
-import Simplification.SimplifierObjective;
 import Util.Tree;
 
 import java.io.IOException;
@@ -34,8 +33,8 @@ public class EquationBuilder{
                     return Simplifier.simplifyMetaFunctions(processedEquation);
                 case 2: //Autosimplify this
                     processedEquation = Simplifier.simplifyWithMetaFunction(processedEquation, MathOperator.SIMPLIFY_RATIONAL_EXPRESSION);
-                    processedEquation = Simplifier.orderEquation(processedEquation);
-                    return Simplifier.orderEquation(Simplifier.simplifyWithMetaFunction(processedEquation, MathOperator.AUTOSIMPLIFY));
+                    processedEquation = Simplifier.orderEquation.simplify(processedEquation).getResult();
+                    return Simplifier.orderEquation.simplify(Simplifier.simplifyWithMetaFunction(processedEquation, MathOperator.AUTOSIMPLIFY)).getResult();
                 default:
                     return processedEquation;
             }

@@ -5,6 +5,8 @@ import CAS.EquationObjects.MathObject;
 import CAS.EquationObjects.MathOperator;
 import CAS.EquationObjects.MathOperatorSubtype;
 import Simplification.Methods.OrderEquationSimplify;
+import Simplification.Methods.PruningRemoveOperator;
+import Simplification.Methods.RemoveSingleRootOperator;
 import Util.Tree;
 import Database.DatabaseConnection;
 import Database.SubSerializer;
@@ -15,13 +17,16 @@ import Substitution.EquationSub;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.sql.ResultSet;
-import java.util.*;
 
 
 /**
  * Created by jack on 1/5/2017.
  */
 public class Simplifier {
+    public static BruteForceRemoveOperator bruteForceRemoveOperator = new BruteForceRemoveOperator(3);
+    public static OrderEquationSimplify orderEquation = new OrderEquationSimplify();
+    public static PruningRemoveOperator pruningRemoveOperator = new PruningRemoveOperator();
+    public static RemoveSingleRootOperator removeSingleRootOperator = new RemoveSingleRootOperator();
     private int numberOfOperators(Equation eq, MathOperator op){ //Will be used as a hueristic for traversing a graph of all possible alternate forms of our input equation.
         return eq.tree.getNumberOfOccurances(new MathObject(op)); //Note: I'm not actually sure if this is admissible, and I'm using an A* algorithm to traverse simplifications. So, it might
         //not find the optimal solution. Still, better than a brute-force greedy or depth-first search.
@@ -42,7 +47,7 @@ public class Simplifier {
         }
         Tree<MathObject> newTree = new Tree<>(new MathObject(metaFunction));
         newTree.addChild(eq.tree);
-        return simplifyMetaFunctions(new Equation(newTree));
+        return simplifyMetaFunctions(new Equation(newTree, 0));
     }
     public static Equation simplifyMetaFunctions(Equation equation) {
         EquationSub sub = new EquationSub((DirectOperation) eq -> {
@@ -58,29 +63,23 @@ public class Simplifier {
         Equation data = recursiveApplyMeta(newEq);
         return data;
     }
-    public static Equation orderEquation(Equation equation){
-        return new OrderEquationSimplify().simplify(equation).getResult();
-    }
     private static Equation recursiveApplyMeta(Equation applyTo){
-        Equation result = applyTo.clone();
-        if(result.tree.hasChildren()){
+        if(applyTo.tree.hasChildren()){
             for(Tree<MathObject> child : applyTo.tree.getChildren()){
                 Equation newChild = recursiveApplyMeta(new Equation(child));
                 child.replaceWith(newChild.tree);
             }
         }
         try{
-            Equation newEq = new Equation(applyTo);
             String sql = "select algorithm from subs where (subtype =='META' and operator == '" + applyTo.getRoot().toString() + "')";
             ResultSet results = DatabaseConnection.runQuery(sql);
-            Equation last = newEq.clone();
             while(results.next()){
                 EquationSub tempSub = SubSerializer.deserialize(results.getBytes("algorithm"));
-                result = tempSub.apply(result);
+                applyTo = tempSub.apply(applyTo);
             }
         } catch (Exception ex){
             ex.printStackTrace();
         }
-        return result;
+        return applyTo;
     }
 }

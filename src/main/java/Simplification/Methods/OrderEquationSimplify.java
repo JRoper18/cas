@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by Jack Roper on 9/3/2017.
  */
-public class OrderEquationSimplify implements SimplifierStrategy {
+public class OrderEquationSimplify extends SimplifierStrategy {
     public SimplifierResult simplify(Equation equation){
         Tree<MathObject> eqTree = equation.tree.clone();
         List<Equation> newChildren = equation.getOperands();

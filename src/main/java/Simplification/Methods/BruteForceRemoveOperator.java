@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * This strategy tries every possible combination of substitutions. It is absurdly slow. It takes a second seconds just to go 3 levels deep, and I've never even see it finish going 5 levels.
  */
-public class BruteForceRemoveOperator implements SimplifierStrategy{
+public class BruteForceRemoveOperator extends SimplifierStrategy{
     public int maxLevel;
     public BruteForceRemoveOperator(int maxLevel){
         this.maxLevel = maxLevel;

@@ -12,7 +12,7 @@ import Simplification.SimplifyObjectiveNotDoneException;
 /**
  * This strategy attempts to completely remove an operator from the equation by
  */
-public class PruningRemoveOperator implements SimplifierStrategy {
+public class PruningRemoveOperator extends SimplifierStrategy {
     public int maxTries;
     public PruningRemoveOperator(int maxTries){
         this.maxTries = maxTries;

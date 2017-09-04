@@ -2,11 +2,9 @@ package Substitution;
 
 import CAS.Equation;
 import CAS.EquationObjects.MathObject;
-import Simplification.Methods.RemoveRootOperator;
+import Simplification.Methods.RemoveSingleRootOperator;
 import Simplification.SimplifyObjectiveNotDoneException;
 import Util.Tree;
-import Simplification.Simplifier;
-import Simplification.SimplifierObjective;
 
 import java.io.Serializable;
 
@@ -50,7 +48,7 @@ public class EquationSub implements Serializable {
                     Equation subEquation = new Equation(subEquationTree);
                     Equation temp;
                     try{
-                        temp = new RemoveRootOperator().simplify(subEquation).getResult();
+                        temp = new RemoveSingleRootOperator().simplify(subEquation).getResult();
                     } catch (SimplifyObjectiveNotDoneException ex){
                         ex.printStackTrace();
                         return newEq;

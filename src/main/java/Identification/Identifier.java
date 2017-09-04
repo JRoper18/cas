@@ -65,6 +65,9 @@ public class Identifier {
                 }
                 break;
             case RATIONAL_NUMBER_EXPRESSION:
+                if(equation.isType(IdentificationType.IRRATIONAL)){
+                    return false;
+                }
                 if(!equation.isType(IdentificationType.CONSTANT)){
                     return false;
                 }

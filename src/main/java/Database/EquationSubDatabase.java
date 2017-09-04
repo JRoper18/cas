@@ -5,9 +5,8 @@ import CAS.EquationObjects.*;
 import Identification.IdentificationType;
 import PatternMatching.PatternMatchResult;
 import PatternMatching.PatternMatcher;
-import Simplification.Methods.RemoveRootOperator;
+import Simplification.Methods.RemoveSingleRootOperator;
 import Simplification.Simplifier;
-import Simplification.SimplifierObjective;
 import Simplification.SimplifyObjectiveNotDoneException;
 import Substitution.DirectOperation;
 import Substitution.EquationSub;
@@ -208,7 +207,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                         return new Equation("UNDEFINED");
                     }
                     try{
-                        Equation toReturn = new RemoveRootOperator().simplify(new Equation("POWER(" + newBase + ", " + power + ")", 0)).getResult();
+                        Equation toReturn = new RemoveSingleRootOperator().simplify(new Equation("POWER(" + newBase + ", " + power + ")", 0)).getResult();
                         return toReturn;
                     } catch (SimplifyObjectiveNotDoneException ex){
                         ex.printStackTrace();
@@ -223,12 +222,13 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                         Equation replace = new Equation("SIMPLIFY_RATIONAL_EXPRESSION(" + new Equation(child) + ")", 1);
                         child.replaceWith(replace.tree);
                     }
+                    Equation operatorSimplified = newEq;
                     try{
-                        Equation operatorSimplified =  new RemoveRootOperator().simplify(newEq).getResult();
-                        return Simplifier.simplifyWithMetaFunction(operatorSimplified, MathOperator.SIMPLIFY_RATIONAL_FRACTION);
+                        operatorSimplified =  new RemoveSingleRootOperator().simplify(newEq).getResult();
                     } catch (SimplifyObjectiveNotDoneException ex){
-                        return newEq;
+
                     }
+                    return Simplifier.simplifyWithMetaFunction(operatorSimplified, MathOperator.SIMPLIFY_RATIONAL_FRACTION);
 
                 }
                 else{
@@ -312,7 +312,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     return equation;
                 }));
                 newEq = sub.applyEverywhere(newEq);
-                newEq = Simplifier.orderEquation(newEq);
+                newEq = Simplifier.orderEquation.simplify(newEq).getResult();
                 if(newEq.tree.containsData(new MathObject(MathOperator.UNDEFINED))){
                     return new Equation("UNDEFINED", 0);
                 }
@@ -350,7 +350,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                         toReturn = newEq.clone();
                 }
 
-                return Simplifier.orderEquation(toReturn);
+                return Simplifier.orderEquation.simplify(toReturn).getResult();
             }), new MathObject(MathOperator.AUTOSIMPLIFY)),
             new EquationSub("Simplifies a sum", (DirectOperation & Serializable) eq -> {
                 Equation sum = eq.getSubEquation(0).clone();
@@ -560,7 +560,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
             new EquationSub((DirectOperation & Serializable) eq -> {
                 Equation newEq = eq.getSubEquation(0);
                 if(newEq.isType(MathOperator.MULTIPLY)) {
-                    Equation sorted = Simplifier.orderEquation(eq);
+                    Equation sorted = Simplifier.orderEquation.simplify(eq).getResult();
                     //Now find the first non-number (variable)
                     int firstVarIndex = 0;
                     for (int i = 0; i < newEq.getOperands().size(); i++) {
