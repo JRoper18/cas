@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -66,6 +67,17 @@ public class Equation implements Serializable, Comparable<Equation>{
             return this.tree.equals(((Equation) obj).tree);
         }
         return false;
+    }
+
+    public HashSet<String> getVariables(){
+        HashSet vars = new HashSet();
+        if(this.getRoot().getOperator() == MathOperator.EXPRESSION){
+            vars.add(((GenericExpression) this.getRoot()).tag);
+        }
+        for(int i = 0; i<this.tree.getNumberOfChildren(); i++){
+            vars.addAll(this.getSubEquation(i).getVariables());
+        }
+        return vars;
     }
 
     @Override

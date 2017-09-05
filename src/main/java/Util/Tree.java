@@ -261,6 +261,14 @@ public class Tree<T> implements Serializable{
             child.print(level + 1);
         }
     }
+    public void replaceAllData(T before, T after){
+        if(this.data.equals(before)){
+            this.data = after;
+        }
+        for(Tree<T> child : children){
+            child.replaceAllData(before, after);
+        }
+    }
     public void replaceAll(Tree<T> before, Tree<T> after){
         if(this.equals(before)){
             this.replaceWith(after);

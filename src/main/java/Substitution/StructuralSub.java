@@ -12,6 +12,7 @@ import Simplification.Simplifier;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Created by jack on 1/9/2017.
@@ -33,7 +34,19 @@ public class StructuralSub extends EquationSub implements Serializable {
             if(data.match) {
                 Equation newEquation = after.clone(); //Quick clone
                 HashMap<String, Equation> subs = data.variableValues;
-                //Go through conditions
+                HashSet<String> dupVarNames = before.getVariables();
+                dupVarNames.retainAll(equation.getVariables());
+                for(String dupVar: dupVarNames){
+                    String newVarName = "a";
+                    while(subs.keySet().contains(newVarName)){
+                        newVarName += "0";
+                    }
+                    MathObject substitution = new GenericExpression(newVarName);
+                    GenericExpression genExToLookFor = new GenericExpression(dupVar);
+                    newEquation.tree.replaceAllData(genExToLookFor, substitution);
+                    subs.put(newVarName, subs.get(dupVar));
+                    subs.remove(dupVar);
+                }
                 for (String sub : subs.keySet()) {
                     Tree<MathObject> substitution = subs.get(sub).tree;
                     GenericExpression genExToLookFor = new GenericExpression(sub);
