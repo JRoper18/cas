@@ -96,7 +96,8 @@ public class Tree<T> implements Serializable{
                 }
             }
         }
-        if(this.isRoot() && condition.checkCondition(this)){
+
+        if(condition.checkCondition(this)){
             paths.add(new LinkedList<>());
         }
         return paths;
@@ -148,12 +149,11 @@ public class Tree<T> implements Serializable{
         }
     }
     public Tree<T> getRoot(){
-        int parents = this.pathFromRoot().size();
-        Tree<T> parent = this.parent;
-        for(int i = 1; i<parents; i++){
-            parent = parent.getParent();
+        Tree<T> selected = this;
+        while(selected.parent != null){
+            selected = selected.parent;
         }
-        return parent;
+        return selected;
     }
     public void replaceWith(Tree<T> newTree){
         if(this.parent != null){
@@ -228,7 +228,7 @@ public class Tree<T> implements Serializable{
         this.print(1);
     }
     public String toString(){
-        String str = new String("TREE:");
+        String str = new String();
         if(this.data == null){
             str += ("null");
         }

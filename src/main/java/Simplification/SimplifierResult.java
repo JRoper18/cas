@@ -2,6 +2,7 @@ package Simplification;
 
 import CAS.Equation;
 import CAS.EquationObjects.MathObject;
+import CAS.EquationObjects.MathOperator;
 import Util.Tree;
 import Substitution.EquationSub;
 
@@ -29,17 +30,38 @@ public class SimplifierResult {
     public SimplifierResult(LinkedList<SubstitutionData> steps){
         this.stepsTaken = steps;
     }
+    public void addStep(SubstitutionData step){
+        Equation lastRoot = getResult();
+        lastRoot.tree.getChildThroughPath(step.subPath).replaceWith(step.equation.tree);
+        this.stepsTaken.add(new SubstitutionData(step.sub, Simplifier.simplifyWithMetaFunction(lastRoot, MathOperator.AUTOSIMPLIFY), step.subPath));
+    }
+    public void addSteps(List<SubstitutionData> steps){
+        for(int i = 1; i<steps.size(); i++){
+            this.addStep(steps.get(i));
+        }
+    }
+    public void setPath(LinkedList<Integer> path){
+        for(SubstitutionData step: stepsTaken){
+            step.subPath.addAll(path);
+        }
+    }
     public Equation getInitial(){
         return stepsTaken.get(0).equation;
     }
     public Equation getResult(){
-        return stepsTaken.get(stepsTaken.size()-1).equation;
+        return this.stepsTaken.get(this.stepsTaken.size() - 1).equation.clone();
     }
     public String getPrintableSteps(){
         StringBuilder build = new StringBuilder();
         for(int i = 0; i<this.stepsTaken.size(); i++){
             SubstitutionData step = this.stepsTaken.get(i);
-            build.append(step.toString());
+            build.append(step.equation.toString());
+            if(step.sub != null){
+                build.append(" using sub " + step.sub);
+                if(!step.subPath.isEmpty()){
+                    build.append(" on sub-equation " + new Equation(stepsTaken.get(i - 1).equation.tree.getChildThroughPath(step.subPath), 0).toString());
+                }
+            }
             build.append("\n");
         }
         return build.toString();

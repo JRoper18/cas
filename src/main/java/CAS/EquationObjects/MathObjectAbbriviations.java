@@ -16,6 +16,7 @@ public class MathObjectAbbriviations {
         abbriviations.put("MINUS", new AbbriviationData(new MathObject(MathOperator.SUBTRACT), AbbriviationType.PREFIX));
         abbriviations.put("/", new AbbriviationData(new MathObject(MathOperator.DIVIDE), AbbriviationType.INFIX));
         abbriviations.put("SIN", new AbbriviationData(new MathObject(MathOperator.SINE), AbbriviationType.PREFIX));
+        abbriviations.put("COS", new AbbriviationData(new MathObject(MathOperator.COSINE), AbbriviationType.PREFIX));
         abbriviations.put("^", new AbbriviationData(new MathObject(MathOperator.POWER), AbbriviationType.INFIX));
         abbriviations.put("GCD", new AbbriviationData(new MathObject(MathOperator.GREATEST_COMMON_DENOMINATOR), AbbriviationType.PREFIX));
         abbriviations.put("DERIV", new AbbriviationData(new MathObject(MathOperator.DERIVATIVE), AbbriviationType.PREFIX));

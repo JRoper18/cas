@@ -3,6 +3,7 @@ package Database;
 import CAS.*;
 import Simplification.Methods.BruteForceRemoveOperator;
 import Simplification.Methods.RemoveSingleRootOperator;
+import Simplification.Simplifier;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -12,7 +13,7 @@ import static org.junit.Assert.*;
  */
 public class EquationSubDatabaseTest {
 
-    RemoveSingleRootOperator removeRootStrat = new RemoveSingleRootOperator();
+    RemoveSingleRootOperator removeRootStrat = new RemoveSingleRootOperator(false);
     BruteForceRemoveOperator removeOperator = new BruteForceRemoveOperator();
     @Test
     public void testIntegerAddition() throws Exception {
@@ -202,20 +203,23 @@ public class EquationSubDatabaseTest {
 
     @Test
     public void testDerivative() throws Exception {
-        assertEquals(new Equation("1"), removeOperator.getResult(new Equation("DERIV(PLUS(1, _x), _x)")));
-        assertEquals(new Equation("1"), removeOperator.getResult(new Equation("DERIV(_y, _y)")));
-        assertEquals(new Equation("0"), removeOperator.getResult(new Equation("DERIV(_y, _x)")));
-        assertEquals(new Equation("2 * _x"), removeOperator.getResult(new Equation("DERIV(POWER(_x, 2), _x)")));
-        assertEquals(new Equation("5"), removeOperator.getResult(new Equation("DERIV(TIMES(5, _x), _x)")));
-        assertEquals(new Equation("TIMES(4, _x)"), removeOperator.getResult(new Equation("DERIV(TIMES(2, POWER(_x, 2)), _x)")));
-        assertEquals(new Equation("_y"), removeOperator.getResult(new Equation("DERIV(TIMES(_x, _y), _x)")));
-        assertEquals(new Equation("TIMES(2, _y)"), removeOperator.getResult(new Equation("DERIV(TIMES(_x, _y, 2), _x)")));
-        assertEquals(new Equation("PLUS(1, _x, TIMES(3, POWER(_x, 2)))"), removeOperator.getResult(new Equation("DERIV(PLUS(_x, DIVIDE(POWER(_x, 2), 2), POWER(_x, 3)), _x)")));
-        assertEquals(new Equation("POWER(E, _x)"), removeOperator.getResult(new Equation("DERIV(POWER(E, _x), _x)")));
-        assertEquals(new Equation("TIMES(NATURAL_LOG(2), POWER(2, _x))"), removeOperator.getResult(new Equation("DERIV(POWER(2, _x), _x)")));
-        assertEquals(new Equation("TIMES(-6, POWER(_x, -3))"), removeOperator.getResult(new Equation("DERIV(DIVIDE(3, POWER(_x, 2)), _x)")));
-        assertEquals(new Equation("DIVIDE(-2, POWER(_x, 3))"), removeOperator.getResult(new Equation("DERIV(DIVIDE(1, POWER(_x, 2)), _x)")));
-        assertEquals(new Equation("DIVIDE(-1, POWER(PLUS(_x, 2), 2))"), removeOperator.getResult(new Equation("DERIV(DIVIDE(1, PLUS(_x, 2)), _x)")));
-        assertEquals(new Equation("DIVIDE(1, POWER(PLUS(_x, 1), 2))"), removeOperator.getResult(new Equation("DERIV(DIVIDE(_x, PLUS(_x, 1)), _x)")));
+        assertEquals(new Equation("1"), Simplifier.pruningRemoveOperator.getResult(new Equation("DERIV(PLUS(1, _x), _x)")));
+        assertEquals(new Equation("1"), Simplifier.pruningRemoveOperator.getResult(new Equation("DERIV(_y, _y)")));
+        assertEquals(new Equation("0"), Simplifier.pruningRemoveOperator.getResult(new Equation("DERIV(_y, _x)")));
+        assertEquals(new Equation("2 * _x"), Simplifier.pruningRemoveOperator.getResult(new Equation("DERIV(POWER(_x, 2), _x)")));
+        assertEquals(new Equation("5"), Simplifier.pruningRemoveOperator.getResult(new Equation("DERIV(TIMES(5, _x), _x)")));
+        assertEquals(new Equation("TIMES(4, _x)"), Simplifier.pruningRemoveOperator.getResult(new Equation("DERIV(TIMES(2, POWER(_x, 2)), _x)")));
+        assertEquals(new Equation("_y"), Simplifier.pruningRemoveOperator.getResult(new Equation("DERIV(TIMES(_x, _y), _x)")));
+        assertEquals(new Equation("TIMES(2, _y)"), Simplifier.pruningRemoveOperator.getResult(new Equation("DERIV(TIMES(_x, _y, 2), _x)")));
+        assertEquals(new Equation("PLUS(1, _x, TIMES(3, POWER(_x, 2)))"), Simplifier.pruningRemoveOperator.getResult(new Equation("DERIV(PLUS(_x, DIVIDE(POWER(_x, 2), 2), POWER(_x, 3)), _x)")));
+        assertEquals(new Equation("POWER(E, _x)"), Simplifier.pruningRemoveOperator.getResult(new Equation("DERIV(POWER(E, _x), _x)")));
+        assertEquals(new Equation("TIMES(NATURAL_LOG(2), POWER(2, _x))"), Simplifier.pruningRemoveOperator.getResult(new Equation("DERIV(POWER(2, _x), _x)")));
+        assertEquals(new Equation("TIMES(-6, POWER(_x, -3))"), Simplifier.pruningRemoveOperator.getResult(new Equation("DERIV(DIVIDE(3, POWER(_x, 2)), _x)")));
+        assertEquals(new Equation("DIVIDE(-2, POWER(_x, 3))"), Simplifier.pruningRemoveOperator.getResult(new Equation("DERIV(DIVIDE(1, POWER(_x, 2)), _x)")));
+        assertEquals(new Equation("DIVIDE(-1, POWER(PLUS(_x, 2), 2))"), Simplifier.pruningRemoveOperator.getResult(new Equation("DERIV(DIVIDE(1, PLUS(_x, 2)), _x)")));
+        assertEquals(new Equation("TIMES(5, POWER(PLUS(_x, 1), 4))"), Simplifier.pruningRemoveOperator.getResult(new Equation("DERIV(POWER(PLUS(_x, 1), 5), _x)")));
+        assertEquals(new Equation("SIN(_x)"), Simplifier.pruningRemoveOperator.getResult(new Equation("DERIV(COS(_x), _x)")));
+        assertEquals(new Equation("COS(_x)"), Simplifier.pruningRemoveOperator.getResult(new Equation("DERIV(TIMES(-1, SIN(_x)), _x)")));
+        assertEquals(new Equation("TIMES(SIN(_x), -1, COS(COS(_x)))"), Simplifier.pruningRemoveOperator.getResult(new Equation("DERIV(SIN(COS(_x)), _x)")));
     }
 }

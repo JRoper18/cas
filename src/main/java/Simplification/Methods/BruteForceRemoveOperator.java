@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * This strategy tries every possible combination of substitutions. It is absurdly slow. It takes a second seconds just to go 3 levels deep, and I've never even see it finish going 5 levels.
  */
-public class BruteForceRemoveOperator extends SimplifierStrategy{
+public class BruteForceRemoveOperator extends RemoveAllOperatorsStrategy{
     public int maxLevel;
     public BruteForceRemoveOperator(int maxLevel){
         this.maxLevel = maxLevel;
@@ -36,7 +36,7 @@ public class BruteForceRemoveOperator extends SimplifierStrategy{
                 Tree<SubstitutionData> currentNode = (currentLevel.get(i));
                 Equation currentEq = currentNode.data.equation;
                 //Check if the node is good.
-                if(!currentEq.tree.containsData(eq.getRoot())){
+                if(this.isSimplifyDone(eq, currentEq)){
                     //No paths to the root operator we are trying to remove. That means it's not there! Yay!
                     return SimplifierTree.getResult(currentNode);
                 }
@@ -62,6 +62,6 @@ public class BruteForceRemoveOperator extends SimplifierStrategy{
                 }
             }
         }
-        throw new SimplifyObjectiveNotDoneException(this);
+        throw new SimplifyObjectiveNotDoneException(this, eq);
     }
 }

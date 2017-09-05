@@ -16,5 +16,7 @@ public class SubstitutionRuleDatabase {
             "DERIV(PLUS(_f_EXPRESSION, _g_EXPRESSION), _d) -> PLUS(DERIV(_f, _d), DERIV(_g, _d))",
             "DERIV(POWER(E, _f_EXPRESSION), _d) -> TIMES(DERIV(_f_EXPRESSION, _d), POWER(E, _f))",
             "DERIV(POWER(_n_VARCONSTANT, _f_EXPRESSION), _d) -> TIMES(NATURAL_LOG(_n), DERIV(_f_EXPRESSION, _d), POWER(_n, _f))",
+            "DERIV(SIN(_x_EXPRESSION), _d) -> TIMES(-1, DERIV(_x_EXPRESSION, _d), COS(_x_EXPRESSION))",
+            "DERIV(COS(_x_EXPRESSION), _d) -> TIMES(DERIV(_x_EXPRESSION, _d), SIN(_x_EXPRESSION))"
     };
 }

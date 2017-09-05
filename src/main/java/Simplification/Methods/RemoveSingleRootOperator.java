@@ -4,10 +4,7 @@ import CAS.Equation;
 import CAS.EquationObjects.MathOperator;
 import Database.DatabaseConnection;
 import Database.SubSerializer;
-import Simplification.SimplifierResult;
-import Simplification.SimplifierStrategy;
-import Simplification.SimplifyObjectiveNotDoneException;
-import Simplification.SubstitutionData;
+import Simplification.*;
 import Substitution.EquationSub;
 import Util.Tree;
 
@@ -24,6 +21,16 @@ import java.util.LinkedList;
  * This strategy only removes the root operator from the top level of the equation. If we start with TIMES(2, 3) and go to PLUS(TIMES(1, 2), 4), then it would be ok since TIMES is no longer the root.
  */
 public class RemoveSingleRootOperator extends SimplifierStrategy{
+    public final boolean autoSimplifyAfter;
+    public RemoveSingleRootOperator(boolean autoSimplifyAfter){
+        this.autoSimplifyAfter = autoSimplifyAfter;
+    }
+    public RemoveSingleRootOperator(){
+        this.autoSimplifyAfter = true;
+    }
+    public boolean isSimplifyDone(Equation begin, Equation current){
+        return current.getRoot() != begin.getRoot();
+    }
     public SimplifierResult simplify(Equation eq) throws SimplifyObjectiveNotDoneException{
         MathOperator operator = eq.getRoot().getOperator();
         try {
@@ -32,6 +39,9 @@ public class RemoveSingleRootOperator extends SimplifierStrategy{
             while (results.next()) {
                 EquationSub tempSub = SubSerializer.deserialize(results.getBytes("algorithm"));
                 Equation temp = tempSub.apply(newEq);
+                if(this.autoSimplifyAfter){
+                    temp = Simplifier.simplifyWithMetaFunction(temp, MathOperator.AUTOSIMPLIFY);
+                }
                 if(temp.tree.data.getOperator() != operator){
                     LinkedList<SubstitutionData> steps = new LinkedList<>();
                     steps.add(new SubstitutionData(null, eq));
@@ -42,6 +52,6 @@ public class RemoveSingleRootOperator extends SimplifierStrategy{
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        throw new SimplifyObjectiveNotDoneException(this);
+        throw new SimplifyObjectiveNotDoneException(this, eq);
     }
 }

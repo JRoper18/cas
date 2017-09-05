@@ -634,7 +634,7 @@ public class EquationSubDatabase { //NOTE: I know, I know, this should be in the
                     return expanded;
                 }
                 return newEq; //DEFAULT
-            }, new MathObject(MathOperator.EXPAND))
+            }, new MathObject(MathOperator.EXPAND)),
     };
     public static final HashSet<EquationSub> subs = new HashSet<EquationSub>(Arrays.asList(subsArray));
 }

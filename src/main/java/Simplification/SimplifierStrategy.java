@@ -7,6 +7,7 @@ import CAS.Equation;
  */
 public abstract class SimplifierStrategy {
     public abstract SimplifierResult simplify(Equation eq) throws SimplifyObjectiveNotDoneException;
+    public abstract boolean isSimplifyDone(Equation begin, Equation current);
     public Equation getResult(Equation eq) throws SimplifyObjectiveNotDoneException {
         return this.simplify(eq).getResult();
     }
