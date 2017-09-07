@@ -29,6 +29,7 @@ public enum MathOperator {
     TANGENT(1, true, false, MathOperatorSubtype.MATH, null, null, false),
     FACTORIAL(1, true, false, MathOperatorSubtype.MATH, null, null, false),
     DERIVATIVE(2, true, false, MathOperatorSubtype.MATH, null, null, true),
+    INTEGRAL(2, true, false, MathOperatorSubtype.MATH, null, null, true),
     CUSTOM_FUNCTION(0, false, false, MathOperatorSubtype.MATH, null, null, false), //Placeholder values - check customfunction class,
     NATURAL_LOG(1, true, false, MathOperatorSubtype.MATH, null, null, true),
     LIST(1, true, true, MathOperatorSubtype.MATH, null, null, false),

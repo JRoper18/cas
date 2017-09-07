@@ -11,8 +11,10 @@ import PatternMatching.PatternMatcher;
 import Simplification.Simplifier;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Created by jack on 1/9/2017.
@@ -20,45 +22,16 @@ import java.util.HashSet;
 public class StructuralSub extends EquationSub implements Serializable {
     public final Equation before;
     public final Equation after;
+
+    public final List<Equation> conditions;
     public final int operatorCost;
-    public StructuralSub(String total){
-        this(total.split("->")[0], total.split("->")[1]);
-    }
-    public StructuralSub(String before, String after){
-        this(Simplifier.simplifyWithMetaFunction(new Equation(before), MathOperator.AUTOSIMPLIFY), Simplifier.simplifyWithMetaFunction(new Equation(after), MathOperator.AUTOSIMPLIFY));
-    }
-    public StructuralSub(Equation before, Equation after){
-        super((DirectOperation & Serializable) (equation -> {
-            PatternMatcher matcher = new PatternMatcher();
-            PatternMatchResult data = matcher.patternMatch(equation, before);
-            if(data.match) {
-                Equation newEquation = after.clone(); //Quick clone
-                HashMap<String, Equation> subs = data.variableValues;
-                HashSet<String> dupVarNames = before.getVariables();
-                dupVarNames.retainAll(equation.getVariables());
-                for(String dupVar: dupVarNames){
-                    String newVarName = "a";
-                    while(subs.keySet().contains(newVarName)){
-                        newVarName += "0";
-                    }
-                    MathObject substitution = new GenericExpression(newVarName);
-                    GenericExpression genExToLookFor = new GenericExpression(dupVar);
-                    newEquation.tree.replaceAllData(genExToLookFor, substitution);
-                    subs.put(newVarName, subs.get(dupVar));
-                    subs.remove(dupVar);
-                }
-                for (String sub : subs.keySet()) {
-                    Tree<MathObject> substitution = subs.get(sub).tree;
-                    GenericExpression genExToLookFor = new GenericExpression(sub);
-                    newEquation.tree.replaceAll(new Tree(genExToLookFor), substitution);
-                }
-                return Simplifier.simplifyWithMetaFunction(newEquation, MathOperator.AUTOSIMPLIFY);
-            }
-            return equation;
-        }), getProbableAssignedOperator(before));
-        this.before = before.clone();
-        this.after = after.clone();
-        this.operatorCost = after.tree.getNumberOfOccurances(this.rootOperator) - before.tree.getNumberOfOccurances(this.rootOperator);
+
+    public StructuralSub(DirectOperation oper, Equation before, Equation after, List<Equation> conditions, int operatorCost){
+        super(oper, getProbableAssignedOperator(before));
+        this.before = before;
+        this.after = after;
+        this.conditions = conditions;
+        this.operatorCost = operatorCost;
     }
     private static MathObject getProbableAssignedOperator(Equation equation){
         MathObject probableOperator = null;

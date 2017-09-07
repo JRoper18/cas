@@ -9,6 +9,7 @@ public enum IdentificationType {
     CONSTANT,
     VARCONSTANT,
     NEGATIVE_CONSTANT,
+    POSITIVE_CONSTANT,
     VARIABLE,
     EXPRESSION,
     GENERICFUNCTION,

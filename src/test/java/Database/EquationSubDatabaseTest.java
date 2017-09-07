@@ -222,4 +222,13 @@ public class EquationSubDatabaseTest {
         assertEquals(new Equation("COS(_x)"), Simplifier.pruningRemoveOperator.getResult(new Equation("DERIV(TIMES(-1, SIN(_x)), _x)")));
         assertEquals(new Equation("TIMES(SIN(_x), -1, COS(COS(_x)))"), Simplifier.pruningRemoveOperator.getResult(new Equation("DERIV(SIN(COS(_x)), _x)")));
     }
+
+    @Test
+    public void testIntegral() throws Exception {
+        assertEquals(new Equation("TIMES(2, POWER(_x, 2))"), Simplifier.pruningRemoveOperator.getResult(new Equation("INTEGRAL(TIMES(4, _x), _x)")));
+        assertEquals(new Equation("DIVIDE(3, POWER(_x, 2)"), Simplifier.pruningRemoveOperator.getResult(new Equation("INTEGRAL(TIMES(-6, POWER(_x, -3), _x)")));
+        assertEquals(new Equation("TIMES(2, POWER(_x, 2))"), Simplifier.pruningRemoveOperator.getResult(new Equation("INTEGRAL(TIMES(4, _x), _x)")));
+        assertEquals(new Equation("TIMES(2, POWER(_x, 2))"), Simplifier.pruningRemoveOperator.getResult(new Equation("INTEGRAL(TIMES(4, _x), _x)")));
+
+    }
 }

@@ -30,10 +30,4 @@ public class StructuralSubTest {
     public void testConstructors() throws Exception {
         assertEquals(new StructuralSub("1", "0"), new StructuralSub("1 -> 0"));
     }
-
-    @Test
-    public void testGenericFunctions() throws Exception {
-        StructuralSub sub1 = new StructuralSub("_f_GENERICFUNCTION(_x_EXPRESSION) -> _f_GENERICFUNCTION(PLUS(_x_EXPRESSION, 2))");
-        System.out.println(sub1.apply(new Equation("POWER(PLUS(_v, 1), 2)")));
-    }
 }

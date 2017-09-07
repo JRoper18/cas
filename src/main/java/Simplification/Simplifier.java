@@ -4,6 +4,7 @@ import CAS.Equation;
 import CAS.EquationObjects.MathObject;
 import CAS.EquationObjects.MathOperator;
 import CAS.EquationObjects.MathOperatorSubtype;
+import PatternMatching.PatternMatchResult;
 import Simplification.Methods.OrderEquationSimplify;
 import Simplification.Methods.PruningRemoveOperator;
 import Simplification.Methods.RemoveSingleRootOperator;
@@ -81,5 +82,21 @@ public class Simplifier {
             ex.printStackTrace();
         }
         return applyTo;
+    }
+    public static boolean evalCondition(Equation conditionEq, PatternMatchResult matchResult) throws EquationNotConditionException{
+        MathOperator op = conditionEq.getRoot().getOperator();
+        if(op.getSubType() != MathOperatorSubtype.BOOLEAN){
+            throw new EquationNotConditionException(conditionEq);
+        }
+        Equation arg1 = matchResult.variableValues.get(conditionEq.getSubEquation(0));
+        Equation arg2 = matchResult.variableValues.get(conditionEq.getSubEquation(1));
+        switch(op){
+            case EQUALS:
+                return arg1.equals(arg2);
+            case NOT:
+                return !evalCondition(conditionEq.getSubEquation(0), matchResult);
+            default:
+                return false;
+        }
     }
 }
